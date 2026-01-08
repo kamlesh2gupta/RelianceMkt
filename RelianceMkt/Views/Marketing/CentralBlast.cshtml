@@ -1,0 +1,813 @@
+﻿@{
+    ViewBag.Title = "campaign";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '@TempData["SuccessMessage"]',
+            timer: 3000,
+            showConfirmButton: false
+        });
+    </script>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '@TempData["ErrorMessage"]',
+        });
+    </script>
+}
+<style>
+    .gs-icon {
+        font-size: 30px;
+        border-radius: 12px;
+        height: 47px;
+        width: 47px;
+        line-height: 47px;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    /* Remove DataTables sorting arrows from table header */
+    table.dataTable thead th.sorting,
+    table.dataTable thead th.sorting_asc,
+    table.dataTable thead th.sorting_desc {
+        background-image: none !important;
+        padding-right: 10px !important; /* Adjust padding to prevent layout shift */
+    }
+    /* Style for aligned file input and buttons */
+    .file-upload-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+        .file-upload-container .form-control {
+            flex: 1;
+            min-width: 200px;
+        }
+
+    .form-control {
+        height: 50px;
+    }
+
+    .file-upload-container .btn {
+        height: 54px; /* Match typical form-control height */
+        line-height: 1.5;
+        padding: 6px 12px;
+    }
+</style>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v15.0&appId=841516383953923&autoLogAppEvents=1" nonce="eIW8JUSQ"></script>
+
+<div class="container-fluid">
+    <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+        <div class="mr-auto d-none d-lg-block">
+            <h2 class="text-black font-w600">Campaign</h2>
+            <p class="mb-0">Current campaign list</p>
+        </div>
+        <div class="d-none d-lg-flex align-items-center">
+            <div class="text-right">
+                @Html.Partial("_PartialDateTime")
+            </div>
+            @*<a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
+                    <i class="las la-cog scale5"></i>
+                </a>*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-xxl-12 col-lg-12">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            @using (Html.BeginForm("CentralBlast", "Marketing", FormMethod.Post, new { id = "filterForm" }))
+                            {
+                                <div class="form-row">
+                                    <div class="form-group col-xl-4">
+                                        <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span><br />
+                                        @Html.DropDownList("channel", new SelectList(ViewBag.lstchannels, "channel_id", "channel_name", ViewBag.channel),
+                                            "Select Channel", new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group col-xl-4">
+                                        <label class="text-black font-w500 mb-3">Category:</label><span class="text-danger ml-1">*</span><br />
+                                        @Html.DropDownList("category", new SelectList(ViewBag.lstcategory, "campaign_category_id", "campaign_category_name", ViewBag.category),
+                                            "Select Category", new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group col-xl-4">
+                                        <label class="text-black font-w500 mb-3">Campaign:</label><span class="text-danger ml-1">*</span><br />
+                                        @Html.DropDownList("campaign", new SelectList(ViewBag.lstcampaign, "campaign_id", "campaign_name", ViewBag.campaign),
+                                            "Select Campaign", new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group col-xl-4">
+                                        <label class="text-black font-w500 mb-3">Sub Campaign</label><span class="text-danger ml-1">*</span><br />
+                                        @Html.DropDownList("subcampaign", new SelectList(ViewBag.lstsubcampaign, "subcampaign_id", "subcampaign_name", ViewBag.subcampaign),
+                                            "Select Sub Campaign", new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group col-xl-4">
+                                        <label class="text-black font-w500 mb-3">Language</label><span class="text-danger ml-1">*</span><br />
+                                        @Html.DropDownList("language", new SelectList(ViewBag.lstlanguage, "Value", "Text", ViewBag.language),
+                                            "Select Language", new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group col-xl-4">
+                                        <label class="text-black font-w100 mb-3">Type</label><span class="text-danger ml-1">*</span><br />
+                                        @Html.DropDownList("campaigntype", new SelectList(ViewBag.lsttype, "Value", "Text", ViewBag.type),
+                                            "Select Campaign Type", new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group col-xl-12" style="padding-top:10px;">
+                                        <button type="submit" class="btn btn-warning w-100">Apply Filter</button>
+                                    </div>
+                                </div>
+                            }
+                            @using (Html.BeginForm("UploadExcel", "Marketing", FormMethod.Post, new { enctype = "multipart/form-data", id = "uploadForm" }))
+                            {
+                                <div>
+                                    <label class="text-black font-w500 mb-3">Choose Excel File:</label><span class="text-danger ml-1">*</span>
+                                    <div class="file-upload-container">
+                                        <input type="file" name="excelFile" id="excelFile" accept=".xlsx" class="form-group col-xl-8 form-control" required />
+                                        <button type="submit" id="uploadBtn" class="form-group col-xl-3 btn btn-primary">Send</button>
+                                        <a href="@Url.Action("DownloadCentralBlastTemplate", "Marketing")" class="form-group col-xl-1 btn btn-primary">
+                                            <i class="fas fa-file-excel" style="font-size: 2rem;"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Campaign Creatives</h4>
+                            <div class="dropdown" style="display: inline-block; position: relative;">
+                                <button class="btn btn-primary" type="button" id="btnActive">Active</button>
+                                <button class="btn btn-primary" type="button" id="btnPause">Pause</button>
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="statusDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Status
+                                </button>
+                                <div class="dropdown-menu p-3" aria-labelledby="statusDropdown" style="min-width: 200px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input status-filter" type="checkbox" value="Active" id="statusActive">
+                                        <label class="form-check-label" for="statusActive">Active</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input status-filter" type="checkbox" value="Paused" id="statusPaused">
+                                        <label class="form-check-label" for="statusPaused">Paused</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input status-filter" type="checkbox" value="Upcoming" id="statusUpcoming">
+                                        <label class="form-check-label" for="statusUpcoming">Upcoming</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-responsive-md" id="campaignTable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <label style="display: flex; align-items: center; gap: 5px; margin: 0;">
+                                                    <input type="checkbox" id="selectAll">All
+                                                </label>
+                                            </th>
+                                            <th><strong>ID</strong></th>
+                                            <th><strong>Campaign</strong></th>
+                                            <th><strong>ChannelName</strong></th>
+                                            <th><strong>Status</strong></th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                        {
+                                            <tr data-id="@item.campaign_master_id"
+                                                data-start-date="@item.campaign_master_start_date.ToString("o")"
+                                                data-end-date="@item.campaign_master_end_date.ToString("o")"
+                                                data-server-status="@item.camapaign_master_status">
+                                                <td><input type="checkbox" class="select-campaign" value="@item.campaign_master_id" data-campaign-name="@item.CampaignName" /></td>
+                                                <td class="row-index"><strong></strong></td>
+                                                <td>@item.CampaignName</td>
+                                                <td>@item.ChannelName</td>
+                                                <td class="campaign-status">
+                                                    @if (item.camapaign_master_status == "Paused")
+                                                    {
+                                                        <span class="badge badge-rounded badge-warning">Paused</span>
+                                                    }
+                                                    else if (item.camapaign_master_status == "Active")
+                                                    {
+                                                        <span class="badge badge-rounded badge-success">Active</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-rounded badge-info">Upcoming</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (item.camapaign_master_status == "Active" || item.camapaign_master_status == "Paused" || item.camapaign_master_status == "Upcoming")
+                                                    {
+                                                        <a class="badge badge-rounded badge-success edit-icon" href="~/Marketing/EditcampaignCentralBlast/@item.campaign_master_id" title="Edit Campaign">
+                                                            <i class="fa fa-pencil color-info"></i>
+                                                        </a>
+                                                    }
+                                                    <a class="badge badge-rounded badge-primary" href="~/Marketing/campaigndetailsadmin?CampaignMasterId=@item.campaign_master_id" title="View Details">
+                                                        <i class="fa fa-eye color-info"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="campaign-modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="myModalBodyDiv1"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hidden divs to prevent ApexCharts "Element not found" errors -->
+<div id="chartCircle" style="display: none;"></div>
+<div id="columnChart" style="display: none;"></div>
+
+@section js
+{
+    <!-- Add CSS for bootstrap-select and bootstrap-multiselect -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Content/vendor/jqueryui/js/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css" />
+
+    <!-- Add JS for bootstrap-select and bootstrap-multiselect after jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+
+    <script>
+        // Define getUrlParams function to fix ReferenceError in deznav-init.js
+        function getUrlParams() {
+            var params = {};
+            window.location.search.substr(1).split('&').forEach(function (pair) {
+                if (pair === '') return;
+                var keyVal = pair.split('=');
+                params[decodeURIComponent(keyVal[0])] = decodeURIComponent(keyVal[1] || '');
+            });
+            return params;
+        }
+
+    var ShowCampaign = function (CampaignMasterId) {
+        var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+        $("#myModalBodyDiv1").load(url, function () {
+            $("#campaign-modal").modal("show");
+        });
+    }
+    $(document).ready(function () {
+        // Reset filter dropdowns to blank on page load after filter application
+        resetFilterDropdowns();
+        // Initialize DataTables without pagination
+        var table = $('#campaignTable').DataTable({
+            pageLength: 10,
+            lengthChange: false,
+            info: true,
+            paging: false,
+            searching: false,
+            ordering: false,
+            columnDefs: [
+                { orderable: false, targets: [0, 5] },
+                {
+                    targets: 1,
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                }
+            ]
+        });
+        // Function to reset all checkboxes
+        function resetCheckboxes() {
+            $('.select-campaign').prop('checked', false);
+            $('#selectAll').prop('checked', false);
+            updateSendButtonState();
+        }
+        // Function to reset filter dropdowns to blank
+        function resetFilterDropdowns() {
+            $('#filterForm select').val('');
+        }
+        // Enhanced function to update campaign statuses based on dates and server response
+        function updateCampaignStatuses() {
+            var needsUpdate = [];
+            $('#campaignTable tbody tr').each(function () {
+                var row = $(this);
+                var startDate = new Date(row.data('start-date'));
+                var endDate = new Date(row.data('end-date'));
+                var today = new Date();
+                var serverStatus = row.data('server-status') || row.find('.campaign-status').text().trim();
+                var currentStatus = row.find('.campaign-status').text().trim();
+                var rowId = row.data('id');
+                // Calculate the actual status based on dates
+                var calculatedStatus = calculateStatus(startDate, endDate, today, serverStatus);
+                // Collect IDs that need DB update
+                if (calculatedStatus !== currentStatus) {
+                    needsUpdate.push(rowId);
+                }
+            });
+            if (needsUpdate.length > 0) {
+                // Send to server to update DB
+                $.ajax({
+                    url: '@Url.Action("UpdateSpecificCampaignStatuses", "Marketing")',
+                    type: 'POST',
+                    data: { ids: needsUpdate.join(',') },
+                    success: function (response) {
+                        if (response.success) {
+                            // After DB update, update the UI
+                            doUpdateUI();
+                            if (response.expiredCount > 0) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Campaigns Expired',
+                                    text: `${response.expiredCount} campaign(s) moved to Stopped and removed from view.`,
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location.reload(); // Reload to remove Stopped campaigns
+                                });
+                            }
+                        } else {
+                            console.error('Failed to update statuses in DB: ' + response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('Error updating statuses in DB: ' + xhr.statusText);
+                    }
+                });
+            } else {
+                // No changes needed, but run UI update anyway
+                doUpdateUI();
+            }
+        }
+        // Separate function to perform UI updates
+        function doUpdateUI() {
+            $('#campaignTable tbody tr').each(function () {
+                var row = $(this);
+                var startDate = new Date(row.data('start-date'));
+                var endDate = new Date(row.data('end-date'));
+                var today = new Date();
+                var serverStatus = row.data('server-status') || row.find('.campaign-status').text().trim();
+                var currentStatus = row.find('.campaign-status').text().trim();
+                // Calculate the actual status based on dates
+                var calculatedStatus = calculateStatus(startDate, endDate, today, serverStatus);
+                // Only update if different from current display
+                if (calculatedStatus !== currentStatus) {
+                    if (calculatedStatus === 'Stopped') {
+                        // Remove the row from the table
+                        row.remove();
+                    } else {
+                        updateStatusCell(row, calculatedStatus, true); // Update UI and server-status data attr
+                    }
+                }
+            });
+            // Re-apply filters after UI update
+            filterTable();
+            // Update DataTables display
+            table.draw(false);
+        }
+        // Helper function to calculate status based on dates
+        function calculateStatus(startDate, endDate, today, serverStatus) {
+            // If explicitly Paused, keep as Paused unless expired
+            if (serverStatus === 'Paused') {
+                if (endDate < today) {
+                    return 'Stopped';
+                }
+                return 'Paused';
+            }
+            // Status logic based on dates
+            if (startDate > today) {
+                return 'Upcoming';
+            } else if (startDate <= today && endDate >= today) {
+                return 'Active';
+            } else if (endDate < today) {
+                return 'Stopped';
+            }
+            return serverStatus; // Default fallback
+        }
+        // Helper function to update status cell
+        function updateStatusCell(row, status, isServerUpdate) {
+            var statusCell = row.find('.campaign-status');
+            var editIcon = row.find('.edit-icon');
+            statusCell.empty();
+            let badgeClass, statusText;
+            switch(status) {
+                case 'Paused':
+                    badgeClass = 'badge-warning';
+                    statusText = 'Paused';
+                    editIcon.show();
+                    break;
+                case 'Active':
+                    badgeClass = 'badge-success';
+                    statusText = 'Active';
+                    editIcon.show();
+                    break;
+                case 'Upcoming':
+                    badgeClass = 'badge-info';
+                    statusText = 'Upcoming';
+                    editIcon.show();
+                    break;
+            }
+            statusCell.append(`<span class="badge badge-rounded ${badgeClass}">${statusText}</span>`);
+            // If this is a server update, also update the hidden server status
+            if (isServerUpdate) {
+                row.data('server-status', status);
+            }
+        }
+        // Call initially and check every 5 minutes
+        updateCampaignStatuses();
+        setInterval(updateCampaignStatuses, 300000); // Check every 5 minutes
+        // Filter table based on selected status checkboxes
+        $('.status-filter').on('change', function () {
+            filterTable();
+        });
+        function filterTable() {
+            var selectedStatuses = $('.status-filter:checked').map(function () {
+                return $(this).val();
+            }).get();
+            // Show all rows initially
+            $('#campaignTable tbody tr').show();
+            if (selectedStatuses.length === 0) {
+                // If no filters selected, show all rows
+                $('#campaignTable tbody tr').show();
+            } else {
+                // Filter based on selected statuses
+                $('#campaignTable tbody tr').each(function () {
+                    var row = $(this);
+                    var statusText = row.find('.campaign-status').text().trim();
+                    // Check if this row's status matches any selected filter
+                    var shouldShow = selectedStatuses.includes(statusText);
+                    if (shouldShow) {
+                        row.show();
+                    } else {
+                        row.hide();
+                    }
+                });
+            }
+            // Re-number the visible rows
+            renumberRows();
+            // Update DataTables display
+            table.draw(false);
+        }
+        // Renumber visible rows
+        function renumberRows() {
+            var visibleRows = $('#campaignTable tbody tr:visible');
+            visibleRows.each(function(index) {
+                var rowIndex = $(this).find('.row-index');
+                rowIndex.find('strong').text(index + 1);
+            });
+        }
+        // Function to check if Excel file is selected
+        function isExcelSelected() {
+            return $('#excelFile').get(0).files.length > 0;
+        }
+        // Collect unique selected campaign master IDs and their statuses
+        function getSelectedCampaignIdsAndStatuses() {
+            const campaigns = [];
+            $('.select-campaign:checked').each(function () {
+                const id = $(this).val();
+                const row = $(this).closest('tr');
+                const status = row.find('.campaign-status').text().trim();
+                const serverStatus = row.data('server-status') || status;
+                campaigns.push({
+                    id: id,
+                    status: status,
+                    serverStatus: serverStatus,
+                    row: row
+                });
+            });
+            return campaigns;
+        }
+        // Enhanced status update function with server sync
+        function updateStatus(newStatus) {
+            const selectedCampaigns = getSelectedCampaignIdsAndStatuses();
+            let updated = 0;
+            let skippedInvalidTransition = 0;
+            if (selectedCampaigns.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Campaign Selected',
+                    text: 'Please select at least one campaign.',
+                });
+                return;
+            }
+            // Validate transitions with enhanced logic
+            let invalid = false;
+            let reason = '';
+            selectedCampaigns.forEach(c => {
+                // Skip if already in target status
+                if (c.serverStatus === newStatus) {
+                    skippedInvalidTransition++;
+                    return;
+                }
+                if (c.serverStatus === 'Upcoming') {
+                    invalid = true;
+                    reason = 'Upcoming campaigns cannot be modified.';
+                    return;
+                }
+                // Validate status transitions
+                if (newStatus === 'Active' && c.serverStatus !== 'Paused') {
+                    invalid = true;
+                    skippedInvalidTransition++;
+                    reason = 'Only Paused campaigns can be set to Active.';
+                    return;
+                }
+                if (newStatus === 'Paused' && c.serverStatus !== 'Active') {
+                    invalid = true;
+                    skippedInvalidTransition++;
+                    reason = 'Only Active campaigns can be set to Paused.';
+                    return;
+                }
+            });
+            if (invalid && selectedCampaigns.length === skippedInvalidTransition) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Transition',
+                    text: reason,
+                });
+                return;
+            }
+            // Directly perform status update for Pause without confirmation
+            performStatusUpdate(selectedCampaigns, newStatus, skippedInvalidTransition);
+        }
+        // Perform the actual status update
+        function performStatusUpdate(selectedCampaigns, newStatus, skippedInvalidTransition) {
+            const selectedIds = selectedCampaigns
+                .filter(c => c.serverStatus !== newStatus && c.serverStatus !== 'Upcoming')
+                .map(c => c.id);
+            if (selectedIds.length === 0) {
+                if (skippedInvalidTransition > 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Changes',
+                        text: `${skippedInvalidTransition} campaign(s) cannot be changed due to invalid status transition or already in requested state.`,
+                    });
+                }
+                return;
+            }
+            // Show loading
+            Swal.fire({
+                title: 'Updating Status...',
+                text: 'Please wait while updating campaign statuses.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            $.ajax({
+                url: '@Url.Action("UpdateStatus", "Marketing")',
+                type: 'POST',
+                traditional: true,
+                data: {
+                    campaign_master_id: selectedIds.join(','),
+                    campaign_master_status: newStatus
+                },
+                success: function (response) {
+                    Swal.close();
+                    if (response.success) {
+                        let messages = [];
+                        let updatedCount = 0;
+                        // Update UI for each selected campaign
+                        selectedCampaigns.forEach(campaign => {
+                            // Only update if it was actually changed on server
+                            if (selectedIds.includes(campaign.id.toString())) {
+                                // Update server status
+                                campaign.row.data('server-status', newStatus);
+                                // Update display status
+                                updateStatusCell(campaign.row, newStatus, true);
+                                updatedCount++;
+                            }
+                        });
+                        // Build success message
+                        if (updatedCount > 0) {
+                            messages.push(`${updatedCount} campaign(s) ${newStatus.toLowerCase()}d successfully.`);
+                        }
+                        if (skippedInvalidTransition > 0) {
+                            messages.push(`${skippedInvalidTransition} campaign(s) skipped due to invalid status transition or already in requested state.`);
+                        }
+                        if (messages.length > 0) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Status Updated',
+                                html: messages.join('<br>'),
+                            }).then(() => {
+                                // Re-apply filter after successful update
+                                filterTable();
+                            });
+                        }
+                        // Trigger immediate status check
+                        updateCampaignStatuses();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: response.message || 'Failed to update status.',
+                        });
+                    }
+                    resetCheckboxes();
+                },
+                error: function (xhr) {
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error: ' + (xhr.responseJSON?.message || xhr.statusText),
+                    });
+                    resetCheckboxes();
+                }
+            });
+        }
+        // Bind Active and Pause buttons to updateStatus function
+        $('#btnActive').on('click', function () {
+            updateStatus('Active');
+        });
+        $('#btnPause').on('click', function () {
+            updateStatus('Paused');
+        });
+        // Handle checkbox changes based on Excel selection state
+        $('.select-campaign').on('change', function () {
+            var excelSelected = isExcelSelected();
+            var checkedCount = $('.select-campaign:checked').length;
+            if (excelSelected && checkedCount > 1) {
+                $(this).prop('checked', false);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Single Selection Only',
+                    text: 'When an Excel file is selected, only one campaign can be chosen.',
+                });
+            }
+            updateSendButtonState();
+        });
+        // Handle Select All checkbox
+        $('#selectAll').on('change', function () {
+            var excelSelected = isExcelSelected();
+            if (excelSelected) {
+                this.checked = false;
+                $('.select-campaign').prop('checked', false);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Single Selection Mode',
+                    text: 'When an Excel file is selected, only one campaign can be chosen. Select All is disabled.',
+                });
+            } else {
+                $('.select-campaign').prop('checked', this.checked);
+            }
+            updateSendButtonState();
+        });
+        // Handle Excel file selection change
+        $('#excelFile').on('change', function () {
+            var excelSelected = isExcelSelected();
+            if (excelSelected) {
+                var checkedCount = $('.select-campaign:checked').length;
+                if (checkedCount > 1) {
+                    $('.select-campaign').prop('checked', false);
+                    $('#selectAll').prop('checked', false);
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Selection Cleared',
+                        text: 'Multiple selections cleared. Now select only one campaign for upload.',
+                    });
+                }
+            }
+            updateSendButtonState();
+        });
+        // Enable/disable send button based on selections
+        function updateSendButtonState() {
+            var fileSelected = isExcelSelected();
+            var singleCampaignSelected = $('.select-campaign:checked').length === 1;
+            $('#uploadBtn').prop('disabled', !(fileSelected && singleCampaignSelected));
+        }
+        // Initial state
+        updateSendButtonState();
+        // Handle upload form submission
+        $('#uploadForm').on('submit', function (e) {
+            var selected = $('.select-campaign:checked');
+            var fileSelected = isExcelSelected();
+            if (!fileSelected) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Excel File Not Selected',
+                    text: 'Please select an Excel file.',
+                });
+                return;
+            }
+            if (selected.length === 0) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campaign Selection Required',
+                    text: 'Please select campaign name in table',
+                });
+                return;
+            }
+            if (selected.length > 1) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Multiple Selection Not Allowed',
+                    text: 'Please select only one campaign.',
+                });
+                return;
+            }
+            var campaignName = selected.data('campaign-name');
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'CampaignName',
+                value: campaignName
+            }).appendTo('#uploadForm');
+            Swal.fire({
+                title: 'Uploading...',
+                text: 'Please wait while processing the Excel file.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                success: function () {
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Data saved and WhatsApp messages sent successfully!',
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function (xhr) {
+                    Swal.close();
+                    var errorMsg = 'Error processing request: ' + xhr.statusText;
+                    if (xhr.responseText && xhr.responseText.includes('ErrorMessage')) {
+                        errorMsg = 'Upload failed. Please check the file and try again.';
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMsg,
+                    });
+                }
+            });
+            e.preventDefault();
+        });
+    });
+    // CentralBlast view script section
+    $(function() {
+        @if (ViewBag.IsSuccess != null && ViewBag.IsSuccess == true)
+        {
+            <text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Campaign Updated!',
+                text: '@ViewBag.SuccessMessage',
+                showConfirmButton: true,
+                timer: 3000,
+                timerProgressBar: true,
+                toast: false,
+                position: 'center'
+            });
+            </text>
+        }
+    });
+    </script>
+} 

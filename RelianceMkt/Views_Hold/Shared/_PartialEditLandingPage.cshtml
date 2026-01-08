@@ -1,0 +1,57 @@
+﻿@model RelianceMkt.Models.landingpage
+
+
+<div>
+
+    <form id="myForm">
+        <div class="row">
+            <div class="col-md-8">
+                @Html.HiddenFor(m => m.landingpage_id)
+                @Html.TextBoxFor(model => model.landingpage_url, new { @class = "form-control", @placeholder = "Name" })
+            </div>
+            <div class="col-md-4">
+                <a href="#" id="btnSubmit" class="btn btn-success btn-block">
+                    @if (Model.landingpage_id > 0)
+                    {
+                        <span>Update</span>
+                    }
+                    else
+                    {<span>Save</span>}
+                </a>
+            </div>
+        </div>
+
+
+
+    </form>
+    @*<div class="sk-child sk-bounce1" id="loaderDiv"></div>*@
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function () {
+
+            //$("#loaderDiv").show();
+            //debugger;
+            var myformdata = $("#myForm").serialize();
+
+            $.ajax({
+
+                type: "POST",
+                //url: "/Marketing/EditLandingPage",
+                url - : '@Url.Action("EditLandingPage", "Marketing")',
+                data: myformdata,
+                success: function () {
+                    //$("#loaderDiv").hide();
+                    $("#edit-modal").modal("hide");
+                    window.location.href = '@Url.Action("LandingPageList", "Marketing")';
+
+                }
+            })
+        })
+    })
+</script>
+

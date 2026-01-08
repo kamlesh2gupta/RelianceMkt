@@ -1,0 +1,70 @@
+﻿@media only screen and (max-width: 767px) .header .header-content {
+    padding-left: 1.75rem;
+    padding-right: 0.938rem;
+}
+
+.nav-header .brand-logo {
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+    background: #5856CE;
+}
+
+[data-sidebar-style="mini"] .deznav .metismenu > li > a {
+    /* height: 100px; */
+    text-align: center;
+    line-height: 50px;
+    padding: 0;
+}
+
+.header .header-content {
+    height: 100%;
+    padding-left: 5.3125rem;
+    padding-right: 1.875rem;
+    align-items: center;
+    display: flex;
+    background: #5856CE;
+}
+
+[data-sidebar-style="mini"] .nav-header .logo-abbr {
+    display: block;
+    max-width: 240px;
+}
+
+
+[data-sidebar-style="mini"] .deznav .metismenu > li {
+    padding: 0px 5px 5px 0px;
+}
+
+    [data-sidebar-style="mini"] .deznav .metismenu > li > a {
+        /* height: 100px; */
+        text-align: center;
+        line-height: 50px;
+        padding: 0;
+    }
+
+element.style {
+}
+
+[data-sidebar-style="mini"] .deznav .metismenu > li > a {
+    /* height: 100px; */
+    text-align: center;
+    line-height: 50px;
+    padding: 0;
+}
+
+[data-sidebar-style="mini"] .deznav .metismenu > li > a {
+    /* height: 100px; */
+    text-align: center;
+    line-height: 50px;
+    padding: 0;
+}
+
+@media only screen and (min-width: 768px) {
+    [data-sidebar-style="mini"] .deznav .metismenu > li > a {
+        height: 50px;
+        text-align: left;
+        line-height: 50px;
+        padding: 2px 2px 2px 10px;
+    }
+}

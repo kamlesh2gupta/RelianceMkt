@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "UserLeaderBoard";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Leaderboard</h4>
+                </div>
+                <div class="card-body">
+                    <div class="custom-tab-1">
+                        <ul class="nav nav-tabs justify-content-end mb-4">
+                            <li class="nav-item">
+                                <a href="#navpills2-1" class="nav-link active" data-toggle="tab">Shares</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#navpills2-2" class="nav-link" data-toggle="tab">Leads</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+
+                            <!-- 🔹 Shares Tab -->
+                            <div id="navpills2-1" class="tab-pane active">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Rank</span>
+                                        Name
+                                        <span class="badge badge-primary badge-pill">Shares</span>
+                                    </li>
+
+                                    @foreach (var item in ViewBag.ShareLeaderBoard)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>@item.SHC_ID</span>
+                                            <span>@Session["USERNAME"]</span>
+                                            <span class="badge badge-primary badge-pill">@item.SHC_SHARECOUNT</span>
+                                        </li>
+                                    }
+
+                                    @if (ViewBag.ShareLeaderBoardMyRank != null)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                                            <span>@ViewBag.ShareLeaderBoardMyRank.SHC_ID</span>
+                                            <span>@Session["USERNAME"]</span>
+                                            <span class="badge badge-success badge-pill">@ViewBag.ShareLeaderBoardMyRank.SHC_SHARECOUNT</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <!-- 🔹 Leads Tab -->
+                            <div id="navpills2-2" class="tab-pane">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>Rank</span>
+                                        Name
+                                        <span class="badge badge-primary badge-pill">Leads</span>
+                                    </li>
+
+                                    @foreach (var item in ViewBag.LeadLeaderBoard)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>@item.leads_id</span>
+                                            <span>@Session["USERNAME"]</span>
+                                            <span class="badge badge-primary badge-pill">@item.leads_sapcode</span>
+                                        </li>
+                                    }
+
+                                    @if (ViewBag.LeadLeaderBoardMyRank != null)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                                            <span>@ViewBag.LeadLeaderBoardMyRank.leads_id</span>
+                                            <span>@Session["USERNAME"]</span>
+                                            <span class="badge badge-success badge-pill">@ViewBag.LeadLeaderBoardMyRank.leads_sapcode</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                        </div> <!-- tab-content -->
+                    </div> <!-- custom-tab-1 -->
+                </div> <!-- card-body -->
+            </div> <!-- card -->
+        </div> <!-- col -->
+    </div> <!-- row -->
+</div>

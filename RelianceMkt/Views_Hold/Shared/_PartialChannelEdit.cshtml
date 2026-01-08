@@ -1,0 +1,56 @@
+﻿@model RelianceMkt.Models.channel
+
+
+<div>
+
+    <form id="myForm">
+        <div class="row">
+            <div class="col-md-8">
+                @Html.HiddenFor(m => m.channel_id)
+                @Html.TextBoxFor(model => model.channel_name, new { @class = "form-control", @placeholder = "Name" })
+            </div>
+            <div class="col-md-4">
+                <a href="#" id="btnSubmit" class="btn btn-success btn-block">
+                    @if (Model.channel_id > 0)
+                    {
+                        <span>Update</span>
+                    }
+                    else
+                    {<span>Save</span>}
+                </a>
+            </div>
+        </div>
+
+
+
+    </form>
+    @*<div class="sk-child sk-bounce1" id="loaderDiv"></div>*@
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function () {
+
+            //$("#loaderDiv").show();
+            //debugger;
+            var myformdata = $("#myForm").serialize();
+
+            $.ajax({
+
+                type: "POST",
+                //url: "/Marketing/EditChannel",
+                url: '@Url.Action("EditChannel", "Marketing")',
+                data: myformdata,
+                success: function () {
+                    //$("#loaderDiv").hide();
+                    $("#edit-modal").modal("hide");
+                   window.location.href = '@Url.Action("ChannelList", "Marketing")';
+                }
+            })
+        })
+    })
+</script>
+

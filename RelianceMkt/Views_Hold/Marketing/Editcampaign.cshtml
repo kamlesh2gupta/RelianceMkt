@@ -1,0 +1,586 @@
+﻿@model RelianceMkt.Models.CustomModel.ModelNewCampaign
+
+@{
+    ViewBag.Title = "Editcampaign";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- row -->
+@section css
+{
+    <style>
+        #upload {
+            display: none
+        }
+    </style>
+
+}
+
+@using (Html.BeginForm("Editcampaign", "Marketing", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <div class="form-head d-flex mb-2 mb-sm-3 mb-lg-5 align-items-center">
+            <div class="mr-auto d-none d-lg-block">
+                <h2 class="text-black font-w600">Edit Campaign</h2>
+                <div>
+                    <a href="javascript:void(0);" class="fs-18 text-primary font-w600">Campaign / </a>
+                    <a href="javascript:void(0);" class="fs-18">Edit campaign</a>
+                </div>
+            </div>
+            <div>
+                @*<a href="javascript:void(0);" class="btn btn-outline-primary">PREVIEW</a>*@
+                <button type="submit" class="btn btn-primary ml-3">PUBLISH</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12 col-xxl-12 col-lg-12">
+                <div class="row">
+                    @if (@TempData["AlertType"] == "danger")
+                    {
+                        <div class="alert alert-danger" role="alert" id="success-alert">
+                            @TempData["AlertMessage"]
+                        </div>
+                    }
+                    @if (@TempData["AlertType"] == "Success")
+                    {
+                        <div class="alert alert-success" role="alert" id="success-alert">
+                            @TempData["AlertMessage"]
+                        </div>
+                    }
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header pb-0 border-0">
+                                <h3 class="fs-20 text-black">Describe your campaign below</h3>
+                            </div>
+                            <div class="card-body">
+                                @*<form>*@
+                                <div class="form-row">
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.channel_id, new SelectList(ViewBag.lstchannels, "channel_id", "channel_name"), "Select Channel", new { @class = "form-control" })
+
+                                    </div>
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Category:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_category_id, new SelectList(ViewBag.lstcategory, "campaign_category_id", "campaign_category_name"), "Select Category", new { @class = "form-control cascading", @id = "cm_campaign_category_id" })
+
+                                    </div>
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Campaign:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_id, new SelectList(ViewBag.lstcampaign, "Value", "Text"), "Select Campaign", new { @class = "form-control cascading", @id = "cm_campaign_id" })
+
+                                    </div>
+
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Sub Campaign</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.subcampaign_id, new SelectList(ViewBag.lstsubcampaign, "subcampaign_id", "subcampaign_name"), "Select Sub Campaign", new { @class = "form-control cascading" })
+
+                                    </div>
+
+                                </div>
+                                @*</form>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-9 col-xxl-8 col-lg-8">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header pb-0 border-0">
+                                <h3 class="fs-20 text-black">Describe your campaign below</h3>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-row">
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Type of Campaign:</label><span class="text-danger ml-1">*</span>
+                                            @Html.DropDownListFor(x => x.cm.campaign_master_type, new List<SelectListItem>{
+                                           new SelectListItem{Text="Creative", Value="Creative"},
+                                            new SelectListItem{Text="Video", Value="Video"},
+                                             new SelectListItem{Text="Blogs", Value="Blogs"}
+                                       }
+                                       ,
+                                       "Select Campaign Type", new { @class = "form-control" })
+                                            @*<select class="form-control">
+                                                    <option>Creative</option>
+                                                    <option>Video</option>
+                                                    <option>Blogs</option>
+
+                                                </select>*@
+                                        </div>
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Language:</label><span class="text-danger ml-1">*</span>
+                                            @Html.DropDownListFor(x => x.cm.campaign_master_lang, new List<SelectListItem>{
+                                          new SelectListItem{Text="English", Value="English"},
+                                           new SelectListItem{Text="Hindi", Value="Hindi"},
+                                            new SelectListItem{Text="Marathi", Value="Marathi"},
+                                            new SelectListItem{Text="Tamil", Value="Tamil"}
+                                      }
+                                      ,
+                                      "Select Language", new { @class = "form-control" })
+                                            @*<select class="form-control">
+                                                    <option>English</option>
+                                                    <option>Hindi</option>
+                                                    <option>Marathi</option>
+                                                    <option>Tamil</option>
+
+                                                </select>*@
+                                        </div>
+
+
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Description Tool Tip</label><span class="text-danger ml-1">*</span>
+                                            @Html.TextAreaFor(x => x.cm.campaign_master_description, new { @class = "form-control", @rows = "13" })
+
+                                        </div>
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Creative  Caption</label><span class="text-danger ml-1">*</span>
+                                            @Html.TextBoxFor(x => x.cm.campaign_master_creative_caption, "", new { @class = "form-control", @placeholder = "Get 70% OFF Discount from Westoreid" })
+                                            @*<input type="text" class="form-control" placeholder="Get 70% OFF Discount from Westoreid">*@
+                                        </div>
+
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Tags</label><span class="text-danger ml-1">*</span>
+                                            @Html.TextBoxFor(x => x.cm.campaign_master_tags, "", new { @class = "form-control tags_input" })
+                                            @*<input type="text" class="form-control tags_input" value="html,css,bootstrap,photoshop" />*@
+                                        </div>
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Landing Page Link</label><span class="text-danger ml-1">*</span>
+                                            @Html.DropDownListFor(x => x.cm.campaign_master_landing_page, new SelectList(ViewBag.lstlandingpage, "landingpage_url", "landingpage_url"),
+                                         "Select Landing Page", new { @class = "form-control" })
+                                            @*<input type="text" class="form-control" placeholder="https://date24.in/marketing/new-compaign.html">*@
+                                        </div>
+                                        <div class="form-group col-xl-12">
+                                            <div>
+                                                <label>@Html.CheckBox("input_name", bool.Parse(Model.cm.input_name.ToString()), new { @class = "form-control-input" }) Name</label>
+                                            </div>
+                                            <div>
+                                                <label>@Html.CheckBox("input_mobile", bool.Parse(Model.cm.input_mobile.ToString()), new { @class = "form-control-input" }) Mobile</label>
+                                            </div>
+                                            <div>
+                                                <label>@Html.CheckBox("input_email", bool.Parse(Model.cm.input_email.ToString()), new { @class = "form-control-input" }) Email</label>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="form-group col-xl-12">
+                                            <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>
+                                            @Html.DropDownListFor(x => x.cm.camapaign_master_status, new SelectList(ViewBag.lstStatus, "Text", "Value"),
+                                         "Select Status", new { @class="form-control"})
+                                            @*<input type="text" class="form-control" placeholder="https://date24.in/marketing/new-compaign.html">*@
+                                        </div>
+                                        <!--<div class="form-group col-xl-12">
+                                            <div class="row">
+                                                <div class="col-lg-6 mb-4">
+                                                    <label class="text-black font-w500 mb-3">Set Daily Budget</label><span class="text-danger ml-1">*</span>
+                                                    <input type="text" class="form-control fs-24 text-center text-black mb-3" placeholder="" value="1000">
+                                                    <div class="btn-group budget-check" data-toggle="buttons">
+                                                        <label class="btn btn-outline-primary light btn-sm">
+                                                            <input type="radio" class="position-absolute invisible" name="options" id="option5"> $200
+                                                        </label>
+                                                        <label class="btn btn-outline-primary light btn-sm">
+                                                            <input type="radio" class="position-absolute invisible" name="options" id="option1" checked="">$500
+                                                        </label>
+                                                        <label class="btn btn-outline-primary light btn-sm active">
+                                                            <input type="radio" class="position-absolute invisible" name="options" id="option2"> $1,000
+                                                        </label>
+                                                        <label class="btn btn-outline-primary light btn-sm">
+                                                            <input type="radio" class="position-absolute invisible" name="options" id="option3"> $2000
+                                                        </label>
+                                                        <label class="btn btn-outline-primary light btn-sm">
+                                                            <input type="radio" class="position-absolute invisible" name="options" id="option4"> $5000
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label class="text-black font-w500 mb-3">Total Budget</label><span class="text-danger ml-1">*</span>
+                                                    <div class="input-element">
+                                                        <div class="inputs mb-4">
+                                                            <input class="form-control fs-24 text-center text-black" type="number" min="-20" max="40" step="1" id="input-number">
+                                                        </div>
+                                                        <div id="html5"></div>
+                                                        <div class="d-flex align-items-center justify-content-between text-black">
+                                                            <span>$0</span>
+                                                            <span>$100</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>-->
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="form-group col-xl-12 p-0">
+                                            <label class="text-black font-w500 mb-3">Date Start</label>
+                                            @Html.TextBoxFor(x => x.cm.campaign_master_start_date, "{0:yyyy/MM/dd}", new { @class = "form-control", @type = "date" })
+                                            @*<input type="date" class="form-control">*@
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="form-group col-xl-12 p-0">
+                                            <label class="text-black font-w500 mb-3">Date End</label>
+                                            @Html.TextBoxFor(x => x.cm.campaign_master_end_date, "{0:yyyy/MM/dd}", new { @class = "form-control", @type = "date" })
+                                            @*<input type="date" class="form-control">*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-4 col-lg-4">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h3 class="text-black fs-20">Images</h3>
+                                @*<input type="file" multiple class="btn btn-link fs-18 pr-0" />*@
+                                @Html.TextBoxFor(x => x.images, "", new { @type = "file", @multiple = "false", @id = "upload" })
+                                <a class="btn btn-link fs-18 pr-0" id="upload_link" href="">+Upload</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="bgl-primary p-3 text-black rounded" id="ImgList">
+                                    @*@Html.ValidationMessageFor(x => x.images, "", new { @class = "text-danger" })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h3 class="text-black fs-20">Social Media Share</h3>
+                                @*<a class="btn btn-link text-dark fs-18 pr-0" href="javascript:void(0);">Clear</a>*@
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @*  @Html.CheckBoxFor(x=>x.cm.campaign_master_instagram, false, new { @class = "custom-control-input", @id = "customCheckBox7" })*@
+                                            @Html.CheckBox("instagram", bool.Parse(Model.cm.campaign_master_instagram.ToString()), new { @class = "custom-control-input", @id = "customCheckBox7" })
+                                            @*<input type="checkbox" class="custom-control-input" id="customCheckBox7" required="">*@
+                                            <label class="custom-control-label" for="customCheckBox7"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Instagram</span>
+                                    </div>
+                                    <i class="lab la-instagram social-icon bg-secondary text-white"></i>
+                                </div>
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @Html.CheckBox("facebook", bool.Parse(Model.cm.campaign_master_facebook.ToString()), new { @class = "custom-control-input", @id = "customCheckBox71" })
+                                            @*<input type="checkbox" class="custom-control-input" id="customCheckBox71" required="">*@
+                                            <label class="custom-control-label" for="customCheckBox71"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Facebook</span>
+                                    </div>
+                                    <i class="lab la-facebook-f social-icon bg-info text-white"></i>
+                                </div>
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @*<input type="checkbox" class="custom-control-input" id="customCheckBox72" required="">*@
+                                            @Html.CheckBox("twitter", bool.Parse(Model.cm.campaign_master_twitter.ToString()), new { @class = "custom-control-input", @id = "customCheckBox72" })
+                                            <label class="custom-control-label" for="customCheckBox72"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Twitter</span>
+                                    </div>
+                                    <i class="lab la-twitter social-icon bg-success text-white"></i>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @*<input type="checkbox" class="custom-control-input" id="customCheckBox73" required="">*@
+                                            @Html.CheckBox("whatsapp", bool.Parse(Model.cm.campaign_master_whatsapp.ToString()), new { @class = "custom-control-input", @id = "customCheckBox73" })
+                                            <label class="custom-control-label" for="customCheckBox73"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Whatsapp</span>
+                                    </div>
+                                    <i class="lab la-whatsapp social-icon bg-danger text-white"></i>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @*<input type="checkbox" class="custom-control-input" id="customCheckBox73" required="">*@
+                                            @Html.CheckBox("linkedin", false, new { @class = "custom-control-input", @id = "customCheckBox74" })
+                                            <label class="custom-control-label" for="customCheckBox74"></label>
+                                        </div>
+                                        <span class="text-black font-w600">LinkedIn</span>
+                                    </div>
+                                    <i class="lab la-linkedin-in social-icon bg-primary text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-xl-12 col-xxl-12 col-lg-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <button type="submit" class="btn btn-block btn-primary ml-3">PUBLISH</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section js
+{
+
+    <script src="~/Content/vendor/tagcomplete/tagcomplete.js"></script>
+    <script>
+        $(function () {
+            var data = [
+                'css',
+                'html',
+                'php',
+                'jquery'
+            ];
+
+            $(".tags_input").tagComplete({
+
+                keylimit: 1,
+                hide: false,
+                autocomplete: {
+                    data: data
+                }
+            });
+        });
+    </script>
+    <script src="~/Content/vendor/nouislider/nouislider.min.js"></script>
+    <script src="~/Content/vendor/wnumb/wNumb.js"></script>
+    <script src="~/Content/js/dashboard/new-compaign.js"></script>
+    <script>
+        $(function () {
+            $("#upload_link").on('click', function (e) {
+                e.preventDefault();
+                $("#upload:hidden").trigger('click');
+            });
+        });
+
+
+
+        $(function () {
+            $("#upload").on('change', function (e) {
+                var fileUpload = $("#upload").get(0);
+                var files = fileUpload.files;
+
+                $("#ImgList").html('').html(files[0].name);
+
+            });
+        });
+    </script>
+    <script>
+        $("#success-alert").fadeTo(4000, 500).slideUp(500, function () {
+            $("#success-alert").slideUp(500);
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            GetCampaign();
+            GetSubCampaign();
+            $(".cascading").each(function () {
+                if ($(this).find("option").length <= 1) {
+                    $(this).attr("disabled", "disabled");
+                }
+            });
+
+            $('#cm_campaign_category_id').change(function () {
+                GetCampaign();
+            });
+
+            $('#cm_campaign_id').change(function () {
+                GetSubCampaign();
+            });
+
+
+        });
+        debugger;
+        /*$(document).on('change', '.cascading', function ()*/
+        function GetCampaign() {
+            //  alert("");
+            debugger;
+            var value = 0;
+            if ($('#cm_campaign_category_id').val() != "") {
+                value = $('#cm_campaign_category_id').val();
+            }
+            /*var id = $(this).attr("id");*/
+            var id = "cm_campaign_category_id";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod", "Marketing")',
+                data: '{type: "' + id + '", value: ' + value + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var dropDownId;
+                    var list;
+                    switch (id) {
+                        case "cm_campaign_category_id":
+                            list = response;
+                            DisableDropDown("#cm_campaign_id");
+                            DisableDropDown("#cm_subcampaign_id");
+                            PopulateDropDown("#cm_campaign_id", list);
+                            break;
+                        case "cm_campaign_id":
+                            dropDownId = "#cm_subcampaign_id";
+                            list = response;
+                            DisableDropDown("#cm_subcampaign_id");
+                            PopulateDropDown("#cm_subcampaign_id", list);
+                            break;
+                    }
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        function GetSubCampaign() {
+            //  alert("");
+            debugger;
+            var value = 0;
+            if ($('#cm_campaign_id').val() != "") {
+                value = $('#cm_campaign_id').val();
+            }
+            /*var id = $(this).attr("id");*/
+            var id = "cm_campaign_id";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod", "Marketing")',
+                data: '{type: "' + id + '", value: ' + value + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var dropDownId;
+                    var list;
+                    switch (id) {
+                        case "cm_campaign_category_id":
+                            list = response;
+                            DisableDropDown("#cm_campaign_id");
+                            DisableDropDown("#cm_subcampaign_id");
+                            PopulateDropDown("#cm_campaign_id", list);
+                            break;
+                        case "cm_campaign_id":
+                            dropDownId = "#cm_subcampaign_id";
+                            list = response;
+                            DisableDropDown("#cm_subcampaign_id");
+                            PopulateDropDown("#cm_subcampaign_id", list);
+                            break;
+                    }
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        //$(function () {
+        //    $("select").each(function () {
+        //        if ($(this).find("option").length <= 1) {
+        //            $(this).attr("disabled", "disabled");
+        //        }
+        //    });
+        //    debugger;
+        //    $(document).on('change', '.cascading', function () {
+        //      //  alert("");
+        //        debugger;
+        //        var value = 0;
+        //        if ($(this).val() != "") {
+        //            value = $(this).val();
+        //        }
+        //        var id = $(this).attr("id");
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/Marketing/AjaxMethod",
+        //            data: '{type: "' + id + '", value: ' + value + '}',
+        //            contentType: "application/json; charset=utf-8",
+        //            dataType: "json",
+        //            success: function (response) {
+        //                var dropDownId;
+        //                var list;
+        //                switch (id) {
+        //                    case "cm_campaign_category_id":
+        //                        list = response;
+        //                        DisableDropDown("#cm_campaign_id");
+        //                        DisableDropDown("#cm_subcampaign_id");
+        //                        PopulateDropDown("#cm_campaign_id", list);
+        //                        break;
+        //                    case "cm_campaign_id":
+        //                        dropDownId = "#cm_subcampaign_id";
+        //                        list = response;
+        //                        DisableDropDown("#cm_subcampaign_id");
+        //                        PopulateDropDown("#cm_subcampaign_id", list);
+        //                        break;
+        //                }
+
+        //            },
+        //            failure: function (response) {
+        //                alert(response.responseText);
+        //            },
+        //            error: function (response) {
+        //                alert(response.responseText);
+        //            }
+        //        });
+        //    });
+        //});
+
+        function DisableDropDown(dropDownId) {
+
+            $(dropDownId).attr("disabled", "disabled");
+            $(dropDownId).empty().append('<option selected="selected" value="0">Please select</option>');
+        }
+
+        function PopulateDropDown(dropDownId, list) {
+            debugger;
+            if (list != null && list.length > 0) {
+                $(dropDownId).removeAttr("disabled");
+                var s = "<option value=''>Choose One </option>";
+                for (var i = 0; i < list.length; i++) {
+                    s += '<option value="' + list[i].Value + '">' + list[i].Text + '</option>';
+                }
+                $(dropDownId).html('');
+                $(dropDownId).html(s);
+                //$.each(list, function () {
+                //    $(dropDownId).append($("<option></option>").val(this.Value).text(this.Text).html());
+            }
+        }
+
+
+        //$(function () {
+        //    if ($("#cm_campaign_category_id").val() != "" && $("#cm_campaign_id").val() != "" && $("#cm_subcampaign_id").val() != "") {
+        //        var message = "Country: " + $("#cm_campaign_category_id option:selected").text();
+        //        message += "\nState: " + $("#cm_campaign_id option:selected").text();
+        //        message += "\nCity: " + $("#cm_subcampaign_id option:selected").text();
+        //        alert(message);
+        //    }
+        //});
+    </script>
+}

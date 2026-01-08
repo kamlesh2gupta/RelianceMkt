@@ -1,0 +1,1683 @@
+﻿
+@{
+    Layout = null;
+    //edit here kamlesh
+    var notifications = ViewBag.Notifications as List<string> ?? new List<string>();
+    var notifCount = ViewBag.NotificationCount as int? ?? 0;
+    //End here
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    @*<link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">*@
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/header.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <link href="~/content/highcharts/css/highcharts.css" rel="stylesheet" />
+
+    @*//Edit here kamlesh*@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    @*//end*@
+    <style>
+
+
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+        .bg-gray {
+            background-color: #ccc !important;
+        }
+
+        .bg-yellow {
+            background-color: #fdbf4f !important;
+        }
+
+        .nav-header {
+            width: 17rem;
+            background: #ff8f16;
+        }
+
+            .nav-header .logo-abbr {
+                max-width: 200px;
+            }
+
+        .nav-control {
+            right: -6rem;
+        }
+
+        .header .header-content {
+            height: 100%;
+            padding-left: 5.3125rem;
+            padding-right: 0.8rem;
+            align-items: center;
+            display: flex;
+            background: #5856CE;
+        }
+
+        [data-sidebar-style="overlay"] .nav-header .logo-abbr {
+            display: block;
+            margin-left: 55px;
+        }
+
+        .hamburger .line {
+            background: #5856CE;
+            display: block;
+            height: 3px;
+            border-radius: 3px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            margin-right: auto;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .page-titles {
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+
+            .page-titles .breadcrumb li {
+                font-size: 20px;
+            }
+
+            .page-titles .breadcrumb .breadcrumb-item + .breadcrumb-item:before {
+                content: "\e606";
+                font-family: 'simple-line-icons';
+                font-size: 15px;
+                color: #ff6d4d;
+                font-weight: 900;
+            }
+
+            .page-titles .breadcrumb li.active a {
+                color: #000;
+            }
+
+        .bg-green {
+            background: #418409 !important;
+        }
+
+        .widget-stat .media .media-body p {
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            font-family: 'Flaticon' !important;
+        }
+        /* //=====================Kamlesh notification==*/
+        #notificationBox {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1000;
+        }
+
+            #notificationBox ul {
+                list-style: none;
+                padding-left: 0;
+                margin: 0;
+            }
+
+            #notificationBox li {
+                padding: 6px 10px;
+                border-bottom: 1px solid #eee;
+            }
+
+                #notificationBox li:last-child {
+                    border-bottom: none;
+                }
+        /*//End here notification*/
+
+        /*//toggle button =====*/
+        /* Nav header default */
+        .nav-header {
+            width: 272px;
+            transition: all 0.3s ease;
+        }
+
+        /* Hide hone par */
+        /*.nav-header.hide {
+                margin-left: -250px;
+            }*/
+
+        /* Sidebar */
+        .deznav {
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        /*.deznav.hide {
+                margin-left: -250px;
+            }*/
+
+        /* Content adjust */
+        .content-body {
+            transition: all 0.3s ease;
+            margin-left: 250px;
+        }
+
+            .content-body.full {
+                margin-left: 0;
+            }
+
+        /*//========================*/
+        /* When sidebar collapsed */
+        .deznav.hide {
+            /*width: 70px !important;*/
+            width: 0px !important;
+            overflow: hidden;
+        }
+
+            /* Hide text but keep icons visible */
+            .deznav.hide .ai-icon {
+                justify-content: center; /* center the icon */
+            }
+
+                /* Hide menu text when collapsed */
+                .deznav.hide .ai-icon span,
+                .deznav.hide .ai-icon i + text,
+                .deznav.hide .metismenu li a {
+                    font-size: 0; /* hides text but keeps icon size */
+                    transition: font-size 0.2s ease;
+                }
+
+                /* Keep icon size intact */
+                .deznav.hide .ai-icon i {
+                    font-size: 20px;
+                    margin-right: 0; /* remove extra spacing */
+                }
+
+        /* Restore text normally when expanded */
+        .deznav .ai-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .deznav .ai-icon span {
+                font-size: 14px;
+            }
+
+        /* Hide copyright when sidebar collapsed */
+        .deznav.hide .copyright {
+            display: none !important;
+        }
+
+
+        /* Sidebar collapsed header fix */
+        .nav-header.hide {
+            margin-left: 0 !important; /* ✅ comment out old margin-left rule */
+            width: 70px !important; /* same as collapsed sidebar */
+            background: #ff8f16 !important; /* keep background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+            /* Hide logo image when collapsed */
+            .nav-header.hide .logo-abbr {
+                display: none !important;
+            }
+
+            /* Adjust hamburger inside collapsed header */
+            .nav-header.hide .nav-control {
+                position: relative;
+                right: auto;
+                margin: 0 auto;
+                top: 20px;
+            }
+    </style>
+
+    <style>
+        #user-activity .card-body canvas {
+            width: 100% !important; /* graph हमेशा div की width ले */
+            height: 250px !important; /* height fix */
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper" class="right-profile">
+
+        <!--**********************************
+            Nav header start
+        ************************kamlesh gupta***********-->
+        <div class="nav-header" style="height: 95px; width: 239px; position: fixed; top: 0; left: 0;">         
+            <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; background: #ff8f16; max-width: 238px;">
+            @*==========end here=========*@
+            <div class="nav-control" style="background:#fff">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+      
+       
+
+            Header start
+        ***********************************-->
+        <div class="header" style="padding-left:0rem; position:fixed; top:0; left:0; width:100%; height:95px; background:#ff8f16; display:flex; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+            <div class="header-content" style="height: 95px;width: 100%;left: 0rem;position: absolute;">
+                <nav class="navbar navbar-expand" style="width:100%;">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">                           
+                        </div>
+                        @*//Edit here kamlesh*@
+                        <div id="notificationContainer" style="position: relative; margin-right: 119px;">
+                            <i id="notificationBell" class="bi bi-bell-fill" style="font-size: 24px; color: orange; cursor: pointer;"></i>
+                            <span id="notificationBadge" style="display:none; position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;"></span>
+                            
+                            <div id="notificationBox">
+                                <ul id="notificationList"></ul>
+                            </div>
+                        </div>
+                        @*// end here*@
+                </nav>
+            </div>
+        </div>
+        
+        <!--**********************************Sidebar start***********************************-->        
+        <div class="deznav" style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; width:15rem">
+            <div class="deznav-scroll">
+                <ul class="metismenu" id="menu">
+
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i> <span> Dashboard</span>
+                        </a>
+
+                    </li>               
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/campaignview" aria-expanded="false">
+                            <i class="flaticon-381-notepad"></i> <span>  Campaign</span>
+                        </a>
+                    </li>
+                   
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/hotleadsuser" aria-expanded="false">
+                            <i class="flaticon-381-settings-2"></i> <span>Hot Leads</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/calendarUser" aria-expanded="false">
+                            <i class="flaticon-381-controls-3"></i> <span>Calendar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/UserLeaderBoard" aria-expanded="false">
+                            <i class="flaticon-381-television"></i><span> Leader Board</span>
+                        </a>
+                    </li>
+                    @*<li>
+                            <a class="has-arrow ai-icon" href="~/Marketing/UserTimeLine" aria-expanded="false">
+                                <i class="flaticon-381-television"></i> Timeline
+                            </a>
+                        </li>*@
+
+                    @*<li>
+                            <a class="ai-icon" href="~/Marketing/upcomingcampaignsuser" aria-expanded="false">
+                                <i class="flaticon-381-internet"></i>  Upcoming Campaigns
+                            </a>
+                        </li>*@
+                    @*<li>
+                            <a class="ai-icon" href="~/Marketing/LogoutUser" aria-expanded="false">
+                                <i class="flaticon-381-exit"></i>
+                                Logout
+                            </a>
+                        </li>*@
+
+                    <div class="copyright">
+                        <br />© All Rights Reserved By Reliance
+
+                        <img class="img-thumbnail" src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="">
+
+
+                    </div>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+        <!--**********************************
+            Content body start
+
+        ***********************************-->
+        <!--<div class="profile-sidebar dz-scroll" style="width: 17rem;" id="DZ_W_Sidebar">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h5 class="text-black"></h5>
+                <a href="#" class="text-red text-info edit-profile-link">
+
+                </a>
+                <a href="javascript:;" class="text-red d-none close-side">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                </a>
+            </div>
+            <div class="profile-img mb-4">-->
+        @*<img src="~/Content/images/profile/profile.png" width="140" height="140" alt="" />*@
+        <!--<img src="~/Content/images/profile/DigimyinAdmin.jfif" width="140" height="140" alt="" />-->
+        @*<a href="~/Content/images/profile/DigimyinAdmin.jfif">~/Content/images/profile/DigimyinAdmin.jfif</a>*@
+        <!--</div>
+        <div class="profile-info-bx mb-4">
+            <h4 class="mb-1 fs-22">@ViewBag.username</h4>
+            <span>@Session["TYPE"]</span>
+        </div>-->
+        @*<div class="text-center mb-5">
+                <a href="javascript:;" class="btn text-left light btn-dark d-block mb-3 "><i class="fa fa-instagram scale5 mr-3"></i>/samuelanderson.404</a>
+                <a href="javascript:;" class="btn text-left light btn-dark d-block mb-3 "><i class="fa fa-twitter scale5 mr-3"></i>/samuel.404nderson</a>
+                <a href="javascript:;" class="btn text-left light btn-dark d-block mb-4 "><i class="fa fa-facebook scale5 mr-3"></i>/talksamuel.404</a>
+                <a href="#" class="btn btn-outline-dark d-block btn-lg">Edit Profile</a>
+            </div>*@
+        <!--<hr />-->
+        <!--<div class="card-campaign mt-5">
+            <h5>Creative Campaign Tutorials Video</h5>
+            <a href="javascript:;" class="fa fa-play"></a>
+        </div>-->
+        <!--</div>-->
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body" style=" margin-right: 7rem; margin-top: 99px;">
+            <!-- row -->
+            <div class="container-fluid" style="padding-right: 0px; padding-left: 110px; padding-top: 3px; ">
+                <div class="row">
+                    <div class="col-lg-12">
+
+
+
+
+                        @if (Session["TYPE"] != null && Session["TYPE"].ToString() != "AGENT")
+                        {
+                            <div class="new-btn">
+                                <div class="btn-group btn-primary btn-block mb-1 btn-rounded" style="color: #fff !important;">
+                                    <button class="btn  btn-sm dropdown-toggle text-white" type="button" data-toggle="dropdown">
+                                        @ViewBag.zone
+                                    </button>
+
+                                    <div class="dropdown-menu" style="width:100%;text-align:center;">
+                                        @foreach (var item in ViewBag.lstDownline)
+                                        {
+                                            string toencode = "SAPCODE=" + item.Value;
+                                            byte[] encData_byte = new byte[toencode.Length];
+                                            encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                            string encodedData = Convert.ToBase64String(encData_byte);
+                                            <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+                @if (Session["LOGIN"] != null && Session["LOGIN"].ToString() == "AGENT")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.AGENT_NAME</a></li>
+                            <!--<li class="breadcrumb-item active"><a href="javascript:void(0)">Profile</a></li>-->
+                        </ol>
+                    </div>
+                }
+                @if (Session["LOGIN"] != null && Session["LOGIN"].ToString() == "ZM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "ZM")
+                            {
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.username</a></li>
+                            }
+                            else if (Session["TYPE"] != null && Session["LOGIN"].ToString() == "RM")
+                            {
+
+                                string toencode = "SAPCODE=" + ViewBag.ZM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string ZM = Convert.ToBase64String(encData_byte);
+                                <li class="breadcrumb-item "><a href="~/Marketing/UserDashboard?REF_KEY=@ZM">@ViewBag.ZM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.RM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"] != null && Session["LOGIN"].ToString() == "BM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.ZM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string ZM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item "><a href="~/Marketing/UserDashboard?REF_KEY=@ZM">@ViewBag.ZM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.BM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"] != null && Session["LOGIN"].ToString() == "ARDM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.ZM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string ZM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+                                <li class="breadcrumb-item "><a href="~/Marketing/UserDashboard?REF_KEY=@ZM">@ViewBag.ZM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.BM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+
+                @if (Session["LOGIN"] != null && Session["LOGIN"].ToString() == "RM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "RM")
+                            {
+
+
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.RM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "BM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.BM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "ARDM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.BM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+                @if (Session["LOGIN"] != null && Session["LOGIN"].ToString() == "BM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "BM")
+                            {
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.BM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "ARDM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.BM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+                @if (Session["LOGIN"] != null && Session["LOGIN"].ToString() == "ARDM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "ARDM")
+                            {
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.ARDM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "AGENT")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.ARDM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.AGENT_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+
+                <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+                    <div class="mr-auto d-none d-lg-block">
+                        <h2 class="text-black font-w600 mb-1">Dashboard</h2>
+                        <p class="mb-0">Welcome to Creative Campaign Dashboard</p>
+                    </div>
+                    <div class="d-none d-lg-flex align-items-center">
+                        <div class="text-right">
+                            @Html.Partial("_PartialDateTime")
+                        </div>
+                        @*<a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
+                                <i class="las la-cog scale5"></i>
+                            </a>*@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-xxl-12">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-gray">
+                                    <div class="card-body  p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-yellow bg-green">
+                                                <i class="flaticon-381-share "></i>
+                                            </span>
+                                            <div class="media-body text-info text-right">
+                                                <p class="mb-1">Self Shares</p>
+                                                <h3 class="text-info">@ViewBag.selfshare</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-yellow">
+                                    <div class="card-body p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-yellow bg-red">
+                                                <i class="flaticon-381-database"></i>
+                                            </span>
+                                            <div class="media-body text-info text-right">
+                                                <p class="mb-1">Self Hot Leads</p>
+                                                <h3 class="text-info">@ViewBag.selflead</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-info">
+                                    <div class="card-body p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-white bg-yellow">
+                                                <i class="flaticon-381-networking-1"></i>
+                                            </span>
+                                            <div class="media-body text-white text-right ">
+                                                <p class="mb-1">Team Shares</p>
+                                                <h3 class="text-white">@ViewBag.teamshare</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-warning">
+                                    <div class="card-body p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-white bg-success">
+                                                <i class="flaticon-381-network"></i>
+                                            </span>
+                                            <div class="media-body text-white text-right">
+                                                <p class="mb-1">Team Hot Leads</p>
+                                                <h3 class="text-white">@ViewBag.teamslead</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                  
+                    @*=============graph====================*@
+                    <div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                        <div id="user-activity" class="card" style="background-color:#cccccc10; width:100%;">
+                            <div class="card-header border-0 pb-0 d-sm-flex d-block">
+                                <h4 class="card-title">Shares Activity - Platform</h4>
+                                <div class="card-action mb-sm-0 my-2">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#user1" role="tab">Yesterday</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user2" role="tab">MTD</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user3" role="tab">QTD</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user4" role="tab">YTD</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content" id="myTabContent">
+                                    <!-- Yesterday -->
+                                    <div class="tab-pane fade show active" id="user1" role="tabpanel">
+                                        <canvas id="shareYesterdayChart"></canvas>
+                                    </div>
+
+                                    <!-- MTD -->
+                                    <div class="tab-pane fade" id="user2" role="tabpanel">
+                                        <canvas id="shareMTDChart"></canvas>
+                                    </div>
+
+                                    <!-- QTD -->
+                                    <div class="tab-pane fade" id="user3" role="tabpanel">
+                                        <canvas id="shareQTDChart"></canvas>
+                                    </div>
+
+                                    <!-- YTD -->
+                                    <div class="tab-pane fade" id="user4" role="tabpanel">
+                                        <canvas id="shareYTDChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                        <div id="user-activity" class="card" style="background-color:#cccccc10">
+                            <div class="card-header border-0 pb-0 d-sm-flex d-block">
+                                <h4 class="card-title">Leads Activity - Platform</h4>
+                                <div class="card-action mb-sm-0 my-2">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#user5" role="tab">Yesterday</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user6" role="tab">MTD</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user7" role="tab">QTD</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user8" role="tab">YTD</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content" id="myTabContent">
+
+                                    <!-- Yesterday -->
+                                    <div class="tab-pane fade show active" id="user5" role="tabpanel">
+                                        <canvas id="leadsYesterdayChart"></canvas>
+                                    </div>
+
+                                    <!-- MTD -->
+                                    <div class="tab-pane fade" id="user6" role="tabpanel">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadMTDYear", new List<SelectListItem>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+                                new SelectListItem{Text="2025-2026", Value="2025"},
+                                new SelectListItem{Text="2024-2025", Value="2024"}
+                            }, new { @class = "form-control", @id = "leadMTDYear" })
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadMTDMonth", new List<SelectListItem>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+                                new SelectListItem{Text="January", Value="1"},
+                                new SelectListItem{Text="February", Value="2"},
+                                new SelectListItem{Text="March", Value="3"},
+                                new SelectListItem{Text="April", Value="4"},
+                                new SelectListItem{Text="May", Value="5"},
+                                new SelectListItem{Text="June", Value="6"},
+                                new SelectListItem{Text="July", Value="7"},
+                                new SelectListItem{Text="August", Value="8"},
+                                new SelectListItem{Text="September", Value="9"},
+                                new SelectListItem{Text="October", Value="10"},
+                                new SelectListItem{Text="November", Value="11"},
+                                new SelectListItem{Text="December", Value="12"},
+                            }, new { @class = "form-control", @id = "leadMTDMonth" })
+                                            </div>
+                                        </div>
+                                        <canvas id="leadsMTDChart"></canvas>
+                                    </div>
+
+                                    <!-- QTD -->
+                                    <div class="tab-pane fade" id="user7" role="tabpanel">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadQTDYear", new List<SelectListItem>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+                                new SelectListItem{Text="2025-26", Value="2025"},
+                                new SelectListItem{Text="2024-25", Value="2024"}
+                            }, new { @class = "form-control", @id = "leadQTDYear" })
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadQTDMonth", new List<SelectListItem>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+                                new SelectListItem{Text="Qtr 1", Value="1"},
+                                new SelectListItem{Text="Qtr 2", Value="2"},
+                                new SelectListItem{Text="Qtr 3", Value="3"},
+                                new SelectListItem{Text="Qtr 4", Value="4"},
+                            }, new { @class = "form-control", @id = "leadQTDMonth" })
+                                            </div>
+                                        </div>
+                                        <canvas id="leadsQTDChart"></canvas>
+                                    </div>
+
+                                    <!-- YTD -->
+                                    <div class="tab-pane fade" id="user8" role="tabpanel">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadYTDYear", new List<SelectListItem>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {
+                                new SelectListItem{Text="2025-26", Value="2025"},
+                                new SelectListItem{Text="2024-25", Value="2024"}
+                            }, new { @class = "form-control", @id = "leadYTDYear" })
+                                            </div>
+                                        </div>
+                                        <canvas id="leadsYTDChart"></canvas>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <!--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <!--**********************************
+        Content body end
+    ***********************************-->
+    <!--**********************************
+        Footer start
+    ***********************************-->
+    <div class="footer">
+        <div class="copyright">
+            <p>
+                Copyright © Designed &amp; Developed by Reliance 2020
+
+            </p>
+
+
+        </div>
+
+    </div>
+    <!--**********************************
+        Footer end
+    ***********************************-->
+    
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    @*<script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>*@
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+    @*<script src="~/Content/js/custom.min.js"></script>*@
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Chart Chartist plugin files -->
+    @*<script src="~/Content/vendor/chartist/js/chartist.min.js"></script>
+        <script src="~/Content/vendor/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
+        <script src="~/Content/js/plugins-init/chartist-init.js"></script>*@
+
+    <!-- Apex Chart-->
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+    <!-- Chart piety plugin files -->
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <script src="~/Content/js/dashboard/compaign.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+
+
+
+
+
+    <script>
+    $(document).ready(function () {
+
+        var lastday = function (y, m) {
+            return new Date(y, m, 0).getDate();
+        }
+
+
+        var dateObjytd = new Date();
+
+        // subtract one day from current time
+        dateObjytd.setDate(dateObjytd.getDate() - 1);
+        // Get year, month, and day part from the date
+        var year = dateObjytd.toLocaleString("default", { year: "numeric" });
+        var month = dateObjytd.toLocaleString("default", { month: "2-digit" });
+        var day = dateObjytd.toLocaleString("default", { day: "2-digit" });
+
+        // Generate yyyy-mm-dd date string
+        var formattedDate = year + "-" + month + "-" + day;
+        GetShares(formattedDate, formattedDate, 'share_yesterday'); //Loads yesterday share pie chart
+        GetLeads(formattedDate, formattedDate, 'leads_yesterday');  //Loads yesterday Leads pie chart
+
+        // Current Month share activity Pie Chart
+        var lastdayofmonth = lastday(year, month)
+        var fromdate = year + '-' + month + '-01';
+        var todate = year + '-' + month + '-' + lastdayofmonth;
+        GetShares(fromdate, todate, 'share_mtd'); //Loads Current Month share pie chart
+        GetLeads(fromdate, todate, 'leads_mtd');  //Loads current month Leads pie chart
+
+        // Current Quarter share activity pie chart
+        var qtr;
+        if (month < 4) {
+            qtr = '4';
+            fromdate = year + '-01-01';
+            todate = year  + '-03-31';
+        }
+        else if (month < 7 && month > 3) {
+            qtr = '1'
+            fromdate = year + '-04-01';
+            todate = year + '-06-30';
+        }
+        else if (month < 10 && month > 6) {
+            qtr = '2'
+            fromdate = year + '-07-01';
+            todate = year + '-09-30';
+        }
+        else if (month <= 12 && month > 9) {
+            qtr = '3'
+            fromdate = year + '-10-01';
+            todate = year + '-12-31';
+        }
+        GetShares(fromdate, todate, 'share_qtd'); //Loads Current Qtr share pie chart
+        GetLeads(fromdate, todate, 'leads_qtd');  //Loads current Qtr Leads pie chart
+
+         // Current FY share activity pie chart
+        if (month < 4) {
+            fromdate = Number(year) - 1 + '-04-01';
+            todate = year + '-03-31';
+        }
+        else {
+            fromdate = year + '-04-01';
+            todate = Number(year)+1 + '-03-31';
+        }
+        GetShares(fromdate, todate, 'share_ytd'); //Loads Current FY share pie chart
+        GetLeads(fromdate, todate, 'leads_ytd');  //Loads current FY Leads pie chart
+
+
+        $("#shareMTDMonth, #shareMTDYear").change(function () {
+
+            var lastdayofmonth = lastday($("#shareMTDYear").val(), $("#shareMTDMonth").val())
+            //console.log(lastdayofmonth);
+            var fromdate = $("#shareMTDYear").val() + '-' +  $("#shareMTDMonth").val() + '-01' ;
+            var todate = $("#shareMTDYear").val() + '-' + $("#shareMTDMonth").val() + '-' + lastdayofmonth;
+            console.log(fromdate);
+            console.log(todate);
+            GetShares(fromdate, todate, 'share_mtd');
+        })
+
+        $("#shareQTDMonth, #shareQTDYear").change(function () {
+
+            var qtr = $("#shareQTDMonth").val();
+            var year = $("#shareQTDYear").val();
+            var fromdate ;
+            var todate;
+            if (qtr == "1") {
+                fromdate = year + '-04-01';
+                todate = year + '-06-30';
+            }
+            if (qtr == "2") {
+                fromdate = year + '-07-01';
+                todate = year + '-09-30';
+            }
+            if (qtr == "3") {
+                fromdate = year + '-10-01';
+                todate = year + '-12-31';
+            }
+            if (qtr == "4") {
+                fromdate = Number(year)+1 + '-01-01';
+                todate = Number(year) + 1 + '-03-31';
+                //alert(fromdate);
+            }
+
+
+            GetShares(fromdate, todate, 'share_qtd');
+        })
+
+
+
+        $("#shareYTDYear").change(function () {
+
+
+            var year = $("#shareYTDYear").val();
+            var fromdate;
+            var todate;
+
+                fromdate = year + '-04-01';
+                todate = Number(year) + 1 + '-03-31';
+                //alert(fromdate);
+
+
+            GetShares(fromdate, todate, 'share_ytd');
+        })
+
+
+
+
+        //get leads pie chart on change
+
+
+        $("#leadMTDMonth, #leadMTDYear").change(function () {
+            //alert();
+            var lastdayofmonth = lastday($("#leadMTDYear").val(), $("#leadMTDMonth").val())
+            //console.log(lastdayofmonth);
+            var fromdate = $("#leadMTDYear").val() + '-' + $("#leadMTDMonth").val() + '-01';
+            var todate = $("#leadMTDYear").val() + '-' + $("#leadMTDMonth").val() + '-' + lastdayofmonth;
+            console.log(fromdate);
+            console.log(todate);
+            GetLeads(fromdate, todate, 'leads_mtd');
+        })
+
+        $("#leadQTDMonth, #leadQTDYear").change(function () {
+
+            var qtr = $("#leadQTDMonth").val();
+            var year = $("#leadQTDYear").val();
+            var fromdate;
+            var todate;
+            if (qtr == "1") {
+                fromdate = year + '-04-01';
+                todate = year + '-06-30';
+            }
+            if (qtr == "2") {
+                fromdate = year + '-07-01';
+                todate = year + '-09-30';
+            }
+            if (qtr == "3") {
+                fromdate = year + '-10-01';
+                todate = year + '-12-31';
+            }
+            if (qtr == "4") {
+                fromdate = Number(year) + 1 + '-01-01';
+                todate = Number(year) + 1 + '-03-31';
+                //alert(fromdate);
+            }
+
+
+            GetLeads(fromdate, todate, 'leads_qtd');
+        })
+
+
+
+        $("#leadYTDYear").change(function () {
+
+
+            var year = $("#leadYTDYear").val();
+            var fromdate;
+            var todate;
+
+            fromdate = year + '-04-01';
+            todate = Number(year) + 1 + '-03-31';
+            //alert(fromdate);
+
+
+            GetLeads(fromdate, todate, 'leads_ytd');
+        })
+
+
+        //console.log(typeof(result));
+    }); //end document.ready block
+
+
+    function GetShares(dt1, dt2, prm1) {
+        var events = new Array();
+        //debugger;
+        $.ajax({
+            url: '@Url.Action("GetPieChartShares","Marketing")',
+            dataType: 'json',
+            data: { fromdate: dt1, todate: dt2 },
+                success: function (response) {
+
+                    // Build the chart
+                    Highcharts.chart(prm1, {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            styledMode: true,
+                            ///className: false,
+                            type: 'pie'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        title: {
+                            text: 'Shares Activity'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.short_name}: <b>{point.percentage:.1f}%</b>'
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                //colors: pieColors,
+                                showInLegend: true,
+
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.short_name}</b><br>{point.percentage:.1f} %',
+                                    distance: -50,
+
+                                    filter: {
+                                        property: 'percentage',
+                                        operator: '>',
+                                        value: 4
+                                    }
+                                }
+                            }
+                        },
+                        series: [response]
+
+                    });
+
+                },//end success block
+                error: function (xhr, status) {
+                    alert(response.msg);
+                }
+        }
+        );//end ajax block
+
+    }
+
+
+    function GetLeads(dt1, dt2, prm1) {
+        var events = new Array();
+        //debugger;
+        $.ajax({
+            url: '@Url.Action("GetPieChartLeads","Marketing")',
+            dataType: 'json',
+            data: { fromdate: dt1, todate: dt2 },
+                success: function (response) {
+                    // Build the chart
+                    Highcharts.chart(prm1, {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            styledMode: true,
+                            ///className: false,
+                            type: 'pie'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        title: {
+                            text: 'Leads Activity'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.short_name}: <b>{point.percentage:.1f}%</b>'
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                //colors: pieColors,
+                                showInLegend: true,
+
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.short_name}</b><br>{point.percentage:.1f} %',
+                                    distance: -50,
+
+                                    filter: {
+                                        property: 'percentage',
+                                        operator: '>',
+                                        value: 4
+                                    }
+                                }
+                            }
+                        },
+                        series: [response]
+
+                    });
+
+                },//end success block
+                error: function (xhr, status) {
+                    alert(response.msg);
+                }
+        }
+        );//end ajax block
+
+    }
+
+
+
+
+
+    $(function () {
+        "use strict";
+       // chart4
+        // Make monochrome colors
+        var pieColors = (function () {
+            var colors = [],
+                base = Highcharts.getOptions().colors[0],
+                i;
+            for (i = 0; i < 10; i += 1) {
+                // Start out with a darkened base color (negative brighten), and end
+                // up with a much brighter color
+                colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+            }
+            return colors;
+        }());
+
+
+
+
+    });
+    </script>
+
+
+
+    <script src="~/Content/highcharts/js/highcharts.js"></script>
+    <script src="~/Content/highcharts/js/highcharts-more.js"></script>
+    <script src="~/Content/highcharts/js/variable-pie.js"></script>
+    <script src="~/Content/highcharts/js/solid-gauge.js"></script>
+    <script src="~/Content/highcharts/js/highcharts-3d.js"></script>
+    <script src="~/Content/highcharts/js/cylinder.js"></script>
+    <script src="~/Content/highcharts/js/funnel3d.js"></script>
+    <script src="~/Content/highcharts/js/exporting.js"></script>
+    <script src="~/Content/highcharts/js/export-data.js"></script>
+    <script src="~/Content/highcharts/js/accessibility.js"></script>
+
+
+    @*// notification  kamlesh Edit here*@
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+    var count = parseInt('@Session["NotificationCount"]' || 0);
+
+    if (count > 0) {
+        $('#notificationBadge').text(count).show();
+        for (let i = 1; i <= Math.min(count, 9); i++) {
+            addNotification(`✅ New Campaign successfully created and published`);
+        }
+    }
+
+    function addNotification(msg) {
+        let list = $('#notificationList');
+        list.prepend(`<li>${msg}</li>`);
+
+        if (list.children().length > 9) {
+            list.children().last().remove(); // Max 9 messages
+        }
+
+        $('#notificationBox').show();
+    }
+
+    $('#addCampaignForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.post('/Marketing/AddCampaign', formData, function (res) {
+            if (res.success) {
+                let badge = $('#notificationBadge');
+                let current = parseInt(badge.text() || "0");
+                let newCount = current + 1;
+
+                badge.text(newCount).show();
+                /*addNotification(`✅ New Campaign Created Successfully`);*/
+                addNotification(`✅ New Campaign Created: ${result}`);
+                $('#addCampaignForm')[0].reset();
+            }
+        });
+    });
+       
+    $('#notificationBell').click(function () {
+        $('#notificationBox').toggle(); // Show/hide box
+    });
+
+    // Optional: hide when clicking outside
+    $(document).click(function (event) {
+        if (!$(event.target).closest('#notificationContainer').length) {
+            $('#notificationBox').hide();
+        }
+    });
+    </script>
+    @*////////// toggle button============*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.querySelector(".nav-control");
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header"); // 👈 header bhi liya
+            const content = document.querySelector(".content-body");
+
+            toggleBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("hide");
+                header.classList.toggle("hide");  // 👈 header bhi toggle hoga
+                content.classList.toggle("full");
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header");
+            const content = document.querySelector(".content-body");
+
+            function autoCollapse() {
+                if (window.innerWidth <= 991.98) {
+                    sidebar.classList.add("hide");
+                    header.classList.add("hide");
+                    content.classList.add("full");
+                } else {
+                    sidebar.classList.remove("hide");
+                    header.classList.remove("hide");
+                    content.classList.remove("full");
+                }
+            }
+
+            // Run on load
+            autoCollapse();
+
+            // Run on resize
+            window.addEventListener("resize", autoCollapse);
+        });
+
+    </script>
+    @*//==================graph===============*@
+    <!-- Chart.js CDN -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const periods = ["Yesterday", "MTD", "QTD", "YTD"];
+            const chartIds = {
+                Yesterday: "shareYesterdayChart",
+                MTD: "shareMTDChart",
+                QTD: "shareQTDChart",
+                YTD: "shareYTDChart"
+            };
+            const charts = {};
+
+            // 🔹 Format date as dd-mm-yyyy
+            function formatDate(d) {
+                const day = ("0" + d.getDate()).slice(-2);
+                const month = ("0" + (d.getMonth() + 1)).slice(-2);
+                const year = d.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
+            // 🔹 Get FY start dynamically
+            function getFYStart(today) {
+                return (today.getMonth() >= 3) // April or later
+                    ? new Date(today.getFullYear(), 3, 1)
+                    : new Date(today.getFullYear() - 1, 3, 1);
+            }
+
+            // 🔹 Create or update Chart.js bar chart
+            function createOrUpdateChart(ctx, data, label) {
+                const today = new Date();
+                const fyStart = getFYStart(today);
+                const fyLabel = `FY ${fyStart.getFullYear()}-${(fyStart.getFullYear() + 1).toString().slice(-2)}`;
+
+                if (charts[ctx.canvas.id]) {
+                    charts[ctx.canvas.id].data.datasets[0].data = data;
+                    charts[ctx.canvas.id].data.datasets[0].label = `${label} (${fyLabel})`;
+                    charts[ctx.canvas.id].update();
+                } else {
+                    charts[ctx.canvas.id] = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ["WhatsApp", "Facebook", "Instagram", "Twitter", "LinkedIn"],
+                            datasets: [{
+                                label: `${label} (${fyLabel})`,
+                                data: data,
+                                backgroundColor: [
+                                    'rgba(37, 211, 102, 0.6)',   // WhatsApp
+                                    'rgba(59, 89, 152, 0.6)',    // Facebook
+                                    'rgba(225, 48, 108, 0.6)',   // Instagram
+                                    'rgba(29, 161, 242, 0.6)',   // Twitter
+                                    'rgba(0, 119, 181, 0.6)'     // LinkedIn
+                                ],
+                                borderColor: [
+                                    'rgba(37, 211, 102, 1)',
+                                    'rgba(59, 89, 152, 1)',
+                                    'rgba(225, 48, 108, 1)',
+                                    'rgba(29, 161, 242, 1)',
+                                    'rgba(0, 119, 181, 1)'
+                                ],
+                                borderWidth: 1,
+                                barThickness: 30
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: false,
+                            scales: {
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { font: { size: 12 } }
+                                },
+                                y: {
+                                    grid: { display: false },
+                                    beginAtZero: true,
+                                    ticks: { precision: 0, font: { size: 12 } }
+                                }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return `${context.label}: ${context.parsed.y} Shares`;
+                                        },
+                                        afterTitle: function () {
+                                            return `Financial Year: ${formatDate(fyStart)} to ${formatDate(today)}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // 🔹 Fetch data and render chart
+            function loadChart(period) {
+                fetch(`/Marketing/GetLeadsCounts?period=${period}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const ctx = document.getElementById(chartIds[period]).getContext("2d");
+                        const values = [
+                            data.WhatsApp || 0,
+                            data.Facebook || 0,
+                            data.Instagram || 0,
+                            data.Twitter || 0,
+                            data.LinkedIn || 0
+                        ];
+                        createOrUpdateChart(ctx, values, period);
+                    })
+                    .catch(err => {
+                        console.error(`Error loading ${period} chart:`, err);
+                        const ctx = document.getElementById(chartIds[period]).getContext("2d");
+                        createOrUpdateChart(ctx, [0, 0, 0, 0, 0], period);
+                    });
+            }
+
+            // 🔹 Load all charts initially
+            periods.forEach(period => loadChart(period));
+
+            // 🔹 Reload chart when tab changes
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                const target = $(e.target).attr("href");
+                switch (target) {
+                    case "#user1": loadChart("Yesterday"); break;
+                    case "#user2": loadChart("MTD"); break;
+                    case "#user3": loadChart("QTD"); break;
+                    case "#user4": loadChart("YTD"); break;
+                }
+            });
+        });
+    </script>
+
+   
+
+
+    @*================graph===================*@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const periods = ["Yesterday", "MTD", "QTD", "YTD"];
+            const chartIds = {
+                Yesterday: "leadsYesterdayChart",
+                MTD: "leadsMTDChart",
+                QTD: "leadsQTDChart",
+                YTD: "leadsYTDChart"
+            };
+            const charts = {};
+
+            // ✅ Create or Update Chart Function
+            function createOrUpdateChart(ctx, data, label, startDate, endDate) {
+                const chart = charts[ctx.canvas.id];
+                const labels = ["WhatsApp", "Facebook", "Instagram", "Twitter", "LinkedIn"];
+                const dataset = {
+                    label: `${label} (${startDate} to ${endDate})`,
+                    data: data,
+                    backgroundColor: [
+                        'rgba(37, 211, 102, 0.6)',
+                        'rgba(59, 89, 152, 0.6)',
+                        'rgba(225, 48, 108, 0.6)',
+                        'rgba(29, 161, 242, 0.6)',
+                        'rgba(0, 119, 181, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(37, 211, 102, 1)',
+                        'rgba(59, 89, 152, 1)',
+                        'rgba(225, 48, 108, 1)',
+                        'rgba(29, 161, 242, 1)',
+                        'rgba(0, 119, 181, 1)'
+                    ],
+                    borderWidth: 1,
+                    barThickness: 35
+                };
+
+                const options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false, // ✅ Disable all animations
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { display: false }, ticks: { precision: 0 } }
+                    },
+                    plugins: { legend: { display: false } }
+                };
+
+                if (chart) {
+                    chart.data.datasets[0] = dataset;
+                    chart.update();
+                } else {
+                    charts[ctx.canvas.id] = new Chart(ctx, {
+                        type: 'bar',
+                        data: { labels, datasets: [dataset] },
+                        options: options
+                    });
+                }
+            }
+
+            // ✅ Load data & render chart
+            function loadChart(period, year = null, month = null, quarter = null) {
+                let url = `/Marketing/GetPlatformLeads?period=${period}`;
+                if (year) url += `&year=${year}`;
+                if (month) url += `&month=${month}`;
+                if (quarter) url += `&quarter=${quarter}`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.error) throw new Error(data.error);
+
+                        const ctx = document.getElementById(chartIds[period]).getContext("2d");
+
+                        // ✅ When YTD, only show chart if there’s data
+                        if (period === "YTD") {
+                            const total = (data.WhatsApp || 0) + (data.Facebook || 0) +
+                                (data.Instagram || 0) + (data.Twitter || 0) +
+                                (data.LinkedIn || 0);
+
+                            // No data for that FY → show empty chart
+                            if (total === 0) {
+                                createOrUpdateChart(ctx, [0, 0, 0, 0, 0], period, data.StartDate, data.EndDate);
+                                return;
+                            }
+                        }
+
+                        const values = [
+                            data.WhatsApp || 0,
+                            data.Facebook || 0,
+                            data.Instagram || 0,
+                            data.Twitter || 0,
+                            data.LinkedIn || 0
+                        ];
+
+                        createOrUpdateChart(ctx, values, period, data.StartDate, data.EndDate);
+                    })
+                    .catch(err => console.error(`Error loading ${period}:`, err));
+            }
+
+            // ✅ Load all on startup
+            periods.forEach(period => loadChart(period));
+
+            // ✅ MTD Dropdown
+            document.getElementById("leadMTDYear").addEventListener("change", function () {
+                const year = this.value;
+                const month = document.getElementById("leadMTDMonth").value;
+                loadChart("MTD", year, month);
+            });
+
+            document.getElementById("leadMTDMonth").addEventListener("change", function () {
+                const year = document.getElementById("leadMTDYear").value;
+                const month = this.value;
+                loadChart("MTD", year, month);
+            });
+
+            // ✅ QTD Dropdowns
+            document.getElementById("leadQTDYear").addEventListener("change", function () {
+                const year = this.value;
+                const quarter = document.getElementById("leadQTDMonth").value;
+                loadChart("QTD", year, null, quarter);
+            });
+
+            document.getElementById("leadQTDMonth").addEventListener("change", function () {
+                const year = document.getElementById("leadQTDYear").value;
+                const quarter = this.value;
+                loadChart("QTD", year, null, quarter);
+            });
+
+            // ✅ YTD Dropdown
+            document.getElementById("leadYTDYear").addEventListener("change", function () {
+                const year = this.value;
+                loadChart("YTD", year);
+            });
+
+            // ✅ Reload when tab changes
+            document.querySelectorAll('a[data-toggle="tab"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', e => {
+                    const target = e.target.getAttribute('href');
+                    if (target === '#user5') loadChart('Yesterday');
+                    else if (target === '#user6') loadChart('MTD');
+                    else if (target === '#user7') loadChart('QTD');
+                    else if (target === '#user8') {
+                        const year = document.getElementById("leadYTDYear").value;
+                        loadChart('YTD', year);
+                    }
+                });
+            });
+        });
+    </script>
+
+   
+</body>
+</html>

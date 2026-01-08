@@ -1,0 +1,541 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    @RenderSection("meta", false)
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    <link href="~/Content/css/mobile.css" rel="stylesheet" />
+    @*// <link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">*@
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/header.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+
+
+
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+        .bg-gray {
+            background-color: #ccc !important;
+        }
+
+        .bg-yellow {
+            background-color: #fdbf4f !important;
+        }
+
+        .nav-header {
+            width: 17rem;
+        }
+
+            .nav-header .logo-abbr {
+                max-width: 200px;
+            }
+
+        .nav-control {
+            right: -6rem;
+        }
+
+        .header .header-content {
+            height: 100%;
+            padding-left: 5.3125rem;
+            padding-right: 0.8rem;
+            align-items: center;
+            display: flex;
+            background: #5856CE;
+        }
+
+        [data-sidebar-style="overlay"] .nav-header .logo-abbr {
+            display: block;
+            margin-left: 55px;
+        }
+
+        .hamburger .line {
+            background: #5856CE;
+            display: block;
+            height: 3px;
+            border-radius: 3px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            margin-right: auto;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .page-titles {
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+
+            .page-titles .breadcrumb li {
+                font-size: 20px;
+            }
+
+            .page-titles .breadcrumb .breadcrumb-item + .breadcrumb-item:before {
+                content: "\e606";
+                font-family: 'simple-line-icons';
+                font-size: 15px;
+                color: #ff6d4d;
+                font-weight: 900;
+            }
+
+            .page-titles .breadcrumb li.active a {
+                color: #000;
+            }
+
+        .bg-green {
+            background: #418409 !important;
+        }
+
+        .widget-stat .media .media-body p {
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            font-family: 'Flaticon' !important;
+        }
+        /*//================togglebutton====*/
+        /*//toggle button =====*/
+        /* Nav header default */
+        .nav-header {
+            width: 272px;
+            transition: all 0.3s ease;
+        }
+
+        /* Hide hone par */
+        /*.nav-header.hide {
+                margin-left: -250px;
+            }*/
+
+        /* Sidebar */
+        .deznav {
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        /*.deznav.hide {
+                margin-left: -250px;
+            }*/
+
+        /* Content adjust */
+        .content-body {
+            transition: all 0.3s ease;
+            margin-left: 250px;
+
+        }
+
+            .content-body.full {
+                margin-left: 7rem;
+                margin-right: 7rem;
+               
+            }
+
+        /*//========================*/
+        /* When sidebar collapsed */
+        .deznav.hide {
+            width: 0px !important; /* sidebar shrinks */
+            overflow: hidden;
+        }
+
+            /* Hide text but keep icons visible */
+            .deznav.hide .ai-icon {
+                justify-content: center; /* center the icon */
+            }
+
+                /* Hide menu text when collapsed */
+                .deznav.hide .ai-icon span,
+                .deznav.hide .ai-icon i + text,
+                .deznav.hide .metismenu li a {
+                    font-size: 0; /* hides text but keeps icon size */
+                    transition: font-size 0.2s ease;
+                }
+
+                /* Keep icon size intact */
+                .deznav.hide .ai-icon i {
+                    font-size: 20px;
+                    margin-right: 0; /* remove extra spacing */
+                }
+
+        /* Restore text normally when expanded */
+        .deznav .ai-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .deznav .ai-icon span {
+                font-size: 14px;
+            }
+
+        /* Hide copyright when sidebar collapsed */
+        .deznav.hide .copyright {
+            display: none !important;
+        }
+
+
+        /* Sidebar collapsed header fix */
+        .nav-header.hide {
+            margin-left: 0 !important; /* ✅ comment out old margin-left rule */
+            width: 70px !important; /* same as collapsed sidebar */
+            background: #ff8f16 !important; /* keep background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+            /* Hide logo image when collapsed */
+            .nav-header.hide .logo-abbr {
+                display: none !important;
+            }
+
+            /* Adjust hamburger inside collapsed header */
+            .nav-header.hide .nav-control {
+                position: relative;
+                right: auto;
+                margin: 0 auto;
+                top: 20px;
+            }
+
+    </style>
+
+
+    @RenderSection("css", false)
+
+</head>
+<body>
+
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+        Nav header start
+    ***********************************-->
+        <div class="nav-header" style="height: 95px;background: #ff8f16; width: 239px; position: fixed; top: 0; left: 0;">
+            @*//==end here====//*@
+            <a href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]">
+                <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style=" max-width: 238px; height: 100%;">
+
+            </a>
+
+            <div class="nav-control" style="background: #fff">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+        Nav header end
+    ***********************************-->
+        <!--**********************************
+        Header 
+    ***********************************-->
+        <div class="header"; style="padding-left:0rem;height: 2.5rem; position:fixed; top:0; left:0; width:100%; height:95px; background:#ff8f16; display:flex; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+            @*//====edit by kamlesh======*@
+            <div class="header-content" style="height: 95px;width: 100%; left: 0rem; position: absolute;">
+
+                @*<div class="header-content" style="height: 95px";>*@
+                @*//===end here===*@
+                <nav class="navbar navbar-expand"style="width:100%;">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <!--<div class="search_bar dropdown show">
+                            <div class="dropdown-menu p-0 m-0 show">
+                                <form>
+                                    <input class="form-control" type="search" placeholder="Search Here" aria-label="Search">
+                                </form>
+                            </div>
+                            <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.7871 22.7761L17.9548 16.9437C19.5193 15.145 20.4665 12.7982 20.4665 10.2333C20.4665 4.58714 15.8741 0 10.2333 0C4.58714 0 0 4.59246 0 10.2333C0 15.8741 4.59246 20.4665 10.2333 20.4665C12.7982 20.4665 15.145 19.5193 16.9437 17.9548L22.7761 23.7871C22.9144 23.9255 23.1007 24 23.2816 24C23.4625 24 23.6488 23.9308 23.7871 23.7871C24.0639 23.5104 24.0639 23.0528 23.7871 22.7761ZM1.43149 10.2333C1.43149 5.38004 5.38004 1.43681 10.2279 1.43681C15.0812 1.43681 19.0244 5.38537 19.0244 10.2333C19.0244 15.0812 15.0812 19.035 10.2279 19.035C5.38004 19.035 1.43149 15.0865 1.43149 10.2333Z" fill="#A4A4A4"/></svg>
+                            </span>
+                        </div>-->
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            @if (Session["TYPE"].ToString() != "ARDM")
+                            {
+                                @*<li class="nav-item ">
+                                    <div class="btn-group mb-1">
+                                        <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                            @ViewBag.zone
+                                        </button>
+
+                                        <div class="dropdown-menu">
+                                            @foreach (var item in ViewBag.lstDownline)
+                                                {
+                                                    string toencode = "SAPCODE=" + item.Value;
+                                                    byte[] encData_byte = new byte[toencode.Length];
+                                                    encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                                    string encodedData = Convert.ToBase64String(encData_byte);
+                                            <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
+                                                }
+                                        </div>
+
+                                    </div>
+                                </li>*@
+                            }
+
+
+
+                            <li class="nav-item dropdown header-profile side">
+                                <a class="nav-link" href="#"> 
+                                    <div class="header-info">
+                                        <span>Hello, <strong>Samuel</strong></span>
+                                    </div>
+                                    <img src="~/Content/images/profile/pic1.jpg" width="20" alt="" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--********************************** Header end ti-comment-alt  ***********************************-->
+        <!--**********************************Sidebar start***********************************-->
+        <!--**********************************
+        Sidebar start
+    ***********************************-->
+        <div class="deznav"  style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; width:15rem;">
+            <div class="deznav-scroll">
+                <ul class="metismenu" id="menu">
+
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i> <span> Dashboard</span>
+                        </a>
+
+                    </li>
+                    @*<li>
+                        <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                            <i class="flaticon-381-settings"></i> Master
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="~/Marketing/CampaignCategoryList">Categories </a></li>
+                            <li><a href="~/Marketing/campaignlist">Campaigns</a></li>
+                            <li><a href="~/Marketing/subcampaignlist">Sub-Campaigns</a></li>
+                            <li><a href="#">Creatives</a></li>
+                            <li><a href="#">Hot Leads</a></li>
+                            <li><a href="#">Shares</a></li>
+
+                        </ul>
+                    </li>*@
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/campaignview" aria-expanded="false">
+                            <i class="flaticon-381-notepad"></i> <span>  Campaign</span>
+                        </a>
+                    </li>
+                    @*<li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/newcampaign" aria-expanded="false">
+                            <i class="flaticon-381-plus"></i> Create  Campaign
+                        </a>
+                    </li>*@
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/hotleadsuser" aria-expanded="false">
+                            <i class="flaticon-381-settings-2"></i> <span>Hot Leads</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/calendarUser" aria-expanded="false">
+                            <i class="flaticon-381-controls-3"></i> <span>Calendar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/UserLeaderBoard" aria-expanded="false">
+                            <i class="flaticon-381-television"></i><span> Leader Board</span>
+                        </a>
+                    </li>
+                    @*<li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/UserTimeLine" aria-expanded="false">
+                            <i class="flaticon-381-television"></i> Timeline
+                        </a>
+                    </li>*@
+
+                    @*<li>
+                        <a class="ai-icon" href="~/Marketing/upcomingcampaignsuser" aria-expanded="false">
+                            <i class="flaticon-381-internet"></i>  Upcoming Campaigns
+                        </a>
+                    </li>*@
+                    @*<li>
+                        <a class="ai-icon" href="~/Marketing/LogoutUser" aria-expanded="false">
+                            <i class="flaticon-381-exit"></i>
+                            Logout
+                        </a>
+                    </li>*@
+
+                    <div class="copyright">
+                        <br />© All Rights Reserved By Reliance
+
+                        <img class="img-thumbnail" src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="">
+
+
+                    </div>
+
+                </ul>
+
+            </div>
+
+        </div>
+        <br />
+        <br />
+
+
+
+        <!--**********************************
+        Sidebar end
+    ***********************************-->
+        <!--**********************************
+        Content body start
+    ***********************************-->
+        <div class="content-body"style=" margin-top: 99px;">
+            <div class="row">
+                <ul class="navbar-nav header-right">
+                    @if (@ViewContext.RouteData.Values["action"].ToString().ToLower() == "hotleadsuser")
+                    {
+                        if (Session["TYPE"].ToString() != "ARDM")
+                        {
+                            <li class="nav-item ">
+                                <div class="btn-group mb-1">
+                                    <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                        @ViewBag.zone
+                                    </button>
+
+                                    <div class="dropdown-menu">
+                                        @foreach (var item in ViewBag.lstDownline)
+                                        {
+                                            string toencode = "SAPCODE=" + item.Value;
+                                            byte[] encData_byte = new byte[toencode.Length];
+                                            encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                            string encodedData = Convert.ToBase64String(encData_byte);
+                                            <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
+                                        }
+                                    </div>
+
+                                </div>
+                            </li>
+                        }
+                    }
+
+                </ul>
+            </div>
+
+            <!-- row -->
+            @RenderBody()
+        </div>
+        <!--**********************************
+        Content body end
+    ***********************************-->
+        <!--**********************************
+        Footer start
+    ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by Reliance 2020</p>
+            </div>
+        </div>
+        <!--**********************************
+        Footer end
+    ***********************************-->
+        <!--**********************************
+       Support ticket button start
+    ***********************************-->
+        <!--**********************************
+       Support ticket button end
+    ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    @*<script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>*@
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+    @*<script src="~/Content/js/custom.min.js"></script>*@
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Apex Chart -->
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+
+    <!-- Chart piety plugin files -->
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/compaign.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+
+    @*//===================toggle button scritp=========*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.querySelector(".nav-control");
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header"); // 👈 header bhi liya
+            const content = document.querySelector(".content-body");
+
+            toggleBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("hide");
+                header.classList.toggle("hide");  // 👈 header bhi toggle hoga
+                content.classList.toggle("full");
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header");
+            const content = document.querySelector(".content-body");
+
+            function autoCollapse() {
+                if (window.innerWidth <= 991.98) {
+                    sidebar.classList.add("hide");
+                    header.classList.add("hide");
+                    content.classList.add("full");
+                } else {
+                    sidebar.classList.remove("hide");
+                    header.classList.remove("hide");
+                    content.classList.remove("full");
+                }
+            }
+
+            // Run on load
+            autoCollapse();
+
+            // Run on resize
+            window.addEventListener("resize", autoCollapse);
+        });
+
+    </script>
+
+
+    @RenderSection("js", false)
+
+
+</body>
+</html>

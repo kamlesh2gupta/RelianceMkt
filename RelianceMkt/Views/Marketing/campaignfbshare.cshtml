@@ -1,0 +1,238 @@
+﻿@model RelianceMkt.Models.Lead
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    @{
+        string[] parts = ViewBag.lstAllCampaigns.cm.campaign_master_images.Split(',');
+        <meta property="og:image" content="https://salesassistpivc.reliancenipponlife.com/Digimyin2/Content/images/campaign/@parts[0]" />
+        @*<img class="align-self-center mr-3 " width="230" src="~/Content/images/campaign/@parts[0]" alt="DexignZone">*@
+    }
+
+    <title>Nippon Insurance</title>
+    <!-- You can use Open Graph tags to customize link previews.
+    Learn more: https://developers.facebook.com/docs/sharing/webmasters -->
+    @*<meta property="og:url" content="https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?CampaignMasterId=@ViewBag.lstAllCampaigns.cm.campaign_master_id&SAPCODE=@Session["SAPCODE"]&PLATEFORM=FACEBOOK" />*@
+<meta property="og:url" content="https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=@Request.QueryString["PARAMS"]"/>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption" />
+    <meta property="og:description" content="" />
+    @*<meta property="og:image" content="/Content/images/campaign/@ViewBag.lstAllCampaigns.cm.campaign_master_images" />*@
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    <link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <style>
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+
+        .nav-header {
+            width: 100% !important;
+        }
+
+        .authincation-content {
+            border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+        }
+
+        .note {
+            background-color: #fffc;
+            font-size: 9px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper" class="right-profile" style="background-image: url(/Content/images/bg.png); height: 100%; overflow: hidden; }">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header shadow " style="width:100%;background-color:#fff;">
+            <a href="index.html" class="brand-logo">
+                <img class="logo-abbr" src="~/Content/images/logo1.jpg" alt="" style="max-width:100%">
+
+            </a>
+        </div>
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="container-fluid">
+                @{
+
+                    if (TempData["alert"] == "Show")
+                    {
+                        <div class="alert alert-danger solid alert-dismissible fade show">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                            <strong>Thank you for contacting us, we will get back to you as soon as possible.</strong>
+                            <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close">
+                                <span><i class="mdi mdi-close"></i></span>
+                            </button>
+                        </div>
+                    }
+
+
+
+                }
+                <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+                    <center>
+                        <h3 class="text-red" style="    font-weight: 700;">Safegaurd your tomorrow,<br> take a step today.				</h3>
+                        <p class="text-black">
+                            Please ll in the following details to help us suggest
+                            a suitable plan for you.
+                        </p>
+                    </center>
+                    <div class="col-md-12 mb-30">
+                        <div class="authincation-content">
+                            <div class="row no-gutters">
+                                <div class="col-xl-12 ">
+                                    <div class="card-header " style="    display: inherit;	background-color:#185aa7"> <h4 class=" text-white"><center>Tell Us About You</center></h4>  </div>
+                                    <div class="auth-form">
+
+                                        @using (Html.BeginForm("campaignfbshare", "Marketing", FormMethod.Post))
+                                        {
+                                        <div class="form-group">
+                                            @Html.Hidden("PARAMS", Request.QueryString["PARAMS"])
+                                            @Html.Hidden("SAPCODE", (object)ViewBag.SAPCODE)
+                                            @Html.Hidden("CREATIVEID", (object)ViewBag.CREATIVEID)
+                                            @Html.Hidden("PLATEFORM", (object)ViewBag.PLATEFORM)
+                                            <label class="mb-1"><strong>Full Name</strong></label>
+                                            @Html.TextBoxFor(x => x.leads_name, "", new { @class = "form-control", @required = "true" })
+                                            @*<input type="email" class="form-control" name="name">*@
+                                        </div>
+                                            <div class="form-group">
+                                                <label class="mb-1"><strong>Phone Number</strong></label>
+                                                @Html.TextBoxFor(x => x.leads_mobile, "", new { @class = "form-control", @required = "true", @type = "Number" })
+                                                @Html.ValidationMessageFor(x => x.leads_mobile, "", new { @class = "text-danger" })
+                                            </div>
+
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-danger btn-block">Submit</button>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="note p-3 mb-10">
+                            <div class="row no-gutters text-justify">
+                                <p>Reliance Nippon Life Insurance Company Limited</p>
+                                <p>
+                                    <b>Disclaimer:</b>  By submitting my contact details here, I override my NDNC registration and authorise Reliance Nippon Life Insurance Company and it representatives to contract me over a call/e-mail.
+                                </p><p>
+                                    Trade logo displayed above belongs to Anil Dhirubhai Ambani Ventures Private Limited & Nippon
+                                    Life Insurance Company and used by Reliance Nippon Life Insurance Company Limited under
+                                    license
+                                </p>
+
+                                <div class=" p-3 mb-10" style="background-color:#185aa7;font-size:7px">
+                                    <p class="text-white">
+                                        <b>BEWARE OF SPURIOUS PHONE CALLS AND FICTITIOUS/FRAUDULENT OFFERS:</b> IRDAI
+                                        claries to public that: 1. IRDAI or its ofcials do not involve in activities like sale of
+                                        any kind of insurance or nancial products nor invest premiums. 2. IRDAI does not
+                                        announce any bonus. Public receiving such phone calls are requested to lodge a
+                                        police complaint along with details of phone call, number
+                                    </p>
+                                </div>
+                                <div class="col-md-6" style="width:65%;font-size:6px">CIN: U66010MH2001PLC167089</div>
+                                <div class="col-md-6" style="float:right;width:35%;font-size:6px">Mktg/FBM_SalesLeads/V1/Oct22</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                &nbsp;
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    <script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Counter Up -->
+    <script src="~/Content/vendor/waypoints/jquery.waypoints.min.js"></script>
+    <script src="~/Content/vendor/jquery.counterup/jquery.counterup.min.js"></script>
+
+    <!-- Apex Chart -->
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+
+    <!-- Chart piety plugin files -->
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <!-- Chart Chartist plugin files -->
+    <script src="~/Content/vendor/chartist/js/chartist.min.js"></script>
+    <script src="~/Content/vendor/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
+    <script src="~/Content/js/plugins-init/chartist-init.js"></script>
+
+</body>
+</html>

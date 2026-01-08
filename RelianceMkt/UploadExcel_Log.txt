@@ -1,0 +1,160 @@
+2025-12-23 15:31:21 :: ===== UploadExcel START =====
+2025-12-23 15:31:21 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 15:31:21 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 15:31:22 :: Total rows found (including header): 4
+2025-12-23 15:31:22 :: DB Connected
+2025-12-23 15:31:32 :: Row 2 Raw Mobile: [9027586766]
+2025-12-23 15:31:33 :: Row 2 inserted successfully | Mobile: +919027586766
+2025-12-23 15:31:35 :: Row 3 Raw Mobile: [8746060560]
+2025-12-23 15:31:35 :: Row 3 inserted successfully | Mobile: +918746060560
+2025-12-23 15:31:36 :: Row 4 Raw Mobile: [9027586766]
+2025-12-23 15:31:36 :: Row 4 inserted successfully | Mobile: +919027586766
+2025-12-23 15:31:36 :: Total rows inserted: 3
+2025-12-23 15:31:36 :: ===== UploadExcel SUCCESS =====
+2025-12-23 15:33:12 :: ===== UploadExcel START =====
+2025-12-23 15:33:16 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 15:33:17 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 15:33:30 :: Total rows found (including header): 4
+2025-12-23 15:33:43 :: DB Connected
+2025-12-23 15:34:20 :: Row 2 Raw Mobile: [9027586766]
+2025-12-23 15:34:53 :: Row 2 inserted successfully | Mobile: +919027586766
+2025-12-23 15:35:34 :: Row 3 Raw Mobile: [8746060560]
+2025-12-23 15:35:42 :: Row 3 inserted successfully | Mobile: +918746060560
+2025-12-23 15:36:04 :: Row 4 Raw Mobile: [9027586766]
+2025-12-23 15:36:15 :: Row 4 inserted successfully | Mobile: +919027586766
+2025-12-23 15:36:23 :: Total rows inserted: 3
+2025-12-23 15:36:28 :: ===== UploadExcel SUCCESS =====
+2025-12-23 15:45:04 :: ===== UploadExcel START =====
+2025-12-23 15:45:04 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 15:45:04 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 15:45:04 :: Total rows found (including header): 4
+2025-12-23 15:45:04 :: DB Connected
+2025-12-23 15:45:09 :: Row 2 Raw Mobile: [9027586766]
+2025-12-23 15:45:09 :: Row 2 inserted successfully | Mobile: +919027586766
+2025-12-23 15:45:10 :: Row 3 Raw Mobile: [8746060560]
+2025-12-23 15:45:10 :: Row 3 inserted successfully | Mobile: +918746060560
+2025-12-23 15:45:12 :: Row 4 Raw Mobile: [9027586766]
+2025-12-23 15:45:12 :: Row 4 inserted successfully | Mobile: +919027586766
+2025-12-23 15:45:12 :: Total rows inserted: 3
+2025-12-23 15:45:12 :: ===== UploadExcel SUCCESS =====
+2025-12-23 15:45:48 :: ===== UploadExcel START =====
+2025-12-23 15:45:48 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 15:45:48 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 15:45:48 :: Total rows found (including header): 4
+2025-12-23 15:45:48 :: DB Connected
+2025-12-23 15:45:53 :: Row 2 Raw Mobile: [9027586766]
+2025-12-23 15:45:53 :: Row 2 inserted successfully | Mobile: +919027586766
+2025-12-23 15:45:58 :: Row 3 Raw Mobile: [8746060560]
+2025-12-23 15:45:58 :: Row 3 inserted successfully | Mobile: +918746060560
+2025-12-23 15:46:02 :: Row 4 Raw Mobile: [9027586766]
+2025-12-23 15:46:02 :: Row 4 inserted successfully | Mobile: +919027586766
+2025-12-23 15:46:02 :: Total rows inserted: 3
+2025-12-23 15:46:02 :: ===== UploadExcel SUCCESS =====
+2025-12-23 16:43:46 :: ===== UploadExcel START =====
+2025-12-23 16:43:46 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 16:43:46 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 16:43:46 :: Total rows found (including header): 4
+2025-12-23 16:46:06 :: ===== UploadExcel START =====
+2025-12-23 16:46:06 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 16:46:06 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 16:46:07 :: Total rows found (including header): 4
+2025-12-23 16:46:07 :: DB Connected
+2025-12-23 16:46:07 :: Row 2 Raw Mobile: [9027586766]
+2025-12-23 16:46:07 :: Row 2 inserted successfully | Mobile: +919027586766
+2025-12-23 16:46:09 :: Row 3 Raw Mobile: [8746060560]
+2025-12-23 16:46:09 :: Row 3 inserted successfully | Mobile: +918746060560
+2025-12-23 16:46:11 :: Row 4 Raw Mobile: [9027586766]
+2025-12-23 16:46:11 :: Row 4 inserted successfully | Mobile: +919027586766
+2025-12-23 16:46:11 :: Total rows inserted: 3
+2025-12-23 16:46:11 :: ===== UploadExcel SUCCESS =====
+2025-12-23 17:12:01 :: ===== UploadExcel START =====
+2025-12-23 17:12:01 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 17:12:01 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 17:12:02 :: Total rows found (including header): 4
+2025-12-23 17:16:48 :: ===== UploadExcel START =====
+2025-12-23 17:16:48 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-23 17:16:48 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-23 17:16:48 :: Total rows found (including header): 4
+2025-12-23 17:16:48 :: DB Connected
+2025-12-23 17:16:48 :: Row 2 Raw Mobile: [9027586766]
+2025-12-23 17:16:48 :: Row 2 inserted | Mobile: +919027586766
+2025-12-23 17:16:53 :: Row 3 Raw Mobile: [8746060560]
+2025-12-23 17:16:53 :: Row 3 inserted | Mobile: +918746060560
+2025-12-23 17:16:54 :: Row 4 Raw Mobile: [9027586766]
+2025-12-23 17:16:54 :: Row 4 inserted | Mobile: +919027586766
+2025-12-23 17:16:57 :: Total rows inserted: 3
+2025-12-23 17:16:57 :: ===== UploadExcel SUCCESS =====
+2025-12-24 12:46:08 :: ===== UploadExcel START =====
+2025-12-24 12:46:08 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-24 12:46:08 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-24 12:46:09 :: Total rows found (including header): 4
+2025-12-24 12:46:09 :: DB Connected
+2025-12-24 12:46:09 :: Row 2 Raw Mobile: [9027586766]
+2025-12-24 12:46:09 :: Row 2 inserted | Mobile: +919027586766
+2025-12-24 12:46:14 :: Row 3 Raw Mobile: [8746060560]
+2025-12-24 12:46:14 :: Row 3 inserted | Mobile: +918746060560
+2025-12-24 12:46:14 :: Row 4 Raw Mobile: [9027586766]
+2025-12-24 12:46:14 :: Row 4 inserted | Mobile: +919027586766
+2025-12-24 12:46:15 :: Total rows inserted: 3
+2025-12-24 12:46:15 :: ===== UploadExcel SUCCESS =====
+2025-12-24 15:00:53 :: ===== UploadExcel START =====
+2025-12-24 15:00:53 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-24 15:00:53 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-24 15:00:55 :: Total rows found (including header): 4
+2025-12-24 15:04:32 :: ===== UploadExcel START =====
+2025-12-24 15:04:32 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-24 15:04:32 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-24 15:04:33 :: Total rows found (including header): 4
+2025-12-24 15:04:33 :: DB Connected
+2025-12-24 15:04:33 :: Row 2 Raw Mobile: [9027586766]
+2025-12-24 15:04:33 :: Row 2 inserted | Mobile: +919027586766
+2025-12-24 15:04:41 :: Row 3 Raw Mobile: [8746060560]
+2025-12-24 15:04:41 :: Row 3 inserted | Mobile: +918746060560
+2025-12-24 15:04:41 :: Row 4 Raw Mobile: [9027586766]
+2025-12-24 15:04:41 :: Row 4 inserted | Mobile: +919027586766
+2025-12-24 15:04:41 :: Total rows inserted: 3
+2025-12-24 15:04:41 :: ===== UploadExcel SUCCESS =====
+2025-12-24 15:05:28 :: ===== UploadExcel START =====
+2025-12-24 15:05:28 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-24 15:05:28 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-24 15:05:28 :: Total rows found (including header): 4
+2025-12-24 15:05:28 :: DB Connected
+2025-12-24 15:05:28 :: Row 2 Raw Mobile: [9027586766]
+2025-12-24 15:05:28 :: Row 2 inserted | Mobile: +919027586766
+2025-12-24 15:05:28 :: Row 3 Raw Mobile: [8746060560]
+2025-12-24 15:05:28 :: Row 3 inserted | Mobile: +918746060560
+2025-12-24 15:05:28 :: Row 4 Raw Mobile: [9027586766]
+2025-12-24 15:05:28 :: Row 4 inserted | Mobile: +919027586766
+2025-12-24 15:05:28 :: Total rows inserted: 3
+2025-12-24 15:05:28 :: ===== UploadExcel SUCCESS =====
+2025-12-24 15:07:46 :: ===== UploadExcel START =====
+2025-12-24 15:07:46 :: File Name: CentralBlast_Template (11).xlsx
+2025-12-24 15:07:46 :: Campaign: Returns Ka Aakhri Mauka
+2025-12-24 15:07:46 :: Total rows found (including header): 4
+2025-12-24 15:07:46 :: DB Connected
+2025-12-24 15:07:46 :: Row 2 Raw Mobile: [9027586766]
+2025-12-24 15:07:46 :: Row 2 inserted | Mobile: +919027586766
+2025-12-24 15:07:46 :: Row 3 Raw Mobile: [8746060560]
+2025-12-24 15:07:46 :: Row 3 inserted | Mobile: +918746060560
+2025-12-24 15:07:46 :: Row 4 Raw Mobile: [9082788711]
+2025-12-24 15:07:46 :: Row 4 inserted | Mobile: +919082788711
+2025-12-24 15:07:46 :: Total rows inserted: 3
+2025-12-24 15:07:46 :: ===== UploadExcel SUCCESS =====
+2025-12-24 15:09:12 :: =================================================================
+2025-12-24 15:09:12 :: 🔔 NEW WEBHOOK REQUEST RECEIVED
+2025-12-24 15:09:12 :: =================================================================
+2025-12-24 15:09:12 :: 📥 Raw Model Data: Mobile=+919082788711, Message=Interested
+2025-12-24 15:09:12 :: ✅ Validation passed - Mobile: +919082788711, Message: Interested
+2025-12-24 15:09:12 :: 🔍 Message Analysis: Original='Interested', Lowercase='interested', Result='Interested'
+2025-12-24 15:09:12 :: 🔎 Searching database for mobile: +919082788711
+2025-12-24 15:09:12 :: 📱 Trying formats: [+919082788711], [919082788711], [+919082788711], [9082788711], [919082788711], [+919082788711]
+2025-12-24 15:09:12 :: ✅ RECORD FOUND!
+2025-12-24 15:09:12 ::    ├─ ID: 45
+2025-12-24 15:09:12 ::    ├─ Mobile in DB: +919082788711
+2025-12-24 15:09:12 ::    ├─ Old Response: Pending
+2025-12-24 15:09:12 ::    ├─ Old CreatedDate: 12/24/2025 3:07:46 PM
+2025-12-24 15:09:12 ::    └─ New Response: Interested
+2025-12-24 15:09:12 :: 💾 Database updated successfully!
+2025-12-24 15:09:12 :: ✅ API RESPONSE: 200 OK - Response Updated
+2025-12-24 15:09:12 :: =================================================================
+

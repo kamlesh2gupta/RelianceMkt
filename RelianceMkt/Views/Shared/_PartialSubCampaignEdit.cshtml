@@ -1,0 +1,62 @@
+﻿
+
+@model RelianceMkt.Models.subcampaign
+
+
+<div>
+
+    <form id="myForm">
+        <div class="row">
+            <div class="col-md-6">
+                @Html.HiddenFor(m => m.subcampaign_id)
+                @Html.DropDownListFor(x => x.campaign_id, new SelectList(ViewBag.lstCampaign, "campaign_id", "campaign_name"),
+                                         "Select Campaign", new { @lass = "form-control", @required = "true" })
+                @*</form>*@
+
+            </div>
+            <div class="col-md-6">
+
+                @Html.TextBoxFor(x => x.subcampaign_name, "", new { @class = "form-control  form-white", @required = "true" })
+                @*</form>*@
+
+            </div>
+            <div class="col-md-12">
+                <a href="#" id="btnSubmit" class="btn btn-success btn-block">
+                    Update
+                </a>
+            </div>
+        </div>
+
+
+
+    </form>
+    @*<div class="sk-child sk-bounce1" id="loaderDiv"></div>*@
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function () {
+
+            //$("#loaderDiv").show();
+            //debugger;
+            var myformdata = $("#myForm").serialize();
+
+            $.ajax({
+
+                type: "POST",
+                //url: "/Marketing/EditSubCampaign",
+                url: '@Url.Action("EditSubCampaign", "Marketing")',
+                data: myformdata,
+                success: function () {
+                    //$("#loaderDiv").hide();
+                    $("#edit-modal").modal("hide");
+                    window.location.href =  '@Url.Action("SubCampaignList", "Marketing")';
+
+                }
+            })
+        })
+    })
+</script>

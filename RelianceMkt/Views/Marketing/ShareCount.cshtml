@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "HotLeads";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="page-titles">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Hot Leads</a></li>
+        </ol>
+    </div>
+    <!-- row -->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Hot Leads</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("HotLeads", "Marketing", FormMethod.Post))
+                    {
+                        <div class="form-row">
+                            <div class=" form-group col-md-3">
+                                <label> From: </label>@Html.TextBox("fromdate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt1.ToString("yyyy-MM-dd") })
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label> To: </label>@Html.TextBox("todate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt2.ToString("yyyy-MM-dd") })
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Platform: </label>@Html.DropDownList("plateform", new SelectList(ViewBag.lstPlateform, "Text", "Value", !string.IsNullOrEmpty(ViewBag.plateform) ? ViewBag.plateform : ""), "All Platform", new { @class = "form-control" })
+
+                            </div>
+                            
+
+
+                            <div class="col-md-3" style="padding-top:28px;">
+                                <button type="submit" class="btn btn-warning ml-3">APPLY</button>
+                                <button type="button" id="btnexport" class="btn btn-warning ml-3">Export To Excel</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+                </div>
+            </div>
+
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Hot Leads</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-responsive-md" id="table2excel">
+                                        <thead>
+                                            <tr>
+                                                <th><strong>S NO.</strong></th>
+                                                <th><strong>DATE</strong></th>
+                                                <th><strong>NAME</strong></th>
+                                                <th><strong>MOBILE</strong></th>
+												<th><strong>CHANNEL</strong></th>
+												<th><strong>SAP_NAME</strong></th>
+                                                <th><strong>SAPCODE</strong></th>
+                                                <th><strong>CREATIVE</strong></th>
+                                                <th><strong>PLATFORM</strong></th>
+												<th><strong>X_ZONE</strong></th>
+												<th><strong>X_REGION</strong></th>
+												<th><strong>X_SALES_UNIT_NM</strong></th>
+												<th><strong>X_SALES_UNIT_CD</strong></th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int i = 1;
+
+                                                foreach (var item in ViewBag.lstLeads)
+                                                {
+                                                    <tr>
+                                                        <td>@i</td>
+                                                        <td>@item.l.leads_date.ToString("dd-MM-yyyy")</td>
+                                                        <td>@item.l.leads_name</td>
+                                                        <td>@item.l.leads_mobile</td>
+														<td>@item.X_CHANNEL</td>
+                                                        <td>@item.l.leads_sapcode</td>
+                                                        <td>@item.SAP_NAME</td>
+														<td>@item.cm.campaign_master_creative_caption</td>
+                                                        <td>@item.l.leads_plateform</td>
+														<td>@item.X_ZONE</td>
+														
+														<td>@item.X_REGION</td>
+														<td>@item.X_SALES_UNIT_NM</td>
+														<td>@item.X_SALES_UNIT_CD</td>
+														
+                                                    </tr>
+                                                    i++;
+                                                }
+                                            }
+                                            @*<tr>
+
+                                                <td colspan="5" class="text-center">No data to display</td>
+
+                                            </tr>*@
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @section js{
+                <script src="~/Content/js/jquery.table2excel.js"></script>
+
+                <script>
+                    $("#btnexport").click(function () {
+                        $("#table2excel").table2excel({
+                            // exclude CSS class
+                            exclude: ".noExl",
+                            name: "Worksheet Name",
+                            filename: "HotLeads", //do not include extension
+                            fileext: ".xls" // file extension
+                        });
+                    });
+                </script>
+            }

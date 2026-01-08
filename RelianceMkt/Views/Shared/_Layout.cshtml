@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    @RenderSection("meta", false)
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    @*<link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">*@
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/header.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+    
+    <style>
+        /* Existing styles */
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+        /* reset password */
+        .reset-btn {
+            background-color: #4CAF50; /* green background */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            .reset-btn i {
+                margin-right: 5px; /* icon ke aur text ke beech gap */
+            }
+
+        /* Nav header default */
+        .nav-header {
+            width: 250px;
+            position: fixed;
+            transition: all 0.3s ease;
+        }
+       /* Nav header default */
+        /* Nav header fixed at top */
+       /* .nav-header {
+            width: 250px;
+            height: 95px;
+            background: #ff8f16;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1050;  
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }*/
+
+
+            /* Hide hone par */
+            .nav-header.hide {
+                margin-left: -250px;
+            }
+
+        /* Sidebar */
+        .deznav {
+            width: 250px;
+            position:fixed;
+            transition: all 0.3s ease;
+        }
+
+            .deznav.hide {
+                margin-left: -250px;
+            }
+
+        /* Content adjust */
+        .content-body {
+            transition: all 0.3s ease;
+            margin-left: 250px;
+        }
+
+            .content-body.full {
+                margin-left: 0;
+            }
+
+        /* New styles for collapsed sidebar */
+        .deznav.hide {
+            width: 80px; /* Reduced width when collapsed */
+            margin-left: 0; /* Keep sidebar visible */
+        }
+
+            .deznav.hide .metismenu .nav-label,
+            .deznav.hide .metismenu span,
+            .deznav.hide .copyright {
+                display: none; /* Hide text and copyright when collapsed */
+            }
+
+            .deznav.hide .metismenu i {
+                margin-right: 0; /* Remove margin for icons when collapsed */
+            }
+
+            .deznav.hide .metismenu a {
+                text-align: center; /* Center icons when collapsed */
+            }
+
+            .deznav.hide .metismenu .has-arrow:after {
+                display: none; /* Hide dropdown arrow when collapsed */
+            }
+
+        .nav-header.hide .logo-abbr {
+            display: none; /* Hide logo image when collapsed */
+        }
+
+        .nav-header.hide .nav-control {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Center hamburger icon */
+            width: 70%;
+        }
+
+        .nav-header.hide {
+            width: 80px; /* Match sidebar width when collapsed */
+            margin-left: 0; /* Ensure header stays visible */
+        }
+
+        .content-body.full {
+            margin-left: 80px; /* Adjust content margin when sidebar is collapsed */
+        }
+    </style>
+    
+    @*<style>
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+      /*  =============reset password--===========*/
+        .reset-btn {
+            background-color: #4CAF50; /* green background */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            .reset-btn i {
+                margin-right: 5px; /* icon ke aur text ke beech gap */
+            }
+        
+           /* //===============*/
+
+        /* Nav header default */
+        .nav-header {
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+            /* Hide hone par */
+            .nav-header.hide {
+                margin-left: -250px;
+            }
+
+        /* Sidebar */
+        .deznav {
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+            .deznav.hide {
+                margin-left: -250px;
+            }
+
+        /* Content adjust */
+        .content-body {
+            transition: all 0.3s ease;
+            margin-left: 250px;
+        }
+
+            .content-body.full {
+                margin-left: 0;
+            }
+
+
+    </style>*@
+
+
+
+
+    @RenderSection("css", false)
+
+</head>
+<body>
+    <!--**********************************
+        Nav header start
+    ***********************************-->
+    @*//===Edit by kamlesh===*@
+    <div class="nav-header" style="background: #ff8f16; height: 95px;">
+        @*//==end here====//*@
+        @*<a href="~/Marketing/UserDashboard">
+                <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; max-width: 182px;">
+
+            </a>*@
+        <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; max-width: 236px;">
+
+
+        <div class="nav-control" style="background:#fff">
+            <div class="hamburger">
+                <span class="line"></span><span class="line"></span><span class="line"></span>
+            </div>
+        </div>
+    </div>
+    <!--**********************************
+        Nav header end
+    ***********************************-->
+    <!--**********************************
+        Header start
+    ***********************************-->
+    <!--<div class="header" style="padding-left: 0.0rem;">-->
+    @*//====edit by kamlesh======*@
+    <!--<div class="header-content" style="height: 95px;">-->
+    @*//===end here===*@
+    <!--<nav class="navbar navbar-expand">-->
+    <div class="header" style="padding-left:0rem; position:fixed; top:0; left:0; width:100%; height:95px; background:#ff8f16; display:flex; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <div class="header-content" style="height:95px; width:100%; display:flex; align-items:center;">
+            <nav class="navbar navbar-expand" style="width:100%;">
+                <div class="collapse navbar-collapse justify-content-between">
+                    <div class="header-left">
+                        <!--<div class="search_bar dropdown show">
+                            <div class="dropdown-menu p-0 m-0 show">
+                                <form>
+                                    <input class="form-control" type="search" placeholder="Search Here" aria-label="Search">
+                                </form>
+                            </div>
+                            <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.7871 22.7761L17.9548 16.9437C19.5193 15.145 20.4665 12.7982 20.4665 10.2333C20.4665 4.58714 15.8741 0 10.2333 0C4.58714 0 0 4.59246 0 10.2333C0 15.8741 4.59246 20.4665 10.2333 20.4665C12.7982 20.4665 15.145 19.5193 16.9437 17.9548L22.7761 23.7871C22.9144 23.9255 23.1007 24 23.2816 24C23.4625 24 23.6488 23.9308 23.7871 23.7871C24.0639 23.5104 24.0639 23.0528 23.7871 22.7761ZM1.43149 10.2333C1.43149 5.38004 5.38004 1.43681 10.2279 1.43681C15.0812 1.43681 19.0244 5.38537 19.0244 10.2333C19.0244 15.0812 15.0812 19.035 10.2279 19.035C5.38004 19.035 1.43149 15.0865 1.43149 10.2333Z" fill="#A4A4A4"/></svg>
+                            </span>
+                        </div>-->
+                    </div>
+                    @*<label class="reset-btn" onclick="window.location.href='/Marketing/ResetPassword'">
+                        <i class="fa fa-refresh"></i> Reset Password
+                          </label>*@
+                    <ul class="navbar-nav header-right">
+                        @*<li class="nav-item ">
+                                <div class="btn-group mb-1">
+                                    <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                        Agency
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">TEAM 1</a>
+                                        <a class="dropdown-item" href="#">TEAM 2</a>
+                                        <a class="dropdown-item" href="#">TEAM 2</a>
+
+                                    </div>
+                                </div>
+                            </li>*@
+
+
+                        @*<li class="nav-item dropdown d-none d-xl-flex">
+                                <a class="btn bg-white" href="~/Marketing/newcampaign">+ New Campaign</a>
+                            </li>*@
+                        @*<li class="nav-item dropdown header-profile side">
+                                <a class="nav-link" href="#">
+                                    <div class="header-info">
+                                        <span>Hello, <strong>Samuel</strong></span>
+                                    </div>
+                                    <img src="~/Content/images/profile/pic1.jpg" width="20" alt="" />
+                                </a>
+                            </li>*@
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!--********************************** Header end ti-comment-alt  ***********************************-->
+    <!--**********************************Sidebar start***********************************-->
+    <!--**********************************
+        Sidebar start
+    ***********************************-->
+    <div class="deznav">
+        <div class="deznav-scroll">
+            @{
+                var userRole = Session["role"] as string;
+                var subAdminType = Session["subadmin_type"] as string;
+
+                // Role checks
+                bool isAdmin = userRole == "Admin";
+                bool isSubAdmin = userRole == "SubAdmin";
+                bool isReadOnlySubAdmin = (isSubAdmin && subAdminType == "ReadOnly") || userRole == "Sub-Admin(Read-Only)";
+                bool isCampaignCreator = (isSubAdmin && subAdminType == "CampaignCreator") || userRole == "Sub-Admin(Campaign Creator)";
+
+                // Show all menu items (except logout/report) only to Admin + SubAdmin (not readonly/campaign creator unless allowed)
+                bool showAll = isAdmin || isSubAdmin;
+            }
+
+            <ul class="metismenu" id="menu">
+
+                <!-- Dashboard: Show to all except Campaign Creator -->
+                @if (isCampaignCreator || isReadOnlySubAdmin || isAdmin || isSubAdmin)
+                {
+                    <li>
+                        <a href="~/Marketing/Dashboard" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                }
+
+                <!-- Add SubAdmin: Only Admin -->
+                @if (isAdmin)
+                {
+                    <li>
+                        <a href="~/Marketing/AddSubAdmin" aria-expanded="false">
+                            <i class="fas fa-user-cog"></i> <span>Add SubAdmin</span>
+                        </a>
+                    </li>
+
+                    <!-- Master Section: Only Admin -->
+                    <li>
+                        <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                            <i class="flaticon-381-settings"></i> <span>Master</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="~/Marketing/ChannelList">Channels</a></li>
+                            <li><a href="~/Marketing/CampaignCategoryList">Categories</a></li>
+                            <li><a href="~/Marketing/campaignlist">Campaigns</a></li>
+                            <li><a href="~/Marketing/subcampaignlist">Sub-Campaigns</a></li>
+                            <li><a href="~/Marketing/landingpagelist">Landing Page</a></li>
+                        </ul>
+                    </li>
+                }
+
+                <!-- Campaign & New Campaign: Admin, SubAdmin, Campaign Creator -->
+                @if (isAdmin || isSubAdmin || isCampaignCreator)
+                {
+                    <li>
+                        <a href="~/Marketing/campaignMult" aria-expanded="false">
+                            <i class="flaticon-381-notepad"></i> <span>Campaign</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/Marketing/newcampaign" aria-expanded="false">
+                            <i class="flaticon-381-plus"></i> <span>New Campaign</span>
+                        </a>
+                    </li>
+                }
+
+                <!-- Hot Leads & Share: Only Admin + SubAdmin (not readonly) -->
+                @*@if (isAdmin || (isSubAdmin && !isReadOnlySubAdmin && !isCampaignCreator))*@
+                @if (isAdmin || isCampaignCreator || isSubAdmin || isReadOnlySubAdmin)
+                {
+                    @*<li>
+                <a href="~/Marketing/hotleads" aria-expanded="false">
+                    <i class="flaticon-381-settings-2"></i> Hot Leads
+                </a>
+            </li>
+            <li>
+                <a href="~/Marketing/DateWiseShare" aria-expanded="false">
+                    <i class="bi bi-share me-1"></i> Share
+                </a>
+            </li>*@
+
+
+                    <!-- Report: Show to all -->
+                    <li>
+                        <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                            <i class="bi bi-file-earmark-text"></i> <span>Report</span>
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="~/Marketing/LeadCampaign">Lead Campaign</a></li>
+                            <li><a href="~/Marketing/CreativeWise">Creative Wise</a></li>
+                            <li><a href="~/Marketing/AdminSharecount">Sharecount</a></li>
+                            <li><a href="~/Marketing/hotleads">Hot Leads</a></li>
+                            <li><a href="~/Marketing/DateWiseShare">Share</a></li>
+                        </ul>
+                    </li>
+                }
+                <!-- Central Blast: Only Admin -->
+                @if (isAdmin || isSubAdmin || isCampaignCreator)
+                {
+                    <li>
+                        <a href="~/Marketing/CentralBlast" aria-expanded="false">
+                            <i class="flaticon-381-share text-bg-dark me-2"></i> <span>Central Blast</span>
+                        </a>
+                    </li>
+                }
+
+
+
+                @if (isAdmin || isSubAdmin || isCampaignCreator || isReadOnlySubAdmin)
+                {
+
+
+                    <li>
+                        <a href="~/Marketing/ResetPassword" aria-expanded="false">
+                            <i class="fa fa-refresh"></i><span> Reset Password</span>
+                        </a>
+                    </li>
+
+                }
+
+
+
+
+                <!-- Logout -->
+                <li>
+                    <a href="~/Marketing/Logout" aria-expanded="false">
+                        <i class="flaticon-381-exit"></i><span> Logout</span>                      
+                    </a>
+                </li>
+                
+            </ul>
+
+            <div class="copyright">
+                <br />© All Rights Reserved By Reliance
+            </div>
+        </div>
+
+    </div>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+
+
+
+
+
+
+
+
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body" style=" margin-top: 99px;">
+            <!-- row -->
+            @RenderBody()
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by Reliance 2020</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    @*<script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>*@
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Apex Chart -->
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+
+    <!-- Chart piety plugin files -->
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/compaign.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+
+    @RenderSection("js", false)
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.querySelector(".nav-control");
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header"); // 👈 header bhi liya
+            const content = document.querySelector(".content-body");
+
+            toggleBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("hide");
+                header.classList.toggle("hide");  // 👈 header bhi toggle hoga
+                content.classList.toggle("full");
+            });
+        });
+    </script>
+
+</body>
+</html>

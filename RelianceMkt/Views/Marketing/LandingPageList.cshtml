@@ -1,0 +1,187 @@
+﻿@model RelianceMkt.Models.landingpage
+@{
+    ViewBag.Title = "LandingPageList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-12 col-xxl-12 col-lg-12">
+            <div class="row">
+                <div class="col-xl-12">
+                    @using (Html.BeginForm("LandingPageList", "Marketing", FormMethod.Post))
+                    {
+                        <div class="card">
+                            <div class="card-header pb-0 border-0">
+                                <h3 class="fs-20 text-black">Enter your landing page URL below</h3>
+                            </div>
+                            <div class="card-body">
+                                @*<form>*@
+
+                                <div class="form-row">
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Landing Page URL:</label><span class="text-danger ml-1">*</span>
+                                        @Html.TextBoxFor(x => x.landingpage_url, "", new { @class = "form-control", @required = "true" })
+                                        @*</form>*@
+
+                                    </div>
+                                    <div class="form-group col-xl-3 " style="padding-top:38px;">
+
+                                        <button type="submit" class="btn btn-primary ml-3">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!--**********************************
+        List start
+    ***********************************-->
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Landing Pages</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-responsive-md">
+                            <thead>
+                                <tr>
+
+                                    <th><strong>S NO.</strong></th>
+                                    <th><strong>Landing Page URL</strong></th>
+                                    <th></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+
+                                    foreach (var item in ViewBag.lstLandingpage)
+                                    {
+                                        <tr>
+
+                                            <td><strong>@i</strong></td>
+                                            <td>@item.landingpage_url</td>
+                                            @*<td><a href="#" class="btn btn-success" onclick="EditLandingPage(@item.landingpage_id)">Edit </a> </td>*@
+                                            @*// kamlesh*@
+                                            <td><a href="#" class="btn btn-success" onclick="DeleteLandingPageList(@item.landingpage_id)">Delete </a> </td>
+                                            @*//end*@
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BEGIN MODAL -->
+    <div class="modal fade none-border" id="edit-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><strong>Edit Landing Page</strong></h4>
+                </div>
+                <div class="modal-body" id="myModalBodyDiv1"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                    @*<button type="button" class="btn btn-success save-event waves-effect waves-light">
+                            Update
+                        </button>*@
+
+                    @*<button type="button" class="btn btn-danger delete-event waves-effect waves-light" data-dismiss="modal">Delete</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--**********************************
+   List end
+***********************************-->
+
+@section js
+{
+
+    <script src="~/Content/vendor/jqueryui/js/jquery-ui.min.js"></script>
+    @*<script>
+
+            var EditLandingPage = function (LandingPageId) {
+                //debugger;
+                /*  var url = "/Marketing/EditLandingPage?LandingPageId=" + LandingPageId;*/
+                var url = '@Url.Action("EditLandingPage", "Marketing")' + '?LandingPageId=' + LandingPageId;
+
+
+                $("#myModalBodyDiv1").load(url, function () {
+                    $("#edit-modal").modal("show");
+
+                })
+
+            }
+    </script>*@
+}
+@*<script>
+        function DeleteLandingPageList(landingpagesId) {
+            if (confirm("Are you sure you want to delete this landingpages?")) {
+                    $.ajax({
+                        url: '@Url.Action("DeletelandingpagesPageList", "Marketing")', // Corrected controller name
+                        type: 'POST',
+                        data: { LandingpagesId: landingpagesId },
+                        success: function (response) {
+                            if (response.success) {
+                                $("#row-" + landingpagesId).remove(); // Remove row from table
+         location.reload();
+                            } else {
+                                alert("Error deleting landingpages: " + response.message);
+                            }
+                        },
+                        error: function () {
+                            alert("Error occurred while deleting.");
+                        }
+                    });
+                }
+            }
+    </script>*@
+
+
+<script>
+    function DeleteLandingPageList(landingpagesId) {
+        if (confirm("Are you sure you want to delete this landing page?")) {
+            $.ajax({
+                url: '@Url.Action("DeleteLandingPageList", "Marketing")', // Controller method name
+                type: 'POST',
+                data: { landingpagesId: landingpagesId }, // Must match C# parameter
+                success: function (response) {
+                    if (response.success) {
+                        $("#row-" + landingpagesId).remove(); // Remove row from DOM
+                        location.reload();
+                    } else {
+                        alert("Error deleting landing page: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while deleting: " + error);
+                }
+            });
+        }
+    }
+</script>
+

@@ -1,0 +1,82 @@
+﻿@model RelianceMkt.Models.authentication
+
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reliance - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="h-100">
+    @using (Html.BeginForm("Index", "Marketing", FormMethod.Post))
+    {
+
+<div class="authincation h-100">
+    <div class="container h-100">
+        <div class="row justify-content-center h-100 align-items-center">
+            <div class="col-md-6">
+                <div class="authincation-content">
+                    <div class="row no-gutters">
+                        <div class="col-xl-12">
+                            <div class="auth-form">
+                                <img class="logo-abbr" src="~/Content/images/RNLIC LOGO_WBG.jpg" style="width:100%" alt="">
+                                <h4 class="text-center mb-4">Sign in your account</h4>
+
+                                <h5>@TempData["warning"]</h5>
+
+                                @*<form action="index.html">*@
+                                <div class="form-group">
+                                    <label class="mb-1"><strong>Username</strong></label>
+                                    @Html.TextBoxFor(x => x.au_username, "", new { @class = "form-control", @placeholder = "Username", @required = "true" })
+                                    @*<input type="email" class="form-control" value="hello@example.com">*@
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-1"><strong>Password</strong></label>
+                                    @Html.PasswordFor(x => x.au_password, new { @class = "form-control", @placeholder = "Password", @required = "true" })
+                                </div>
+                                @*<div class="form-row d-flex justify-content-between mt-4 mb-2">
+            <div class="form-group">
+                <div class="custom-control custom-checkbox ml-1">
+                    <input type="checkbox" class="custom-control-input" id="basic_checkbox_1">
+                    <label class="custom-control-label" for="basic_checkbox_1">Remember my preference</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <a href="#">Forgot Password?</a>
+            </div>
+        </div>*@
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                                </div>
+                                @*</form>*@
+                                @*<div class="new-account mt-3">
+            <p>Don't have an account? <a class="text-primary" href="#">Sign up</a></p>
+        </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>}
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    <script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+    <script src="~/Content/js/deznav-init.js"></script>
+
+</body>
+
+</html>

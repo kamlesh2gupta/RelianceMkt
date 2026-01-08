@@ -1,0 +1,1534 @@
+﻿
+@{ ViewBag.Title = "campaignview";
+                Layout = "~/Views/Shared/_LayoutUser.cshtml"; }
+
+
+@section css
+{
+    <style>
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+        
+        .open-filter {
+            z-index: 9999;
+            width: 100%;
+            height: 70px;
+            left: 80%;
+            position: fixed;
+            right: 0px;
+            bottom: 0px;
+        }
+        .nav-tabs {
+            width: 100% !important;
+            border-bottom: 1px solid #dee2e6;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .nav {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            padding-left: 0 !important;
+            margin-bottom: 1rem !important;
+            list-style: none !important;
+        }
+        .accordion__header {
+            padding: 0.3rem 1.75rem;
+            border: 1px solid #f0f1f5;
+            cursor: pointer;
+            position: relative;
+            color: #333;
+            font-weight: 400;
+            border-radius: 0.75rem;
+            -webkit-transition: all 0.5s;
+            -ms-transition: all 0.5s;
+            transition: all 0.5s;
+        }
+        .accordion__body--text {
+            padding: 0.875rem 0rem;
+        }
+        .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col, .col-auto, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm, .col-sm-auto, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-md, .col-md-auto, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg, .col-lg-auto, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl, .col-xl-auto, .col-xxl-1, .col-xxl-2, .col-xxl-3, .col-xxl-4, .col-xxl-5, .col-xxl-6, .col-xxl-7, .col-xxl-8, .col-xxl-9, .col-xxl-10, .col-xxl-11, .col-xxl-12, .col-xxl, .col-xxl-auto {
+            position: relative;
+            width: 100%;
+            padding-right: 6px;
+            padding-left: 6px;
+        }
+    </style>
+}
+
+<!--**********************************
+    Content body start
+***********************************-->
+<!-- row -->
+<div class="container-fluid">
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v15.0&appId=841516383953923&autoLogAppEvents=1" nonce="b26TLwaK"></script>
+    <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+        <div class="mr-auto d-none d-lg-block">
+            <h2 class="text-black font-w600">Campaign</h2>
+            <p class="mb-0">Current campaign list</p>
+        </div>
+        <div class="d-none d-lg-flex align-items-center">
+            <div class="text-right">
+                @Html.Partial("_PartialDateTime")
+            </div>
+            <a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
+                <i class="las la-cog scale5"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <!---<div class="card-header">
+                        <h4 class="card-title">Campaign</h4>
+                        <span class="fs-14 ml-1 pull-right">Language : English</span>
+                    </div>-->
+                <div class="card-body">
+                    <div class="custom-tab-1">
+                        <ul class="nav nav-tabs  mb-4">
+                            <li class=" nav-item">
+                                <a href="#navpills2-1" class="nav-link active" data-toggle="tab" aria-expanded="false">Sales</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#navpills2-2" class="nav-link" data-toggle="tab" aria-expanded="false">Recruitment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#navpills2-3" class="nav-link" data-toggle="tab" aria-expanded="true">Invite & Engage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#navpills2-4" class="nav-link" data-toggle="tab" aria-expanded="true">PWT</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="navpills2-1" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="accordion-one" class="accordion accordion-primary">
+                                            <div class="accordion__item">
+                                                <div class="accordion__header rounded-lg" data-toggle="collapse" data-target="#default_collapseOne">
+                                                    <span class="accordion__header--text">Product Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseOne" class="collapse accordion__body show" data-parent="#accordion-one">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 1 && item.campaign_id == 1)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseTwo">
+                                                    <span class="accordion__header--text">Tax Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseTwo" class="collapse accordion__body" data-parent="#accordion-one">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 1 && item.campaign_id == 2)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseThree">
+                                                    <span class="accordion__header--text">NRI Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseThree" class="collapse accordion__body" data-parent="#accordion-one">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 1 && item.campaign_id == 3)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseFour">
+                                                    <span class="accordion__header--text"> Business Insurance  Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseFour" class="collapse accordion__body" data-parent="#accordion-one">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 1 && item.campaign_id == 4)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseFive">
+                                                    <span class="accordion__header--text">General Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseFive" class="collapse accordion__body" data-parent="#accordion-one">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 1 && item.campaign_id == 5)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="navpills2-2" class="tab-pane">
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <div id="accordion-two" class="accordion accordion-primary">
+                                            <div class="accordion__item">
+                                                <div class="accordion__header rounded-lg" data-toggle="collapse" data-target="#default_collapseSix">
+                                                    <span class="accordion__header--text">Retired Persons Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseSix" class="collapse accordion__body show" data-parent="#accordion-two">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 2 && item.campaign_id == 6)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseSeven">
+                                                    <span class="accordion__header--text">H/W Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseSeven" class="collapse accordion__body" data-parent="#accordion-two">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 2 && item.campaign_id == 7)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseEight">
+                                                    <span class="accordion__header--text">Business Owner Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseEight" class="collapse accordion__body" data-parent="#accordion-two">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 2 && item.campaign_id == 8)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseNine">
+                                                    <span class="accordion__header--text"> Govt Employees  Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseNine" class="collapse accordion__body" data-parent="#accordion-two">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 2 && item.campaign_id == 9)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div id="navpills2-3" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="accordion-three" class="accordion accordion-primary">
+                                            <div class="accordion__item">
+                                                <div class="accordion__header rounded-lg" data-toggle="collapse" data-target="#default_collapseTen">
+                                                    <span class="accordion__header--text">Advisor Engagement Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseTen" class="collapse accordion__body show" data-parent="#accordion-three">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 3 && item.campaign_id == 10)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseEleven">
+                                                    <span class="accordion__header--text">Calculators</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseEleven" class="collapse accordion__body" data-parent="#accordion-three">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 3 && item.campaign_id == 11)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseTwelve">
+                                                    <span class="accordion__header--text">Employee Engagement  Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseTwelve" class="collapse accordion__body" data-parent="#accordion-three">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 3 && item.campaign_id == 12)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            @* PWT *@
+                            <div id="navpills2-4" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="accordion-three" class="accordion accordion-primary">
+                                            <div class="accordion__item">
+                                                <div class="accordion__header rounded-lg" data-toggle="collapse" data-target="#default_collapseTen">
+                                                    <span class="accordion__header--text">Advisor Engagement Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseTen" class="collapse accordion__body show" data-parent="#accordion-three">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 4 && item.campaign_id == 10)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseEleven">
+                                                    <span class="accordion__header--text">Calculators</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseEleven" class="collapse accordion__body" data-parent="#accordion-three">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 3 && item.campaign_id == 11)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion__item">
+                                                <div class="accordion__header collapsed rounded-lg" data-toggle="collapse" data-target="#default_collapseTwelve">
+                                                    <span class="accordion__header--text">Employee Engagement  Campaign</span>
+                                                    <span class="accordion__header--indicator"></span>
+                                                </div>
+                                                <div id="default_collapseTwelve" class="collapse accordion__body" data-parent="#accordion-three">
+                                                    <div class="accordion__body--text">
+                                                        @foreach (var item in ViewBag.lstAllCampaigns)
+                                                        {
+                                                            if (item.campaign_category_id == 3 && item.campaign_id == 12)
+                                                            {
+                                                                <div class="campaign-audio col-md-12">
+                                                                    <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                                                                        <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                                                                            <div class="media align-items-center">
+                                                                                @{ string[] parts = item.campaign_master_images.Split(',');
+                                                                                    <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                                                                            <div class="media-body">
+                                                                                <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                                                                                @{
+                                                                                    decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                                                                                    adsNo = 100000 + adsNo;
+                                                                                }
+                                                                                <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                                                                                <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+                                                                                <p class="text-primary mb-1">
+                                                                                    <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+                                                                                    @if (item.camapaign_master_status == "Pause")
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-warning">Pause</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-success">Ongoning</spam>
+                                                                                    }
+                                                                                    else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-danger">Stopped</spam>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <spam class="badge badge-rounded badge-info">Upcoming</spam>
+                                                                                    }
+                                                                                </p>
+
+
+
+                                                                                <br />
+
+                                                                            </div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <!--<div class="col-md-8 text-left">
+
+                                                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                                                        </div>-->
+                                                                                <div class="col-md-4 text-center  my-2">
+                                                                                    <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                                                                        <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+
+
+                                                                                    </a>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @* end pwt *@
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6 col-xxl-6 col-sm-6">
+                                <div class="card">
+                                    <h4 class="bg-info text-white text-center">Total Shares</h4>
+                                    <div class="row">
+                                        <div class="col-12 border-right">
+                                            <div class="pt-3 pb-3 pl-0 pr-0 text-center">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-xxl-6 col-sm-6">
+                                <div class="card">
+                                    <h4 class="bg-info text-white text-center">Hot Leads</h4>
+                                    <div class="row">
+                                        <div class="col-12 border-right">
+                                            <div class="pt-3 pb-3 pl-0 pr-0 text-center">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- BEGIN MODAL -->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="campaign-modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="myModalBodyDiv1">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                    @*<button type="button" class="btn btn-success save-event waves-effect waves-light">
+                            Update
+                        </button>*@
+
+                    @*<button type="button" class="btn btn-danger delete-event waves-effect waves-light" data-dismiss="modal">Delete</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModalLong">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filter Campaign</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        @using (Html.BeginForm("campaignview", "Marketing", FormMethod.Post, new {@SAPCODE=Session["SAPCODE"], @TYPE=Session["TYPE"],@LOGIN=Session["LOGIN"] }))
+                        {
+
+
+                        <div class="form-row">
+                            @*<div class="form-group col-xl-3">
+            <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span>
+            @Html.DropDownList("channel", new SelectList(ViewBag.lstchannels, "channel_id", "channel_name", ViewBag.channel),
+                                                        "Select Channel", new { @class = "form-control" })
+
+        </div>*@
+                            @*<div class="form-group col-xl-3">
+            <label class="text-black font-w500 mb-3">Category:</label><span class="text-danger ml-1">*</span>
+            @Html.DropDownList("category", new SelectList(ViewBag.lstcategory, "campaign_category_id", "campaign_category_name", ViewBag.category),
+                                                       "Select Category", new { @class = "form-control" })
+
+        </div>*@
+                            @*<div class="form-group col-xl-3">
+            <label class="text-black font-w500 mb-3">Campaign:</label><span class="text-danger ml-1">*</span>
+            @Html.DropDownList("campaign", new SelectList(ViewBag.lstcampaign, "campaign_id", "campaign_name", ViewBag.campaign),
+                                                     "Select Campaign", new { @class = "form-control" })
+
+        </div>*@
+
+                            @*<div class="form-group col-xl-3">
+            <label class="text-black font-w500 mb-3">Sub Campaign</label><span class="text-danger ml-1">*</span>
+            @Html.DropDownList("subcampaign", new SelectList(ViewBag.lstsubcampaign, "subcampaign_id", "subcampaign_name", ViewBag.subcampaign),
+                                                     "Select Sub Campaign"
+                                                     , new { @class = "form-control" })
+
+        </div>*@
+                            <div class="form-group col-xl-3">
+                                <label class="text-black font-w500 mb-3">Language</label><span class="text-danger ml-1">*</span>
+                                @Html.DropDownList("language", new SelectList(ViewBag.lstlanguage, "Value", "Text", ViewBag.language)
+                                                                               ,
+                                                                               "Select Language", new { @class = "form-control" })
+                            </div>
+
+                            <div class="form-group col-xl-3">
+                                <label class="text-black font-w500 mb-3">Type</label><span class="text-danger ml-1">*</span>
+                                @Html.DropDownList("campaigntype", new SelectList(ViewBag.lsttype, "Value", "Text", ViewBag.type)
+                                                                                ,
+                                                                                "Select Campaign Type", new { @class = "form-control" })
+                            </div>
+                            <div class="form-group col-xl-3">
+                                <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>
+                                @Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.type)
+                                                                                ,
+                                                                                "Select Campaign Type", new { @class = "form-control" })
+                            </div>
+
+                            <div class="form-group col-xl-3" style="padding-top:39px;">
+                                <button type="submit" class="btn btn-warning">Apply Filter</button>
+                            </div>
+
+                        </div>}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                    @*<button type="button" class="btn btn-primary">Submit</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="open-filter">   <button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-filter fa-lg"></i></button></div>
+</div>
+<!--**********************************
+    Content body end
+***********************************-->
+@section js
+{
+
+    <script src="~/Content/vendor/jqueryui/js/jquery-ui.min.js"></script>
+    <script>
+
+        var ShowCampaign = function (CampaignMasterId) {
+            //debugger;
+            var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+
+            $("#myModalBodyDiv1").load(url, function () {
+                $("#campaign-modal").modal("show");
+
+            })
+
+        }
+    </script>
+}

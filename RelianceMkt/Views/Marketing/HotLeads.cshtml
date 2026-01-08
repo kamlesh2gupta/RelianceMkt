@@ -1,0 +1,230 @@
+﻿@{
+    ViewBag.Title = "HotLeads";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /* Remove all table borders */
+    #table2excel th, #table2excel td {
+        border: none !important;
+    }
+
+    #table2excel tr {
+        border-bottom: none !important;
+    }
+
+    /* Optional: make table look cleaner */
+    #table2excel th {
+        border-bottom: 0px solid #ddd !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.previous, .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        background: transparent !important;
+        color: #181f39a8 !important;
+        border: 1px solid #181f392e !important;
+        border-radius: 8px !important;
+    }
+</style>
+@*<style>
+    #table2excel {
+        border: none;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #table2excel th {
+            background-color: #f9f9f9;
+            color: #000000b5;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px;
+            text-align: left;
+            border: none;
+        }
+
+        #table2excel td {
+            border: none;
+            padding: 8px;
+            color: #333;
+        }
+        /* ✅ Remove all table grid lines (no X or Y borders) */
+        #table2excel th, #table2excel td {
+            border: none !important;
+        }
+
+        #table2excel tr {
+            border-bottom: none !important;
+        }
+
+    #table2excel {
+        border-collapse: collapse !important;
+        border: none !important;
+    }
+
+        /* ✅ Keep header background subtle for readability */
+        #table2excel thead {
+            background-color: #f8f9fa;
+        }
+
+    /* ✅ Move pagination buttons (Previous / Next) to the LEFT side */
+    div.dataTables_wrapper div.dataTables_paginate {
+        text-align: left !important;
+        float: left !important;
+    }
+
+    /* ✅ Keep “Show entries” dropdown next to pagination */
+    div.dataTables_wrapper div.dataTables_length {
+        float: left !important;
+        margin-left: 20px;
+    }
+
+    /* ✅ Optional spacing for neat look */
+    .dataTables_paginate {
+        margin-top: 10px;
+    }
+
+    /* ✅ Make both pagination + dropdown appear on same line */
+    div.dataTables_wrapper {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border-radius: 8px !important;
+        border: 1px solid #666666e8 !important;
+        color: #666666e8 !important;
+        background: transparent !important;
+    }
+</style>*@
+
+<div class="container-fluid">
+    <div class="page-titles">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Hot Leads</a></li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Hot Leads</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("HotLeads", "Marketing", FormMethod.Post))
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label> From: </label>@Html.TextBox("fromdate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt1.ToString("yyyy-MM-dd") })
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label> To: </label>@Html.TextBox("todate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt2.ToString("yyyy-MM-dd") })
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>Platform: </label>@Html.DropDownList("plateform", new SelectList(ViewBag.lstPlateform, "Text", "Value", !string.IsNullOrEmpty(ViewBag.plateform) ? ViewBag.plateform : ""), "All Platform", new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-4" style="padding-top:28px;">
+                                <button type="submit" class="btn btn-warning ml-3">APPLY</button>
+                                <button type="button" id="btnexport" class="btn btn-warning ml-3">Export To Excel</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Hot Leads</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="table2excel">
+                            <thead>
+                                <tr>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">S NO.</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">DATE</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">NAME</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">CREATIVE ID</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">MOBILE</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">CHANNEL</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">SAPCODE</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">SAP_NAME</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">CREATIVE</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">PLATFORM</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">X_ZONE</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">X_REGION</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">X_SALES_UNIT_NM</th>
+                                    <th style="color: #00000066; white-space: nowrap; font-size: 15px; font-weight: 600; background-color: #f0f1f5;">X_SALES_UNIT_CD</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                    foreach (var item in ViewBag.lstLeads)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@item.l.leads_date.ToString("MM-dd-yyyy")</td>
+                                            <td>@item.l.leads_name</td>
+                                            <td>@item.l.leads_creativeid</td>
+                                            <td>@item.l.leads_mobile</td>
+                                            <td>@item.X_CHANNEL</td>
+                                            <td>@item.l.leads_sapcode</td>
+                                            <td>@item.SAP_NAME</td>
+                                            <td>@item.cm.campaign_master_creative_caption</td>
+                                            <td>@item.l.leads_plateform</td>
+                                            <td>@item.X_ZONE</td>
+                                            <td>@item.X_REGION</td>
+                                            <td>@item.X_SALES_UNIT_NM</td>
+                                            <td>@item.X_SALES_UNIT_CD</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section js {
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+    <!-- Include DataTables CSS and JS -->
+    <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>-->
+    <!-- Include table2excel JS -->
+    <!--<script src="~/Content/js/jquery.table2excel.js"></script>-->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/js/jquery.table2excel.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#table2excel').DataTable({
+                "paging": true,
+                "pageLength": 10,
+                "lengthMenu": [10, 25, 50, 100],
+                "ordering": false,
+                "searching": false,
+                "info": true,
+                autoWidth: true
+            });
+        });
+
+        $("#btnexport").click(function () {
+            $("#table2excel").table2excel({
+                exclude: ".noExl",
+                name: "Worksheet Name",
+                filename: "HotLeads",
+                fileext: ".xls"
+            });
+
+        });
+    </script>
+}

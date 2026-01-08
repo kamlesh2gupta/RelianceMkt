@@ -1,0 +1,94 @@
+﻿<div class="container-fluid">
+    <h4>@ViewBag.lstAllCampaigns.cam.campaign_name</h4><hr>
+    <div class="row">
+        <div class="col-lg-9 col-sm-12 border-right">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Channel</strong>
+                    <span class="mb-0">@ViewBag.lstAllCampaigns.ch.channel_name</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Category</strong>
+                    <span class="mb-0">@ViewBag.lstAllCampaigns.cc.campaign_category_name</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Campaign</strong>
+                    <span class="mb-0">@ViewBag.lstAllCampaigns.cam.campaign_name	</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Language</strong>
+                    <span class="mb-0">@ViewBag.lstAllCampaigns.cm.campaign_master_lang	</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Sub Campaign</strong>
+                    <span class="mb-0">@ViewBag.lstAllCampaigns.sc.subcampaign_name</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Type of Campaign</strong>
+                    <span class="mb-0 text-right">@ViewBag.lstAllCampaigns.cm.campaign_master_type</span>
+                </li>
+
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Landing Page Link</strong>
+                    <span class="mb-0 text-right">@ViewBag.lstAllCampaigns.cm.campaign_master_landing_page</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Date Start  -  Date End</strong>
+                    <span class="mb-0 text-right">@ViewBag.lstAllCampaigns.cm.campaign_master_start_date.ToString("dd-MM-yyyy")  To  @ViewBag.lstAllCampaigns.cm.campaign_master_end_date.ToString("dd-MM-yyyy")</span>
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong>Description Tool Tip</strong><br>
+                    <span class="mb-0 text-right">@ViewBag.lstAllCampaigns.cm.campaign_master_description
+                </li>
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Creative Caption</strong>
+                    <span class="mb-0 text-right">@ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption</span>
+                </li>
+
+                <li class="list-group-item d-flex px-0 justify-content-between">
+                    <strong class="text-left">Tags</strong>
+                    <span class="mb-0 text-right">@ViewBag.lstAllCampaigns.cm.campaign_master_tags</span>
+                </li>
+
+            </ul>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            @{
+                //string csv = @ViewBag.lstAllCampaigns.cm.campaign_master_images; // The input string
+                string[] parts = ViewBag.lstAllCampaigns.cm.campaign_master_images.Split(','); // Call Split method
+
+                foreach (string item in parts)
+                {
+                    @*<h6>@item</h6>
+                        <br />*@
+                    <img class="align-self-center mr-3 " width="230" src="~/Content/images/campaign/@item" alt="Campaign">
+                    <br />
+                }
+            }
+
+        </div>
+        <p class="text-justify">
+            <strong class="text-left">Social Media Share</strong>
+            <span class="mb-0 text-right">
+                @if (@ViewBag.lstAllCampaigns.cm.campaign_master_instagram)
+                {
+                    <i class="lab la-instagram social-icon bg-secondary text-white"></i>
+                }
+                @if (@ViewBag.lstAllCampaigns.cm.campaign_master_facebook)
+                {
+                    <i class="lab la-facebook-f social-icon bg-info text-white"></i>
+                }
+                @if (@ViewBag.lstAllCampaigns.cm.campaign_master_twitter)
+                {
+                    <i class="lab la-twitter social-icon bg-success text-white"></i>
+                }
+                @if (@ViewBag.lstAllCampaigns.cm.campaign_master_whatsapp)
+                {
+                    <i class="lab la-whatsapp social-icon bg-danger text-white"></i>
+                }
+
+
+            </span>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    @RenderSection("meta", false)
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    @*<link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">*@
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/header.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <style>
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+    </style>
+
+
+
+
+    @RenderSection("css",false)
+
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+        Nav header start
+    ***********************************-->
+        <div class="nav-header">
+            <a href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]" class="brand-logo">
+                <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="">
+
+            </a>
+
+            <div class="nav-control" style="background:#fff">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+        Nav header end
+    ***********************************-->
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <!--<div class="search_bar dropdown show">
+                            <div class="dropdown-menu p-0 m-0 show">
+                                <form>
+                                    <input class="form-control" type="search" placeholder="Search Here" aria-label="Search">
+                                </form>
+                            </div>
+                            <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.7871 22.7761L17.9548 16.9437C19.5193 15.145 20.4665 12.7982 20.4665 10.2333C20.4665 4.58714 15.8741 0 10.2333 0C4.58714 0 0 4.59246 0 10.2333C0 15.8741 4.59246 20.4665 10.2333 20.4665C12.7982 20.4665 15.145 19.5193 16.9437 17.9548L22.7761 23.7871C22.9144 23.9255 23.1007 24 23.2816 24C23.4625 24 23.6488 23.9308 23.7871 23.7871C24.0639 23.5104 24.0639 23.0528 23.7871 22.7761ZM1.43149 10.2333C1.43149 5.38004 5.38004 1.43681 10.2279 1.43681C15.0812 1.43681 19.0244 5.38537 19.0244 10.2333C19.0244 15.0812 15.0812 19.035 10.2279 19.035C5.38004 19.035 1.43149 15.0865 1.43149 10.2333Z" fill="#A4A4A4"/></svg>
+                            </span>
+                        </div>-->
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            @*<li class="nav-item ">
+                                <div class="btn-group mb-1">
+                                    <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                        Agency
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#">TEAM 1</a>
+                                        <a class="dropdown-item" href="#">TEAM 2</a>
+                                        <a class="dropdown-item" href="#">TEAM 2</a>
+
+                                    </div>
+                                </div>
+                            </li>*@
+
+
+                            <li class="nav-item dropdown d-none d-xl-flex">
+                                <a class="btn bg-white" href="~/Marketing/newcampaign">+ New Campaign</a>
+                            </li>
+                            <li class="nav-item dropdown header-profile side">
+                                <a class="nav-link" href="#">
+                                    <div class="header-info">
+                                        <span>Hello, <strong>Samuel</strong></span>
+                                    </div>
+                                    <img src="~/Content/images/profile/pic1.jpg" width="20" alt="" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--********************************** Header end ti-comment-alt  ***********************************-->
+        <!--**********************************Sidebar start***********************************-->
+        <!--**********************************
+        Sidebar start
+    ***********************************-->
+        <div class="deznav">
+            <div class="deznav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/Dashboard" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>  Dashboard
+                        </a>
+
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                            <i class="flaticon-381-settings"></i> Master
+                        </a>
+                        <ul aria-expanded="false">
+                            <li><a href="~/Marketing/ChannelList">Channels </a></li>
+                            <li><a href="~/Marketing/CampaignCategoryList">Categories </a></li>
+                            <li><a href="~/Marketing/campaignlist">Campaigns</a></li>
+                            <li><a href="~/Marketing/subcampaignlist">Sub-Campaigns</a></li>
+                            <li><a href="~/Marketing/landingpagelist">Landing Page</a></li>
+
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/campaign" aria-expanded="false">
+                            <i class="flaticon-381-notepad"></i>   Campaign
+                        </a>
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/newcampaign" aria-expanded="false">
+                            <i class="flaticon-381-plus"></i> New  Campaign
+                        </a>
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/hotleads" aria-expanded="false">
+                            <i class="flaticon-381-settings-2"></i> Hot Leads
+                        </a>
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/DateWiseShare" aria-expanded="false">
+                            <i class="flaticon-381-share"></i> Share
+                        </a>
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Admin/SendCampaign" aria-expanded="false">
+                            <i class="flaticon-381-share"></i> Send Campaign
+                        </a>
+                    </li>
+                    @*< <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/calendar" aria-expanded="false">
+                            <i class="flaticon-381-controls-3"></i> Calendar
+                        </a>
+                    </li>
+                    li>
+            <a class="has-arrow ai-icon" href="Phonebook.php" aria-expanded="false">
+                <i class="flaticon-381-television"></i> My Phonebook
+            </a>
+        </li>
+
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/upcomingcampaigns" aria-expanded="false">
+                            <i class="flaticon-381-internet"></i>  Upcoming Campaigns
+                        </a>
+                    </li>*@
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/Logout" aria-expanded="false">
+                            <i class="flaticon-381-exit"></i>
+                            Logout
+                        </a>
+                    </li>
+
+
+
+
+                </ul>
+                <div class="copyright">
+                    <br />© All Rights Reserved</p>
+                    <p>By Reliance </p>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+        Sidebar end
+    ***********************************-->
+        <!--**********************************
+        Content body start
+    ***********************************-->
+        <div class="content-body">
+            <!-- row -->
+            @RenderBody()
+        </div>
+        <!--**********************************
+        Content body end
+    ***********************************-->
+        <!--**********************************
+        Footer start
+    ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by <a href="#" target="_blank">Reliance </a> 2020</p>
+            </div>
+        </div>
+        <!--**********************************
+        Footer end
+    ***********************************-->
+        <!--**********************************
+       Support ticket button start
+    ***********************************-->
+        <!--**********************************
+       Support ticket button end
+    ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    @*<script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>*@
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Apex Chart -->
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+
+    <!-- Chart piety plugin files -->
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/compaign.js"></script>
+
+
+    @RenderSection("js", false)
+
+
+</body>
+</html>

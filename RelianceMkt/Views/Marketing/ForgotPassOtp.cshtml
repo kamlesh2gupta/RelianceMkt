@@ -1,0 +1,684 @@
+﻿@*<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Forgot Password - OTP</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: linear-gradient(135deg, #74ebd5, #acb6e5);
+                font-family: Arial, sans-serif;
+            }
+
+            .form-container {
+                background: white;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                width: 400px;
+            }
+
+            h2 {
+                margin-bottom: 30px;
+                color: #333;
+                text-align: center;
+            }
+
+            .input-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 14px;
+                color: #555;
+            }
+
+            input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-size: 16px;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px;
+                background: #007bff;
+                border: none;
+                border-radius: 8px;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+            #message {
+                text-align: center;
+                margin-top: 15px;
+                font-weight: bold;
+            }
+
+            #message.success { color: green; }
+            #message.error { color: red; }
+        </style>
+    </head>
+    <body>
+        <div class="form-container">
+            <h2>Forgot Password</h2>
+
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username (mobile)">
+                <button onclick="sendOTP()">Send OTP</button>
+            </div>
+
+            <div class="input-group">
+                <label for="otp">OTP</label>
+                <input type="text" id="otp" maxlength="6" placeholder="Enter OTP">
+            </div>
+
+            <button onclick="verifyOTP()">Submit</button>
+
+            <div id="message"></div>
+        </div>
+
+        <script>
+            function sendOTP() {
+                const username = document.getElementById("username").value;
+                if (!username) return showMessage("Please enter your username", "error");
+
+                fetch('/Marketing/SendForgotOtp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username })
+                })
+                .then(res => res.json())
+                .then(data => showMessage(data.message, data.success ? "success" : "error"))
+                .catch(() => showMessage("Something went wrong ❌", "error"));
+            }
+
+            function verifyOTP() {
+                const username = document.getElementById("username").value;
+                const otp = document.getElementById("otp").value;
+
+                if (!otp || otp.length !== 6) return showMessage("Enter valid 6-digit OTP", "error");
+
+                fetch('/Marketing/VerifyOTPAjax', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, otp: otp })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showMessage(data.message, data.success ? "success" : "error");
+                    if (data.success) {
+                        setTimeout(() => window.location.href = "/Marketing/ForgotPass", 2000);
+                    }
+                })
+                .catch(() => showMessage("Error verifying OTP ❌", "error"));
+            }
+
+            function showMessage(msg, type) {
+                const div = document.getElementById("message");
+                div.textContent = msg;
+                div.className = type;
+            }
+        </script>
+    </body>
+    </html>*@
+<!--<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgot Password - OTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+            #message.success {
+                color: green;
+            }
+
+            #message.error {
+                color: red;
+            }
+    </style>
+</head>
+<body>
+
+    <h2>Forgot Password</h2>
+
+    <div class="input-group">
+        <label for="username">Username (Email or Mobile)</label>
+        <input type="text" id="username" placeholder="Enter your username">
+        <button onclick="sendOTP()">Send OTP</button>
+    </div>
+
+    <div class="input-group">
+        <label for="otp">OTP</label>
+        <input type="text" id="otp" maxlength="6" placeholder="Enter OTP">
+    </div>
+
+    <button onclick="verifyOTP()">Submit</button>
+
+    <div id="message"></div>
+    </div>
+
+    <script>
+        function sendOTP() {
+            const username = document.getElementById("username").value;
+            if (!username) return showMessage("Please enter your username", "error");
+
+            fetch('/Marketing/SendForgotOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username })
+            })
+                .then(res => res.json())
+                .then(data => showMessage(data.message, data.success ? "success" : "error"))
+                .catch(() => showMessage("Something went wrong ❌", "error"));
+        }
+
+        function verifyOTP() {
+            const username = document.getElementById("username").value;
+            const otp = document.getElementById("otp").value;
+
+            if (!otp || otp.length !== 6) return showMessage("Enter valid 6-digit OTP", "error");
+
+            fetch('/Marketing/VerifyOTPAjax', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, otp: otp })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    showMessage(data.message, data.success ? "success" : "error");
+                    if (data.success) {
+                        setTimeout(() => window.location.href = "/Marketing/ForgotPass", 1500);
+                    }
+                })
+                .catch(() => showMessage("Error verifying OTP ❌", "error"));
+        }
+
+        function showMessage(msg, type) {
+            const div = document.getElementById("message");
+            div.textContent = msg;
+            div.className = type;
+        }
+    </script>
+
+</body>
+</html>-->
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgot Password - OTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        #message.success {
+            color: green;
+        }
+
+        #message.error {
+            color: red;
+        }-->
+@*@media screen and (max-width: 500px) {
+    .form-container {
+        padding: 20px 15px;
+        width: 90%;
+    }*@
+
+@*input, button {
+                    font-size: 15px;
+                }
+
+                h2 {
+                    font-size: 20px;
+                }
+            }
+            .logo {
+                position: absolute;
+                top: 1px;
+                left: 20px;
+                width: 50px;
+                height: 60px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="form-container">
+            <img src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="Logo" class="logo">
+            <h2>Forgot Password</h2>
+
+            <div class="input-group">
+                <label for="username">Username (Email or Mobile)</label>
+                <input type="text" id="username" placeholder="Enter your username">
+                <button onclick="sendOTP()">Send OTP</button>
+            </div>
+
+            <div class="input-group">
+                <label for="otp">OTP</label>
+                <input type="text" id="otp" maxlength="6" placeholder="Enter OTP">
+            </div>
+
+            <button onclick="verifyOTP()">Submit</button>
+
+            <div id="message"></div>
+        </div>
+
+        <script>
+            function sendOTP() {
+                const username = document.getElementById("username").value.trim();
+                if (!username) return showMessage("Please enter your username", "error");
+
+                fetch('/Marketing/SendForgotOtp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username })
+                })
+                    .then(res => res.json())
+                    .then(data => showMessage(data.message, data.success ? "success" : "error"))
+                    .catch(() => showMessage("Something went wrong ❌", "error"));
+            }
+
+            function verifyOTP() {
+                const username = document.getElementById("username").value.trim();
+                const otp = document.getElementById("otp").value.trim();
+
+                if (!otp || otp.length !== 6) return showMessage("Enter valid 6-digit OTP", "error");
+
+                fetch('/Marketing/VerifyOTPAjax', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, otp: otp })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        showMessage(data.message, data.success ? "success" : "error");
+                        if (data.success) {
+                            setTimeout(() => window.location.href = "/Marketing/ForgotPass", 1500);
+                        }
+                    })
+                    .catch(() => showMessage("Error verifying OTP ❌", "error"));
+            }
+
+            function showMessage(msg, type) {
+                const div = document.getElementById("message");
+                div.textContent = msg;
+                div.className = type;
+            }
+        </script>
+
+    </body>
+    </html>-->*@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgot Password - OTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /*background: linear-gradient(135deg, #74ebd5, #acb6e5);*/
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            background: white;
+            padding: 50px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+              /*text-align: center;*/
+            margin-bottom: 0px;
+            padding: 0.0rem;
+            
+        }
+          
+           
+        
+
+
+        .logo-container img {
+            /* width: 100px;
+                height: auto;
+                position: absolute;*/
+            width: 404px;
+            height: 60px;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+            #message.success {
+                color: green;
+            }
+
+            #message.error {
+                color: red;
+            }
+
+
+
+        input, button {
+            font-size: 15px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        
+    </style>
+</head>
+
+<body class="h-100">
+
+    <div class="form-container"style="border: 2px solid yellow">
+        <div class="logo-container">
+            <img src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="Logo">
+        </div>
+
+        @*<h2>Forgot Password</h2>*@
+
+        <div class="input-group">
+            <label for="username">Email</label>
+            <input type="text" id="username" placeholder="Enter your Email">
+            <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+        </div>
+
+        <div class="input-group" id="otpGroup" style="display: none;">
+            <label for="otp">OTP</label>
+            <input type="text" id="otp" maxlength="6" placeholder="Enter OTP">
+        </div>
+
+        <div class="input-group">
+            <button onclick="verifyOTP()">Submit</button>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function sendOTP() {
+            const username = document.getElementById("username").value.trim();
+            const sendBtn = document.getElementById("sendOtpBtn");
+            const otpGroup = document.getElementById("otpGroup");
+
+            if (!username) return showMessage("Please enter your Email", "error");
+
+            // Disable button for 30 seconds
+            sendBtn.disabled = true;
+            let countdown = 30;
+            sendBtn.textContent = `Wait ${countdown}s`;
+
+            const interval = setInterval(() => {
+                countdown--;
+                sendBtn.textContent = `Wait ${countdown}s`;
+                if (countdown === 0) {
+                    clearInterval(interval);
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = "Send OTP";
+                }
+            }, 1000);
+
+            // Show OTP input
+            otpGroup.style.display = "block";
+
+            // Call server API
+            fetch('/Marketing/SendForgotOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username })
+            })
+                .then(res => res.json())
+                .then(data => showMessage(data.message, data.success ? "success" : "error"))
+                .catch(() => showMessage("Something went wrong ❌", "error"));
+        }
+
+        function verifyOTP() {
+            const username = document.getElementById("username").value.trim();
+            const otp = document.getElementById("otp").value.trim();
+
+            if (!otp || otp.length !== 6) return showMessage("Enter valid 6-digit OTP", "error");
+
+            fetch('/Marketing/VerifyOTPAjax', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, otp: otp })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    showMessage(data.message, data.success ? "success" : "error");
+                    if (data.success) {
+                        setTimeout(() => window.location.href = "/Marketing/ForgotPass", 1500);
+                    }
+                })
+                .catch(() => showMessage("Error verifying OTP ❌", "error"));
+        }
+
+        function showMessage(msg, type) {
+            const div = document.getElementById("message");
+            div.textContent = msg;
+            div.className = type;
+        }
+    </script>
+
+</body>
+
+
+</html>
+
+
+

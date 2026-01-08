@@ -1,0 +1,258 @@
+﻿
+@{
+    ViewBag.Title = "calendarUser";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+@section css
+{
+    <link href="~/Content/vendor/fullcalendar/css/fullcalendar.min.css" rel="stylesheet">
+}
+<!--**********************************
+         Content body start
+     ***********************************-->
+
+<div class="container-fluid">
+    <div class="page-titles">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">App</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Calendar</a></li>
+        </ol>
+    </div>
+    <!-- row -->
+
+
+    <div class="row">
+        <!-- <div class="col-xl-3">
+          <div class="card">
+              <div class="card-body">
+                  <h4 class="card-intro-title">Calendar</h4>
+
+                  <div class="">
+                      <div id="external-events" class="my-3">
+                          <p>Drag and drop your event or click in the calendar</p>
+                          <div class="external-event" data-class="bg-primary"><i class="fa fa-move"></i>New Theme Release</div>
+                          <div class="external-event" data-class="bg-success"><i class="fa fa-move"></i>My Event
+                          </div>
+                          <div class="external-event" data-class="bg-warning"><i class="fa fa-move"></i>Meet manager</div>
+                          <div class="external-event" data-class="bg-dark"><i class="fa fa-move"></i>Create New theme</div>
+                      </div>
+
+                      <div class="checkbox custom-control checkbox-event custom-checkbox pt-3 pb-5">
+                          <input type="checkbox" class="custom-control-input" id="drop-remove">
+                          <label class="custom-control-label" for="drop-remove">Remove After Drop</label>
+                      </div>
+                      <a href="javascript:void()" data-toggle="modal" data-target="#add-category" class="btn btn-primary btn-event w-100">
+                          <span class="align-middle"><i class="ti-plus"></i></span> Create New
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+    -->
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="calendar" class="app-fullcalendar"></div>
+                    <div class="text-center py-2">
+                        <label class="btn btn-danger">Shares</label>
+                        <label class="btn btn-success">Leads</label>
+                    </div>
+                   
+                </div>
+               
+            </div>
+        </div>
+      
+
+            <!-- BEGIN MODAL -->
+            <div class="modal fade none-border" id="event-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><strong>Add New Event</strong></h4>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success save-event waves-effect waves-light">
+                                Create
+                                event
+                            </button>
+
+                            <button type="button" class="btn btn-danger delete-event waves-effect waves-light" data-dismiss="modal">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Add Category -->
+            <div class="modal fade none-border" id="add-category">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"><strong>Add a category</strong></h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="control-label">Category Name</label>
+                                        <input class="form-control form-white" placeholder="Enter name" type="text" name="category-name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="control-label">Choose Category Color</label>
+                                        <select class="form-control form-white" data-placeholder="Choose a color..." name="category-color">
+                                            <option value="success">Success</option>
+                                            <option value="danger">Danger</option>
+                                            <option value="info">Info</option>
+                                            <option value="pink">Pink</option>
+                                            <option value="primary">Primary</option>
+                                            <option value="warning">Warning</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger waves-effect waves-light save-category" data-dismiss="modal">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<!--**********************************
+    Content body end
+***********************************-->
+
+@section js
+{
+
+    <link href="~/Content/calendar/calendar.css" rel="stylesheet" />
+    <!-- JS for jQuery -->
+    <script src="~/Content/calendar/jquery330.min.js"></script>
+    <!-- JS for full calender -->
+
+    <script src="~/Content/calendar/moment.min.js"></script>
+
+    <script src="~/Content/calendar/fullcalendar.min.js"></script>
+    @*<script src="~/Content/vendor/jqueryui/js/jquery-ui.min.js"></script>
+        <script src="~/Content/vendor/moment/moment.min.js"></script>
+
+        <script src="~/Content/vendor/fullcalendar/js/fullcalendar.min.js"></script>*@
+    @*<script src="~/Content/js/plugins-init/fullcalendar-init.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+            display_events();
+        }); //end document.ready block
+
+      function display_events() {
+            //debugger;
+            var events = new Array();
+            //events.push({
+            //    event_id: 1,
+            //    title: 'Hello1',
+            //    start: '2022-12-23',
+            //    end: '2022-12-23',
+            //    color: '',
+            //    url: '#'
+            //});
+            //events.push({
+            //    event_id: 2,
+            //    title: 'Hello2',
+            //    start: '2022-12-24',
+            //    end: '2022-12-24',
+            //    color: '',
+            //    url: '#'
+            //});
+            //events.push({
+            //    event_id: 2,
+            //    title: 'Hello2',
+            //    start: '2022-12-25',
+            //    end: '2022-12-29',
+            //    color: '',
+            //    url: '#'
+            //});
+            //events.push({
+            //    event_id: 2,
+            //    title: 'Hello2',
+            //    start: '2022-12-20',
+            //    end: '2022-12-20',
+            //    color: '',
+            //    url: '#'
+            //});
+            //events.push({
+            //    event_id: 2,
+            //    title: 'Hello2',
+            //    start: '2022-12-21',
+            //    end: '2022-12-21',
+            //    color: '',
+            //    url: '#'
+            //});
+            $.ajax({
+                url: '@Url.Action("DisplayEvent","Marketing")',
+                dataType: 'json',
+                success: function (response) {
+
+                    var result = response;
+                    //var result = {
+                    //    "1": { "event_id": "1", "title": "TEST 1", "start": "2022-12-06", "end": "2022-12-07", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "2": { "event_id": "2", "title": "TEST 2", "start": "2022-12-07", "end": "2022-12-07", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "3": { "event_id": "3", "title": "TEST 3", "start": "2022-12-06", "end": "2022-12-07", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "4": { "event_id": "4", "title": "TEST 4", "start": "2022-12-03", "end": "2022-12-07", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "5": { "event_id": "5", "title": "TEST 5", "start": "2022-12-12", "end": "2022-12-12", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "6": { "event_id": "6", "title": "TEST 6", "start": "2022-12-13", "end": "2022-12-13", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "7": { "event_id": "7", "title": "TEST 7", "start": "2022-12-18", "end": "2022-12-18", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "8": { "event_id": "8", "title": "TEST 8", "start": "2022-12-22", "end": "2022-12-22", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "9": { "event_id": "9", "title": "TEST 9", "start": "2022-12-25", "end": "2022-12-25", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "10": { "event_id": "10", "title": "TEST 10", "start": "2022-12-31", "end": "2022-12-31", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" },
+                    //    "11": { "event_id": "11", "title": "TEST 11", "start": "2022-12-25", "end": "2022-12-25", "color": "#c8161f", "url": "https:\/\/www.shinerweb.com" }
+                    //};
+                    $.each(result, function (i, item) {
+                        //alert(item.event_id)
+                        //debugger;
+                        events.push({
+                            event_id: item.event_id,
+                            title: item.title,
+                            start: item.start,
+                            end: item.end,
+                            color: item.color,
+                            url: item.url
+
+                        });
+                    })
+                    var calendar = $('#calendar').fullCalendar({
+                        defaultView: 'month',
+                        timeZone: 'local',
+                        editable: true,
+                        selectable: true,
+                        selectHelper: true,
+                        select: function (start, end) {
+                            //alert(start);
+                            //alert(end);
+                            $('#event_start_date').val(moment(start).format('YYYY-MM-DD'));
+                            $('#event_end_date').val(moment(end).format('YYYY-MM-DD'));
+                            $('#event_entry_modal').modal('show');
+                        },
+                        events: events,
+                        eventRender: function (event, element, view) {
+                            element.bind('click', function () {
+                                //alert(event.event_id);
+                            });
+                        }
+                    }); //end fullCalendar block
+                },//end success block
+                error: function (xhr, status) {
+                    alert(response.msg);
+                }
+            });//end ajax block
+        }
+
+
+    </script>
+}
+

@@ -1,0 +1,139 @@
+﻿@foreach (var item in ViewBag.lstpAllCampaigns)
+{
+    
+        <div class="campaign-audio col-md-12">
+            <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                    <div class="media align-items-center">
+                        @{ string[] parts = item.campaign_master_images.Split(',');
+                            <img class="align-self-center mr-3 img-fluid" src="~/Content/images/campaign/@parts[0]" alt=""> }
+
+
+                    </div>
+                </div>
+                <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                    <div class="media-body">
+                        <h3 class="fs-20"><a class="text-black" href="#">@item.campaign_master_creative_caption</a></h3>
+                        @{
+                            decimal adsNo = Convert.ToDecimal(item.campaign_master_id);
+                            adsNo = 100000 + adsNo;
+                        }
+                        <p class="text-primary mb-1"><i class="fa fa-list" style="color:red"></i> @("#ADS" + @adsNo.ToString())</p>
+                        <p class="text-primary mb-1"> <i class="fa fa-calendar" style="color:red"></i> <strong>Published on</strong> @item.campaign_master_start_date.ToString("dd MMM yyyy")</p>
+
+
+                        <p class="text-primary mb-1">
+                            <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+
+                            @{
+                                string finalStatus = item.camapaign_master_status; // default DB status
+
+                                // 🔥 Extra Condition: ID-based status
+                                if (item.campaign_master_id == 1)
+                                {
+                                    finalStatus = "SpecialPaused";
+                                }
+                                else if (item.campaign_master_id == 2)
+                                {
+                                    finalStatus = "SpecialActive";
+                                }
+                                // 👉 Aap aur conditions yaha add kar sakte ho
+                            }
+
+                            @if (finalStatus == "Start" || finalStatus == "SpecialActive")
+                            {
+                                <span class="badge badge-rounded badge-success">Active</span>
+                            }
+                            else if (finalStatus == "Pause" || finalStatus == "SpecialPaused")
+                            {
+                                <span class="badge badge-rounded badge-warning">Pause</span>
+                            }
+                            else if (finalStatus == "Stopped")
+                            {
+                                <span class="badge badge-rounded badge-danger">Stopped</span>
+                            }
+                            else if (finalStatus == "Upcoming")
+                            {
+                                <span class="badge badge-rounded badge-info">Upcoming</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-rounded badge-secondary">@finalStatus</span>
+                            }
+                        </p>
+
+
+
+
+
+
+                        @*<p class="text-primary mb-1">
+            <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+            @if (item.camapaign_master_status == "Pause")
+            {
+                <spam class="badge badge-rounded badge-warning">Pause</spam>
+            }
+            else if (System.DateTime.UtcNow.AddMinutes(330) >= item.campaign_master_start_date && System.DateTime.UtcNow.AddMinutes(330) <= item.campaign_master_end_date)
+            {
+                <spam class="badge badge-rounded badge-success">Active</spam>
+            }
+            else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
+            {
+                <spam class="badge badge-rounded badge-danger">Stopped</spam>
+            }
+            else
+            {
+                <spam class="badge badge-rounded badge-info">Upcoming</spam>
+            }
+        </p>*@
+                        @*//==================kamlesh=======================*@
+                        @*<p class="text-primary mb-1">
+            <i class="fa fa-check-square" style="color:red"></i><strong> Status: </strong>
+
+            @if (item.camapaign_master_status == "Start")
+            {
+                <span class="badge badge-rounded badge-success">Start</span>
+            }
+            else if (item.camapaign_master_status == "Pause")
+            {
+                <span class="badge badge-rounded badge-warning">Pause</span>
+            }
+            else if (item.camapaign_master_status == "Stopped")
+            {
+                <span class="badge badge-rounded badge-danger">Stopped</span>
+            }
+            else if (item.camapaign_master_status == "Upcoming")
+            {
+                <span class="badge badge-rounded badge-info">Upcoming</span>
+            }
+            else
+            {
+                <span class="badge badge-rounded badge-secondary">@item.camapaign_master_status</span>
+            }
+        </p>*@
+
+
+                        <br />
+
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <!--<div class="col-md-8 text-left">
+
+                            <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
+                        </div>-->
+                        <div class="col-md-4 text-center  my-2">
+                            <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                                <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg">
+                                <span class="btn-icon-left text-info">
+                                    <i class="fa fa-eye color-info"></i></span>View</button>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+}

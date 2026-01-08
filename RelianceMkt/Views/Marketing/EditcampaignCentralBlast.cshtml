@@ -1,0 +1,1006 @@
+﻿@model RelianceMkt.Models.CustomModel.ModelNewCampaign
+@{
+    ViewBag.Title = "Edit Campaign CentralBlast";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css
+{
+    <style>
+        #upload {
+            display: none
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #dc3545;
+        }
+
+        .is-invalid {
+            border-color: #dc3545;
+        }
+
+        .form-check {
+            margin-bottom: 10px;
+        }
+
+        .form-check-input:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+}
+
+@using (Html.BeginForm("EditcampaignCentralBlast", "Marketing", new { id = Model.cm.campaign_master_id }, FormMethod.Post, new { enctype = "multipart/form-data", @id = "campaignForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.cm.campaign_master_id)
+
+    <div class="container-fluid">
+        <!-- Flash Messages Display -->
+        @if (TempData["AlertType"] != null)
+        {
+            <div class="alert alert-@(TempData["AlertType"])" role="alert" id="success-alert">
+                @TempData["AlertMessage"]
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        <div class="form-head d-flex mb-2 mb-sm-3 mb-lg-5 align-items-center">
+            <div class="mr-auto d-none d-lg-block">
+                <h2 class="text-black font-w600">Edit Campaign</h2>
+                <div>
+                    <a href="javascript:void(0);" class="fs-18 text-primary font-w600">Campaign / </a>
+                    <a href="javascript:void(0);" class="fs-18">Edit campaign</a>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary ml-3" id="publishBtn">PUBLISH</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12 col-xxl-12 col-lg-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header pb-0 border-0">
+                                <h3 class="fs-20 text-black">Describe your campaign below</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.channel_id, new SelectList(ViewBag.lstchannels, "channel_id", "channel_name", Model.cm.channel_id), "Select Channel", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.cm.channel_id, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Category:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_category_id, new SelectList(ViewBag.lstcategory, "campaign_category_id", "campaign_category_name", Model.cm.campaign_category_id), "Select Category", new { @class = "form-control cascading", @id = "cm_campaign_category_id" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_category_id, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Campaign:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_id, new SelectList(ViewBag.lstcampaign, "Value", "Text", Model.cm.campaign_id), "Select Campaign", new { @class = "form-control cascading", @id = "cm_campaign_id" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_id, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Sub Campaign</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.subcampaign_id, new SelectList(ViewBag.lstsubcampaign, "subcampaign_id", "subcampaign_name", Model.cm.subcampaign_id), "Select Sub Campaign", new { @class = "form-control cascading", @id = "cm_subcampaign_id" })
+                                        @Html.ValidationMessageFor(x => x.cm.subcampaign_id, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <!-- CentralBlast Field -->
+                                <div class="form-row">
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">CentralBlast</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.CentralBlast,
+                                            new List<SelectListItem>
+                                            {
+                                                new SelectListItem { Text = "Select CentralBlast", Value = "", Selected = (string.IsNullOrEmpty(Model.cm.CentralBlast)) },
+                                                new SelectListItem { Text = "Yes", Value = "Yes", Selected = (Model.cm.CentralBlast == "Yes") },
+                                                new SelectListItem { Text = "No", Value = "No", Selected = (Model.cm.CentralBlast == "No") }
+                                            },
+                                            new { @class = "form-control", @id = "cm_CentralBlast" })
+                                        @Html.ValidationMessageFor(x => x.cm.CentralBlast, "", new { @class = "text-danger" })
+                                        <div class="invalid-feedback" id="centralBlastError" style="display: none;">
+                                            Please select CentralBlast option.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-9 col-xxl-8 col-lg-8">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header pb-0 border-0">
+                                <h3 class="fs-20 text-black">Describe your campaign below</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Type of Campaign:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_master_type, new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Creative", Value = "Creative", Selected = (Model.cm.campaign_master_type == "Creative") },
+                                            new SelectListItem { Text = "Video", Value = "Video", Selected = (Model.cm.campaign_master_type == "Video") },
+                                            new SelectListItem { Text = "Blogs", Value = "Blogs", Selected = (Model.cm.campaign_master_type == "Blogs") }
+                                        }, "Select Campaign Type", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_master_type, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Language:</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_master_lang, new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "English", Value = "English", Selected = (Model.cm.campaign_master_lang == "English") },
+                                            new SelectListItem { Text = "Hindi", Value = "Hindi", Selected = (Model.cm.campaign_master_lang == "Hindi") },
+                                            new SelectListItem { Text = "Marathi", Value = "Marathi", Selected = (Model.cm.campaign_master_lang == "Marathi") },
+                                            new SelectListItem { Text = "Tamil", Value = "Tamil", Selected = (Model.cm.campaign_master_lang == "Tamil") }
+                                        }, "Select Language", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_master_lang, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Description Tool Tip</label><span class="text-danger ml-1">*</span>
+                                        @Html.TextAreaFor(x => x.cm.campaign_master_description, new { @class = "form-control", @rows = "13" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_master_description, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Creative Caption</label><span class="text-danger ml-1">*</span>
+                                        @Html.TextBoxFor(x => x.cm.campaign_master_creative_caption, new { @class = "form-control", @placeholder = "Get 70% OFF Discount from Westoreid" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_master_creative_caption, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Tags</label><span class="text-danger ml-1">*</span>
+                                        @Html.TextBoxFor(x => x.cm.campaign_master_tags, new { @class = "form-control tags_input" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_master_tags, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Landing Page Link</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.campaign_master_landing_page, new SelectList(ViewBag.lstlandingpage, "landingpage_url", "landingpage_url", Model.cm.campaign_master_landing_page), "Select Landing Page", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.cm.campaign_master_landing_page, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <!-- FIXED: Input Fields Checkboxes -->
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Input Fields</label>
+                                        <div class="form-check">
+                                            @{
+                                                bool isInputNameChecked = Model.cm.input_name.HasValue ? Model.cm.input_name.Value : false;
+                                            }
+                                            <input type="checkbox" class="form-check-input" name="input_name" id="input_name" value="true" @(isInputNameChecked ? "checked" : "") />
+                                            <label class="form-check-label" for="input_name">
+                                                Name
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            @{
+                                                bool isInputMobileChecked = Model.cm.input_mobile.HasValue ? Model.cm.input_mobile.Value : false;
+                                            }
+                                            <input type="checkbox" class="form-check-input" name="input_mobile" id="input_mobile" value="true" @(isInputMobileChecked ? "checked" : "") />
+                                            <label class="form-check-label" for="input_mobile">
+                                                Mobile
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            @{
+                                                bool isInputEmailChecked = Model.cm.input_email.HasValue ? Model.cm.input_email.Value : false;
+                                            }
+                                            <input type="checkbox" class="form-check-input" name="input_email" id="input_email" value="true" @(isInputEmailChecked ? "checked" : "") />
+                                            <label class="form-check-label" for="input_email">
+                                                Email
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-xl-12">
+                                        <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.cm.camapaign_master_status, new SelectList(ViewBag.lstStatus, "Value", "Text", Model.cm.camapaign_master_status), "Select Status", new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(x => x.cm.camapaign_master_status, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="form-group col-xl-12 p-0">
+                                            <label class="text-black font-w500 mb-3">Date Start</label>
+                                            @Html.TextBoxFor(x => x.cm.campaign_master_start_date, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", @id = "campaign_master_start_date" })
+                                            <div class="invalid-feedback" id="startDateError" style="display: none;">
+                                                Start date cannot be in the past. Please select a future date.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="form-group col-xl-12 p-0">
+                                            <label class="text-black font-w500 mb-3">Date End</label>
+                                            @Html.TextBoxFor(x => x.cm.campaign_master_end_date, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date", @id = "campaign_master_end_date" })
+                                            <div class="invalid-feedback" id="endDateError" style="display: none;">
+                                                End date must be after start date.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-xxl-4 col-lg-4">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h3 class="text-black fs-20">Images</h3>
+                                @Html.TextBoxFor(x => x.images, new { @type = "file", @multiple = "false", @id = "upload", @accept = "image/*" })
+                                <a class="btn btn-link fs-18 pr-0" id="upload_link" href="javascript:void(0);">+Upload</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="bgl-primary p-3 text-black rounded" id="ImgList">
+                                    @if (!string.IsNullOrEmpty(Model.cm.campaign_master_images))
+                                    {
+                                        <span>@Model.cm.campaign_master_images</span>
+                                    }
+                                    else
+                                    {
+                                        <span>No image uploaded</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h3 class="text-black fs-20">Social Media Share</h3>
+                            </div>
+                            <div class="card-body">
+                                <!-- FIXED: Social Media Checkboxes -->
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @{
+                                                bool isInstagramChecked = Model.cm.campaign_master_instagram.HasValue ? Model.cm.campaign_master_instagram.Value : false;
+                                            }
+                                            <input type="checkbox" class="custom-control-input" name="instagram" id="customCheckBox7" value="true" @(isInstagramChecked ? "checked" : "") />
+                                            <label class="custom-control-label" for="customCheckBox7"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Instagram</span>
+                                    </div>
+                                    <i class="lab la-instagram social-icon bg-secondary text-white"></i>
+                                </div>
+
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @{
+                                                bool isFacebookChecked = Model.cm.campaign_master_facebook.HasValue ? Model.cm.campaign_master_facebook.Value : false;
+                                            }
+                                            <input type="checkbox" class="custom-control-input" name="facebook" id="customCheckBox71" value="true" @(isFacebookChecked ? "checked" : "") />
+                                            <label class="custom-control-label" for="customCheckBox71"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Facebook</span>
+                                    </div>
+                                    <i class="lab la-facebook-f social-icon bg-info text-white"></i>
+                                </div>
+
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @{
+                                                bool isTwitterChecked = Model.cm.campaign_master_twitter.HasValue ? Model.cm.campaign_master_twitter.Value : false;
+                                            }
+                                            <input type="checkbox" class="custom-control-input" name="twitter" id="customCheckBox72" value="true" @(isTwitterChecked ? "checked" : "") />
+                                            <label class="custom-control-label" for="customCheckBox72"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Twitter</span>
+                                    </div>
+                                    <i class="lab la-twitter social-icon bg-success text-white"></i>
+                                </div>
+
+                                <div class="d-flex mb-3 align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @{
+                                                bool isWhatsappChecked = Model.cm.campaign_master_whatsapp.HasValue ? Model.cm.campaign_master_whatsapp.Value : false;
+                                            }
+                                            <input type="checkbox" class="custom-control-input" name="whatsapp" id="customCheckBox73" value="true" @(isWhatsappChecked ? "checked" : "") />
+                                            <label class="custom-control-label" for="customCheckBox73"></label>
+                                        </div>
+                                        <span class="text-black font-w600">Whatsapp</span>
+                                    </div>
+                                    <i class="lab la-whatsapp social-icon bg-danger text-white"></i>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex">
+                                        <div class="custom-control custom-checkbox mr-2">
+                                            @{
+                                                bool isLinkedinChecked = Model.cm.campaign_master_linkedin.HasValue ? Model.cm.campaign_master_linkedin.Value : false;
+                                            }
+                                            <input type="checkbox" class="custom-control-input" name="linkedin" id="customCheckBox74" value="true" @(isLinkedinChecked ? "checked" : "") />
+                                            <label class="custom-control-label" for="customCheckBox74"></label>
+                                        </div>
+                                        <span class="text-black font-w600">LinkedIn</span>
+                                    </div>
+                                    <i class="lab la-linkedin-in social-icon bg-primary text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-12 col-xxl-12 col-lg-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <button type="submit" class="btn btn-block btn-primary ml-3" id="publishBtn">PUBLISH</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section js
+{
+    <script src="~/Content/vendor/tagcomplete/tagcomplete.js"></script>
+    <script src="~/Content/vendor/nouislider/nouislider.min.js"></script>
+    <script src="~/Content/vendor/wnumb/wNumb.js"></script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/Content/js/dashboard/new-compaign.js"></script>
+    <script>
+        $(function () {
+            // Alert auto-hide
+            if ($('#success-alert').length > 0) {
+                $('#success-alert').fadeTo(4000, 500).slideUp(500, function () {
+                    $('#success-alert').slideUp(500);
+                });
+            }
+
+            // File upload functionality
+            $("#upload_link").on('click', function (e) {
+                e.preventDefault();
+                $("#upload").trigger('click');
+            });
+
+            $("#upload").on('change', function (e) {
+                var fileUpload = $("#upload").get(0);
+                var files = fileUpload.files;
+                if (files.length > 0) {
+                    $("#ImgList").html('').html(files[0].name);
+                }
+            });
+
+            // Initialize cascading dropdowns
+            InitializeCascadingDropdowns();
+
+            // Set minimum date for start date
+            setMinDateForStartDate();
+
+            // Date validation events
+            $("#campaign_master_start_date").on('change', function() {
+                validateStartDate();
+                validateEndDate();
+            });
+
+            $("#campaign_master_end_date").on('change', function() {
+                validateEndDate();
+            });
+
+            // CENTRALBLAST VALIDATION AND SWEETALERT - NEW CODE
+            $("#cm_CentralBlast").on('change', function() {
+                var selectedValue = $(this).val();
+                if (selectedValue && selectedValue !== "") {
+                    // Remove validation error
+                    $(this).removeClass('is-invalid');
+                    $("#centralBlastError").hide();
+
+                    // Show SweetAlert success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'CentralBlast Updated!',
+                        text: `CentralBlast has been set to: ${selectedValue}`,
+                        showConfirmButton: true,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            });
+
+            // Form submit validation
+            $("#campaignForm").on('submit', function(e) {
+                var isValid = true;
+
+                // Validate all required fields
+                if (!validateRequiredFields()) {
+                    isValid = false;
+                }
+
+                if (!validateStartDate()) {
+                    isValid = false;
+                }
+                if (!validateEndDate()) {
+                    isValid = false;
+                }
+                if (!validateCentralBlast()) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Show SweetAlert loading message
+                Swal.fire({
+                    title: 'Publishing Campaign...',
+                    text: 'Please wait while we update your campaign.',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Disable submit button to prevent double submission
+                $("#publishBtn").prop('disabled', true).text('Publishing...');
+            });
+
+            // Tags input initialization
+            var data = ['css', 'html', 'php', 'jquery', 'campaign', 'marketing', 'social media'];
+            if ($(".tags_input").length > 0) {
+                $(".tags_input").tagComplete({
+                    keylimit: 1,
+                    hide: false,
+                    autocomplete: {
+                        data: data
+                    }
+                });
+            }
+        });
+
+        // Validate all required fields
+        function validateRequiredFields() {
+            var isValid = true;
+            var requiredFields = [
+                'input[name="channel_id"]', 'input[name="campaign_category_id"]', 'input[name="campaign_id"]',
+                'input[name="subcampaign_id"]', '#cm_CentralBlast', 'select[name="campaign_master_type"]',
+                'select[name="campaign_master_lang"]', 'textarea[name="campaign_master_description"]',
+                'input[name="campaign_master_creative_caption"]', 'input[name="campaign_master_tags"]',
+                'select[name="campaign_master_landing_page"]', 'select[name="camapaign_master_status"]'
+            ];
+
+            requiredFields.forEach(function(selector) {
+                var element = $(selector);
+                if (element.length > 0) {
+                    var value = element.val();
+                    if (!value || value.trim() === '') {
+                        element.closest('.form-group').find('select, input, textarea').addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        element.closest('.form-group').find('select, input, textarea').removeClass('is-invalid');
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        // Set minimum date for start date field (today)
+        function setMinDateForStartDate() {
+            var today = new Date().toISOString().split('T')[0];
+            $("#campaign_master_start_date").attr('min', today);
+
+            // If existing start date is in the past, set it to today
+            var currentStartDate = $("#campaign_master_start_date").val();
+            if (currentStartDate && currentStartDate < today) {
+                $("#campaign_master_start_date").val(today);
+            }
+        }
+
+        // Validate start date (cannot be in the past)
+        function validateStartDate() {
+            var startDateInput = $("#campaign_master_start_date");
+            var startDate = startDateInput.val();
+            var today = new Date().toISOString().split('T')[0];
+            var errorDiv = $("#startDateError");
+
+            var isValid = true;
+            if (startDate && startDate < today) {
+                isValid = false;
+                startDateInput.addClass('is-invalid');
+                errorDiv.show();
+                // Set to today if invalid
+                startDateInput.val(today);
+
+                // Show error SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Start Date!',
+                    text: 'Start date cannot be in the past. Please select a future date.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            } else {
+                startDateInput.removeClass('is-invalid');
+                errorDiv.hide();
+            }
+
+            return isValid;
+        }
+
+        // Validate end date (must be after start date)
+        function validateEndDate() {
+            var startDate = $("#campaign_master_start_date").val();
+            var endDate = $("#campaign_master_end_date").val();
+            var endDateInput = $("#campaign_master_end_date");
+            var errorDiv = $("#endDateError");
+
+            var isValid = true;
+            if (startDate && endDate && endDate <= startDate) {
+                isValid = false;
+                endDateInput.addClass('is-invalid');
+                errorDiv.show();
+
+                // Show error SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid End Date!',
+                    text: 'End date must be after start date.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            } else {
+                endDateInput.removeClass('is-invalid');
+                errorDiv.hide();
+            }
+
+            return isValid;
+        }
+
+        // Validate CentralBlast field
+        function validateCentralBlast() {
+            var centralBlastInput = $("#cm_CentralBlast");
+            var centralBlast = centralBlastInput.val();
+            var errorDiv = $("#centralBlastError");
+
+            var isValid = true;
+            if (!centralBlast || centralBlast === "") {
+                isValid = false;
+                centralBlastInput.addClass('is-invalid');
+                errorDiv.show();
+
+                // Show error SweetAlert
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'CentralBlast Required!',
+                    text: 'Please select CentralBlast option.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            } else {
+                centralBlastInput.removeClass('is-invalid');
+                errorDiv.hide();
+            }
+
+            return isValid;
+        }
+
+        // NEW: Success message after form submission (optional)
+        function showSuccessMessage(message) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: message,
+                showConfirmButton: true,
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect or refresh if needed
+                    window.location.href = '@Url.Action("CentralBlast", "Marketing")';
+                }
+            });
+        }
+
+        // NEW: Error message function
+        function showErrorMessage(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: message,
+                showConfirmButton: true,
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Cascading dropdowns functions
+        function InitializeCascadingDropdowns() {
+            // Check if category is selected and populate campaigns
+            if ($('#cm_campaign_category_id').val() != '') {
+                GetCampaign($('#cm_campaign_category_id').val(), $('#cm_campaign_id').val());
+            }
+
+            // Check if campaign is selected and populate sub-campaigns
+            if ($('#cm_campaign_id').val() != '') {
+                GetSubCampaign($('#cm_campaign_id').val(), $('#cm_subcampaign_id').val());
+            }
+
+            // Disable dropdowns with no options
+            $(".cascading").each(function () {
+                if ($(this).find("option").length <= 1) {
+                    $(this).attr("disabled", "disabled");
+                }
+            });
+
+            // Handle category change
+            $('#cm_campaign_category_id').change(function () {
+                GetCampaign($(this).val(), null);
+            });
+
+            // Handle campaign change
+            $('#cm_campaign_id').change(function () {
+                GetSubCampaign($(this).val(), null);
+            });
+        }
+
+        function GetCampaign(categoryId, selectedCampaignId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod", "Marketing")',
+                data: JSON.stringify({ type: "cm_campaign_category_id", value: categoryId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    DisableDropDown("#cm_campaign_id");
+                    DisableDropDown("#cm_subcampaign_id");
+                    PopulateDropDown("#cm_campaign_id", response, selectedCampaignId);
+                },
+                error: function (response) {
+                    console.error("Error loading campaigns:", response);
+                    showErrorMessage("Error loading campaigns. Please try again.");
+                }
+            });
+        }
+
+        function GetSubCampaign(campaignId, selectedSubCampaignId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AjaxMethod", "Marketing")',
+                data: JSON.stringify({ type: "cm_campaign_id", value: campaignId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    DisableDropDown("#cm_subcampaign_id");
+                    PopulateDropDown("#cm_subcampaign_id", response, selectedSubCampaignId);
+                },
+                error: function (response) {
+                    console.error("Error loading sub-campaigns:", response);
+                    showErrorMessage("Error loading sub-campaigns. Please try again.");
+                }
+            });
+        }
+
+        function DisableDropDown(dropDownId) {
+            $(dropDownId).attr("disabled", "disabled");
+            $(dropDownId).empty().append('<option selected="selected" value="">Select</option>');
+        }
+
+        function PopulateDropDown(dropDownId, list, selectedValue) {
+            if (list != null && list.length > 0) {
+                $(dropDownId).removeAttr("disabled");
+                var s = '<option value="">Select</option>';
+                for (var i = 0; i < list.length; i++) {
+                    var selected = (list[i].Value == selectedValue) ? ' selected="selected"' : '';
+                    s += '<option value="' + list[i].Value + '"' + selected + '>' + list[i].Text + '</option>';
+                }
+                $(dropDownId).html(s);
+            }
+        }
+    </script>
+}
+@*@section js
+    {
+        <script src="~/Content/vendor/tagcomplete/tagcomplete.js"></script>
+        <script src="~/Content/vendor/nouislider/nouislider.min.js"></script>
+        <script src="~/Content/vendor/wnumb/wNumb.js"></script>
+        <script src="~/Content/js/dashboard/new-compaign.js"></script>
+        <script>
+            $(function () {
+                // Alert auto-hide
+                if ($('#success-alert').length > 0) {
+                    $('#success-alert').fadeTo(4000, 500).slideUp(500, function () {
+                        $('#success-alert').slideUp(500);
+                    });
+                }
+
+                // File upload functionality
+                $("#upload_link").on('click', function (e) {
+                    e.preventDefault();
+                    $("#upload").trigger('click');
+                });
+
+                $("#upload").on('change', function (e) {
+                    var fileUpload = $("#upload").get(0);
+                    var files = fileUpload.files;
+                    if (files.length > 0) {
+                        $("#ImgList").html('').html(files[0].name);
+                    }
+                });
+
+                // Initialize cascading dropdowns
+                InitializeCascadingDropdowns();
+
+                // Set minimum date for start date
+                setMinDateForStartDate();
+
+                // Date validation events
+                $("#campaign_master_start_date").on('change', function() {
+                    validateStartDate();
+                    validateEndDate();
+                });
+
+                $("#campaign_master_end_date").on('change', function() {
+                    validateEndDate();
+                });
+
+                // CentralBlast validation
+                $("#cm_CentralBlast").on('change', function() {
+                    validateCentralBlast();
+                });
+
+                // Form submit validation
+                $("#campaignForm").on('submit', function(e) {
+                    var isValid = true;
+
+                    // Validate all required fields
+                    if (!validateRequiredFields()) {
+                        isValid = false;
+                    }
+
+                    if (!validateStartDate()) {
+                        isValid = false;
+                    }
+                    if (!validateEndDate()) {
+                        isValid = false;
+                    }
+                    if (!validateCentralBlast()) {
+                        isValid = false;
+                    }
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // Disable submit button to prevent double submission
+                    $("#publishBtn").prop('disabled', true).text('Publishing...');
+                });
+
+                // Tags input initialization
+                var data = ['css', 'html', 'php', 'jquery', 'campaign', 'marketing', 'social media'];
+                if ($(".tags_input").length > 0) {
+                    $(".tags_input").tagComplete({
+                        keylimit: 1,
+                        hide: false,
+                        autocomplete: {
+                            data: data
+                        }
+                    });
+                }
+            });
+
+            // Validate all required fields
+            function validateRequiredFields() {
+                var isValid = true;
+                var requiredFields = [
+                    'input[name="channel_id"]', 'input[name="campaign_category_id"]', 'input[name="campaign_id"]',
+                    'input[name="subcampaign_id"]', '#cm_CentralBlast', 'select[name="campaign_master_type"]',
+                    'select[name="campaign_master_lang"]', 'textarea[name="campaign_master_description"]',
+                    'input[name="campaign_master_creative_caption"]', 'input[name="campaign_master_tags"]',
+                    'select[name="campaign_master_landing_page"]', 'select[name="camapaign_master_status"]'
+                ];
+
+                requiredFields.forEach(function(selector) {
+                    var element = $(selector);
+                    if (element.length > 0) {
+                        var value = element.val();
+                        if (!value || value.trim() === '') {
+                            element.closest('.form-group').find('select, input, textarea').addClass('is-invalid');
+                            isValid = false;
+                        } else {
+                            element.closest('.form-group').find('select, input, textarea').removeClass('is-invalid');
+                        }
+                    }
+                });
+
+                return isValid;
+            }
+
+            // Set minimum date for start date field (today)
+            function setMinDateForStartDate() {
+                var today = new Date().toISOString().split('T')[0];
+                $("#campaign_master_start_date").attr('min', today);
+
+                // If existing start date is in the past, set it to today
+                var currentStartDate = $("#campaign_master_start_date").val();
+                if (currentStartDate && currentStartDate < today) {
+                    $("#campaign_master_start_date").val(today);
+                }
+            }
+
+            // Validate start date (cannot be in the past)
+            function validateStartDate() {
+                var startDateInput = $("#campaign_master_start_date");
+                var startDate = startDateInput.val();
+                var today = new Date().toISOString().split('T')[0];
+                var errorDiv = $("#startDateError");
+
+                var isValid = true;
+                if (startDate && startDate < today) {
+                    isValid = false;
+                    startDateInput.addClass('is-invalid');
+                    errorDiv.show();
+                    // Set to today if invalid
+                    startDateInput.val(today);
+                } else {
+                    startDateInput.removeClass('is-invalid');
+                    errorDiv.hide();
+                }
+
+                return isValid;
+            }
+
+            // Validate end date (must be after start date)
+            function validateEndDate() {
+                var startDate = $("#campaign_master_start_date").val();
+                var endDate = $("#campaign_master_end_date").val();
+                var endDateInput = $("#campaign_master_end_date");
+                var errorDiv = $("#endDateError");
+
+                var isValid = true;
+                if (startDate && endDate && endDate <= startDate) {
+                    isValid = false;
+                    endDateInput.addClass('is-invalid');
+                    errorDiv.show();
+                } else {
+                    endDateInput.removeClass('is-invalid');
+                    errorDiv.hide();
+                }
+
+                return isValid;
+            }
+
+            // Validate CentralBlast field
+            function validateCentralBlast() {
+                var centralBlastInput = $("#cm_CentralBlast");
+                var centralBlast = centralBlastInput.val();
+                var errorDiv = $("#centralBlastError");
+
+                var isValid = true;
+                if (!centralBlast || centralBlast === "") {
+                    isValid = false;
+                    centralBlastInput.addClass('is-invalid');
+                    errorDiv.show();
+                } else {
+                    centralBlastInput.removeClass('is-invalid');
+                    errorDiv.hide();
+                }
+
+                return isValid;
+            }
+
+            // Cascading dropdowns functions
+            function InitializeCascadingDropdowns() {
+                // Check if category is selected and populate campaigns
+                if ($('#cm_campaign_category_id').val() != '') {
+                    GetCampaign($('#cm_campaign_category_id').val(), $('#cm_campaign_id').val());
+                }
+
+                // Check if campaign is selected and populate sub-campaigns
+                if ($('#cm_campaign_id').val() != '') {
+                    GetSubCampaign($('#cm_campaign_id').val(), $('#cm_subcampaign_id').val());
+                }
+
+                // Disable dropdowns with no options
+                $(".cascading").each(function () {
+                    if ($(this).find("option").length <= 1) {
+                        $(this).attr("disabled", "disabled");
+                    }
+                });
+
+                // Handle category change
+                $('#cm_campaign_category_id').change(function () {
+                    GetCampaign($(this).val(), null);
+                });
+
+                // Handle campaign change
+                $('#cm_campaign_id').change(function () {
+                    GetSubCampaign($(this).val(), null);
+                });
+            }
+
+            function GetCampaign(categoryId, selectedCampaignId) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AjaxMethod", "Marketing")',
+                    data: JSON.stringify({ type: "cm_campaign_category_id", value: categoryId }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        DisableDropDown("#cm_campaign_id");
+                        DisableDropDown("#cm_subcampaign_id");
+                        PopulateDropDown("#cm_campaign_id", response, selectedCampaignId);
+                    },
+                    error: function (response) {
+                        console.error("Error loading campaigns:", response);
+                    }
+                });
+            }
+
+            function GetSubCampaign(campaignId, selectedSubCampaignId) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AjaxMethod", "Marketing")',
+                    data: JSON.stringify({ type: "cm_campaign_id", value: campaignId }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        DisableDropDown("#cm_subcampaign_id");
+                        PopulateDropDown("#cm_subcampaign_id", response, selectedSubCampaignId);
+                    },
+                    error: function (response) {
+                        console.error("Error loading sub-campaigns:", response);
+                    }
+                });
+            }
+
+            function DisableDropDown(dropDownId) {
+                $(dropDownId).attr("disabled", "disabled");
+                $(dropDownId).empty().append('<option selected="selected" value="">Select</option>');
+            }
+
+            function PopulateDropDown(dropDownId, list, selectedValue) {
+                if (list != null && list.length > 0) {
+                    $(dropDownId).removeAttr("disabled");
+                    var s = '<option value="">Select</option>';
+                    for (var i = 0; i < list.length; i++) {
+                        var selected = (list[i].Value == selectedValue) ? ' selected="selected"' : '';
+                        s += '<option value="' + list[i].Value + '"' + selected + '>' + list[i].Text + '</option>';
+                    }
+                    $(dropDownId).html(s);
+                }
+            }
+        </script>
+    }*@

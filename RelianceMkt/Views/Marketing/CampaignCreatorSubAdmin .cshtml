@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            width: min(90%, 400px);
+            max-width: 480px;
+            position: relative;
+        }
+
+            .form-container h2 {
+                margin-bottom: 2rem;
+                font-size: 1.75rem;
+                font-weight: 600;
+                text-align: center;
+                color: #1a1a1a;
+            }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4a4a4a;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+            input:focus, select:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+            button:hover {
+                background: #0056b3;
+                transform: translateY(-1px);
+            }
+
+        #msg {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+            #msg.success {
+                color: #28a745;
+            }
+
+            #msg.error {
+                color: #dc3545;
+            }
+        logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            width: 360px;
+            /* position: absolute;
+    top: 10px;
+    left: 20px;*/
+            /* height: 60px;*/
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <div class="logo-container">
+            <img src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="Logo">
+        </div>
+        <h2>Create User</h2>
+
+        <div class="input-group">
+            <label for="username">Email</label>
+            <input type="text" id="username" placeholder="Enter Email" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" autocomplete="new-password">
+            <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <div class="input-group">
+            <label for="role">Role</label>
+            <select id="role">
+                <option value="">Select Role</option>
+                <option value="Admin">Admin</option>
+                <option value="SubAdmin">SubAdmin</option>
+                <option value="MasterAdmin">MasterAdmin</option>
+            </select>
+        </div>
+
+        <button onclick="createUser()">Submit</button>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("password");
+            const icon = document.querySelector(".toggle-password");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.textContent = "🙈";
+            } else {
+                input.type = "password";
+                icon.textContent = "👁️";
+            }
+        }
+
+        function showMsg(msg, isError = true) {
+            const el = document.getElementById("msg");
+            el.textContent = msg;
+            el.className = isError ? 'error' : 'success';
+        }
+
+        function createUser() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const role = document.getElementById("role").value;
+
+            if (!username || !password || !role) {
+                showMsg("Please fill all fields");
+                return;
+            }
+
+            fetch('/Marketing/CreateUserAjax', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, role })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    showMsg(data.message, !data.success);
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = 'Index';
+                    }
+                })
+                .catch(() => {
+                    showMsg("Error saving user. Try again.");
+                });
+        }
+    </script>
+
+</body>
+</html>

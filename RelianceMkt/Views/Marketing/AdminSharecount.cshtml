@@ -1,0 +1,327 @@
+﻿@model List<RelianceMkt.Controllers.SharecountViewModel>
+
+@{
+    ViewBag.Title = "Admin Share Count";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /* Remove all table borders */
+    #table2excel th, #table2excel td {
+        border: none !important;
+    }
+
+    #table2excel tr {
+        border-bottom: none !important;
+    }
+
+    /* Optional: make table look cleaner */
+    #table2excel th {
+        border-bottom: 0px solid #ddd !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.previous, .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        background: transparent !important;
+        color: #181f39a8 !important;
+        border: 1px solid #181f392e !important;
+        border-radius: 8px !important;
+    }
+</style>
+<!-- ✅ Style updated to remove x/y axis and move pagination to LEFT -->
+@*<style>
+        #table2excel {
+            border: none;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #table2excel th {
+                background-color: #f9f9f9;
+                color: #000000b5;
+                font-size: 15px;
+                font-weight: 600;
+                padding: 10px;
+                text-align: left;
+                border: none;
+            }
+
+            #table2excel td {
+                border: none;
+                padding: 8px;
+                color: #333;
+            }
+
+            #table2excel tr:nth-child(even) {
+                background-color: #fdfdfd;
+            }
+
+            #table2excel tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        /* ✅ Move pagination buttons (Previous / Next) to the LEFT side */
+        div.dataTables_wrapper div.dataTables_paginate {
+            text-align: left !important;
+            float: left !important;
+        }
+
+        /* ✅ Keep “Show entries” dropdown next to pagination */
+        div.dataTables_wrapper div.dataTables_length {
+            float: left !important;
+            margin-left: 20px;
+
+        }
+
+        /* ✅ Optional spacing for neat look */
+        .dataTables_paginate {
+            margin-top: 10px;
+
+        }
+
+        /* ✅ Make both pagination + dropdown appear on same line */
+        div.dataTables_wrapper {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+       /* =================*/
+        /* ✅ Round corners for Next/Previous buttons */
+        /*.dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 4px !important;
+            border: 1px solid #ddd !important;
+
+
+        }
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                background-color: #ffc107 !important;
+                color: #fff !important;
+                border: 1px solid #181f3961 !important;
+            }*/
+            .dataTables_wrapper .dataTables_paginate .paginate_button.previous, .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+                background: transparent !important;
+                color: #181f39a8 !important;
+                border: 1px solid #181f392e !important;
+                border-radius: 8px !important;
+            }
+
+    </style>*@
+<div class="container-fluid">
+    <div class="page-titles">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"> <a href="javascript:void(0)"> Dashboard</a> </li>
+            <li class="breadcrumb-item active"> <a href="javascript:void(0)"> Admin Share Count</a> </li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"> Admin Share Count</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("AdminSharecount", "Marketing", FormMethod.Post))
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label> From:</label>
+                                @Html.TextBox("fromdate", "", new
+                                                            {
+                                                                @type = "date",
+                                                                @class = "form-control",
+                                                                @Value = ViewBag.dt1 != null ? ((DateTime)ViewBag.dt1).ToString("yyyy-MM-dd") : ""
+                                                            })
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label> To:</label>
+                                @Html.TextBox("todate", "", new
+                                                            {
+                                                                @type = "date",
+                                                                @class = "form-control",
+                                                                @Value = ViewBag.dt2 != null ? ((DateTime)ViewBag.dt2).ToString("yyyy-MM-dd") : ""
+                                                            })
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label> SAP Name</label>
+                                <input type="text" name="SAP_NAME" class="form-control" value="@ViewBag.SAP_NAME" />
+                            </div>
+                            @if (Session["subadmin_type"] == null || Session["subadmin_type"].ToString() != "ReadOnly")
+                            {
+                                <div class="form-group col-md-4">
+                                    <label> Channel</label>
+                                    <select name="X_CHANNEL" class="form-control">
+                                        <option value=""> -- Select Channel --</option>
+                                        @foreach (var channel in ViewBag.ChannelList)
+                                        {
+                                            <option value="@channel" @(ViewBag.X_CHANNEL == channel ? "selected" : "")>@channel </option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                            <div class="form-group col-md-4">
+                                <label> Role</label>
+                                <select name="ROLE" class="form-control">
+                                    <option value=""> -- Select Role --</option>
+                                    @foreach (var role in ViewBag.RoleList)
+                                    {
+                                        <option value="@role" @(ViewBag.ROLE == role ? "selected" : "")>@role </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-4" style="padding-top:28px;">
+                                <button type="submit" class="btn btn-warning"> Apply</button>
+                                <button type="button" id="btnexport" class="btn btn-warning ml-2"> Export to Excel</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Data Table -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"> Filtered Results</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="table2excel" style="border-collapse: collapse; border: none;">
+                            <thead style="background-color: #f8f9fa;">
+                                <tr>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> S.No.</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> SHC_SAPCODE</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> Channel</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> SAP Name</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> Role</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> Date</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> Facebook</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> WhatsApp</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> Twitter</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> Instagram</th>
+                                    <th style="color:#00000066; white-space:nowrap; font-size: 15px; font-weight: 600;"> LinkedIn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                    foreach (var item in ViewBag.lstLeads as List<RelianceMkt.Controllers.SharecountViewModel>)
+                                    {
+                                        <tr style="border:none;">
+                                            <td>@i </td>
+                                            <td>@item.SHC_SAPCODE </td>
+                                            <td>@item.X_CHANNEL </td>
+                                            <td>@item.SAP_NAME </td>
+                                            <td>@item.ROLE </td>
+                                            <td>@item.SHC_DATE.ToString("dd-MM-yyyy") </td>
+                                            <td>@item.facebook_count </td>
+                                            <td>@item.whatsapp_count </td>
+                                            <td>@item.twitter_count </td>
+                                            <td>@item.instagram_count </td>
+                                            <td>@item.linkedin_count </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section js {
+    <!-- Include jQuery (required for DataTables and table2excel) -->
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+    <!-- Include DataTables CSS -->
+    <!--<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />-->
+    <!-- Include DataTables JS -->
+    <!--<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>-->
+    <!-- Include table2excel JS -->
+    <!--<script src="~/Content/js/jquery.table2excel.js"></script>-->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/js/jquery.table2excel.js"></script>
+    <script>
+        var dataTable;
+
+        $(document).ready(function () {
+            // Initialize DataTable
+            dataTable = $('#table2excel').DataTable({
+                paging: true,
+                pageLength: 10,
+                searching: false,
+                ordering: true,
+                info: true,
+                autoWidth: true
+            });
+
+            // Export to Excel
+            $("#btnexport").click(function () {
+                dataTable.destroy();
+                $("#table2excel").table2excel({
+                    exclude: ".noExl",
+                    name: "Worksheet Name",
+                    filename: "LeadCampaign",
+                    fileext: ".xls"
+                });
+                dataTable = $('#table2excel').DataTable({
+                    paging: true,
+                    pageLength: 10,
+                    searching: false,
+                    ordering: true,
+                    info: true,
+                    autoWidth: true
+                });
+            });
+        });
+    </script>
+
+@*<script >
+    var originalTableHtml = "";
+
+    $(document).ready(function () {
+            // Store the original table before DataTables applies pagination
+            originalTableHtml = $('#table2excel')[0].outerHTML;
+
+            // Initialize DataTable
+            $('#table2excel').DataTable({
+                paging: true,
+                pageLength: 10,
+                searching: false,
+                ordering: false,
+                info: true,
+                autoWidth: true,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next"
+                    },
+                    lengthMenu: "Show _MENU_ entries"
+                }
+            });
+
+            // Export to Excel functionality
+            $("#btnexport").click(function () {
+                $('#table2excel_wrapper').hide();
+                var originalTable = $(originalTableHtml);
+                $('#table2excel_wrapper').after(originalTable);
+                originalTable.table2excel({
+                    exclude: ".noExl",
+                    name: "Worksheet Name",
+                    filename: "AdminShareCount",
+                    fileext: ".xls"
+                });
+                originalTable.remove();
+                $('#table2excel_wrapper').show();
+            });
+        });
+    </script >*@
+}

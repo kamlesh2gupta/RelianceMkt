@@ -1,0 +1,198 @@
+﻿
+@{
+    ViewBag.Title = "upcomingcampaigns";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!--**********************************
+    Content body start
+***********************************-->
+<!-- row -->
+<div class="container-fluid">
+    <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+        <div class="mr-auto d-none d-lg-block">
+            <h2 class="text-black font-w600">Campaign</h2>
+            <p class="mb-0">Current campaign list</p>
+        </div>
+        <div class="d-none d-lg-flex align-items-center">
+            <div class="text-right">
+                @Html.Partial("_PartialDateTime")
+            </div>
+            <a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
+                <i class="las la-cog scale5"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                @*<div class="card-header pb-0 border-0">
+                        <h3 class="fs-20 text-black">Describe your campaign below</h3>
+                    </div>*@
+                <div class="card-body">
+                    @*<form>*@
+                    <div class="form-row">
+                        <div class="form-group col-xl-3">
+                            <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span>
+                            @Html.DropDownList("channel", new SelectList(ViewBag.lstchannels, "channel_id", "channel_name"),
+                           "Select Channel", new { @lass = "form-control", @required = "true" })
+                            @*<select class="form-control">
+                                    <option>Sales Campaign</option>
+                                    <option>Agency</option>
+                                    <option>Branch</option>
+                                    <option>Zone</option>
+                                </select>*@
+                        </div>
+                        <div class="form-group col-xl-3">
+                            <label class="text-black font-w500 mb-3">Category:</label><span class="text-danger ml-1">*</span>
+                            @Html.DropDownList("category", new SelectList(ViewBag.lstcategory, "campaign_category_id", "campaign_category_name"),
+                          "Select Category", new { @lass = "form-control", @required = "true" })
+                            @*<select class="form-control">
+                                    <option>Sales Campaign</option>
+                                    <option>Recruitment Campaign</option>
+                                    <option>Invite & Engage Campaign</option>
+
+                                </select>*@
+                        </div>
+                        <div class="form-group col-xl-3">
+                            <label class="text-black font-w500 mb-3">Campaign:</label><span class="text-danger ml-1">*</span>
+                            @Html.DropDownList("campaign", new SelectList(ViewBag.lstcampaign, "campaign_id", "campaign_name"),
+                        "Select Campaign", new { @lass = "form-control", @required = "true" })
+
+                        </div>
+
+                        <div class="form-group col-xl-3">
+                            <label class="text-black font-w500 mb-3">Sub Campaign</label><span class="text-danger ml-1">*</span>
+                            @Html.DropDownList("subcampaign", new SelectList(ViewBag.lstsubcampaign, "subcampaign_id", "subcampaign_name"),
+                        "Select Sub Campaign" +
+                        "", new { @lass = "form-control", @required = "true" })
+
+                        </div>
+
+                        <div class="form-group col-xl-3">
+                            <label class="text-black font-w500 mb-3">Language</label><span class="text-danger ml-1">*</span>
+                            @Html.DropDownList("language", new List<SelectListItem>{
+                                  new SelectListItem{Text="English", Value="English"},
+                                   new SelectListItem{Text="Hindi", Value="Hindi"},
+                                    new SelectListItem{Text="Marathi", Value="Marathi"},
+                                    new SelectListItem{Text="Tamil", Value="Tamil"}
+                              }
+                              ,
+                              "Select Language", new { @lass = "form-control", @required = "true" })
+                        </div>
+
+                        <div class="form-group col-xl-3">
+                            <label class="text-black font-w500 mb-3">Type</label><span class="text-danger ml-1">*</span>
+                            @Html.DropDownList("campaigntype", new List<SelectListItem>{
+                                   new SelectListItem{Text="Creative", Value="Creative"},
+                                    new SelectListItem{Text="Video", Value="Video"},
+                                     new SelectListItem{Text="Blogs", Value="Blogs"}
+                               }
+                               ,
+                               "Select Campaign Type", new { @lass = "form-control", @required = "true" })
+                        </div>
+
+
+                    </div>
+                    @*</form>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        @foreach (var item in ViewBag.lstAllCampaigns)
+        {
+            <div class="campaign-audio col-md-12">
+                <div class="compaign-row align-items-center p-sm-4 p-3 row sp16 mx-0 mb-2">
+                    <div class="my-2 col-xl-4 col-xxl-4 col-lg-4 col-md-3 col-sm-6">
+                        <div class="media align-items-center">
+                            @{
+                                string[] parts = item.cm.campaign_master_images.Split(',');
+                                <img class="align-self-center mr-3 " width="230" src="~/Content/images/campaign/@parts[0]" alt="DexignZone">
+                            }
+
+
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-xxl-8 col-lg-8 col-md-9 col-sm-6 px-3">
+                        <div class="media-body">
+                            <p class="text-primary mb-1">#ADS001245</p>
+                            <h3 class="fs-20"><a class="text-black" href="#">@item.cam.campaign_name</a></h3>
+                            <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 2L5 12.01L2 9.01" stroke="#737373" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+
+                            <span class="fs-14 ml-1">Published on @item.cm.campaign_master_start_date.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-8 text-left">
+                                <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);">@item.cm.campaign_master_landing_page</a>
+                            </div>
+                            <div class="col-md-4 text-center  my-2">
+                                <a onclick="ShowCampaign(@item.cm.campaign_master_id)">
+                                    <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target=".bd-example-modal-lg"><span class="btn-icon-left text-info"><i class="fa fa-eye color-info"></i></span>View</button>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+    <!-- BEGIN MODAL -->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="campaign-modal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body" id="myModalBodyDiv1"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                        @*<button type="button" class="btn btn-success save-event waves-effect waves-light">
+                                Update
+                            </button>*@
+
+                        @*<button type="button" class="btn btn-danger delete-event waves-effect waves-light" data-dismiss="modal">Delete</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--**********************************
+        Content body end
+    ***********************************-->
+</div>
+@section js
+{
+
+    <script src="~/Content/vendor/jqueryui/js/jquery-ui.min.js"></script>
+    <script>
+
+            var ShowCampaign = function (CampaignMasterId) {
+                //debugger;
+                var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+
+                $("#myModalBodyDiv1").load(url, function () {
+                    $("#campaign-modal").modal("show");
+
+                })
+
+            }
+    </script>
+}

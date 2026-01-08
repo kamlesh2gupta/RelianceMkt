@@ -1,0 +1,171 @@
+﻿
+@{
+    ViewBag.Title = "HotLeadsUser";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+
+@section css
+{
+    <style>
+        .profile-description .show-more-height {
+            height: 90px;
+            overflow: hidden;
+        }
+    </style>
+}
+<div class="container-fluid">
+    <!--   <div class="page-titles">
+         <ol class="breadcrumb">
+             <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+             <li class="breadcrumb-item active"><a href="javascript:void(0)">Hot Leads</a></li>
+         </ol>
+     </div>
+    row -->
+
+    <div class="row">
+
+        <div class="card mb-2" style="width: 100%;">
+            <div class="card-body">
+                @using (Html.BeginForm("HotLeadsUser", "Marketing", FormMethod.Post))
+                            {
+                <div class="form-row">
+                    <div class=" form-group col-md-3">
+                        <label> From: </label> @Html.TextBox("fromdate", "", new
+                        {
+                            @type = "date",
+                            @class = "form-control"
+                       ,
+                       @Value = ViewBag.dt1.ToString("yyyy-MM-dd")
+                   })
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label> To: </label> @Html.TextBox("todate", "", new
+                        {
+                            @type = "date",
+                            @class = "form-control"
+                       ,
+                       @Value = ViewBag.dt2.ToString("yyyy-MM-dd")
+                   })
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label> Plateform: </label> @Html.DropDownList("plateform", new SelectList(ViewBag.lstPlateform, "Text", "Value", !string.IsNullOrEmpty(ViewBag.plateform) ? ViewBag.plateform : ""), "Select Plateform", new{@class="form-control"})
+
+</div>
+                    <div class="col-md-3" style="padding-top:23px;">
+                        <button type="submit" class="btn btn-warning ml-3">APPLY</button>
+                    </div>
+                </div>
+                }
+
+            </div>
+            </div>
+        </div>
+
+            <div class="row">
+
+                <div class="card mb-2" style="width: 100%;">
+
+                    <div class="custom-tab-1">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#leads"><h1 class="text-blue">@ViewBag.lstLeads.Count</h1>Leads</a>
+                            </li>
+
+                        </ul>
+                        @*<div class="btn-group btn-group-sm" style="    width: 100%;">
+                            <button type="button" class="btn btn-light" style="border:1px solid #fff">Search By</button>
+                            <button type="button" class="btn btn-light " style="border:1px solid #fff">Sort By</button>
+
+
+
+
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @{
+                    int i = 1;
+
+                    foreach (var item in ViewBag.lstLeads)
+                    {
+                        <div class="col-sm-12 profile-description">
+                            <div class="card rounded-0 ">
+
+                                <div class="@("card-body show-more-height leadsx"+i)">
+                                    <div class="fs-14">
+                                        <ul class="d-flex justify-content-between pb-2">
+                                            <li class="font-w500 text-dark"><span class="text-black fs-16 font-w600">@item.l.leads_name</span></li>
+                                            <li>
+                                                @if (@item.l.leads_plateform.ToUpper() == "INSTAGRAM")
+                                                {
+                                                    <i class="lab la-instagram gs-icon bgl-secondary text-secondary mr-3"></i>
+                                                }
+                                                @if (@item.l.leads_plateform.ToUpper() == "FACEBOOK")
+                                                {
+                                                    <i class="lab la-facebook gs-icon bgl-secondary text-secondary mr-3"></i>
+                                                }
+                                                @if (@item.l.leads_plateform.ToUpper() == "TWITTER")
+                                                {
+                                                    <i class="lab la-twitter gs-icon bgl-secondary text-secondary mr-3"></i>
+                                                }
+                                                @if (@item.l.leads_plateform.ToUpper() == "WHATSAPP")
+                                                {
+                                                    <i class="lab la-whatsapp gs-icon bgl-secondary text-secondary mr-3"></i>
+                                                }
+                                            </li>
+                                        </ul>
+                                        <ul class="d-flex justify-content-between pb-2">
+                                            <li class="font-w500 text-dark"></li>
+                                            <li>Date : @item.l.leads_date.ToString("dd-MM-yyyy")</li>
+                                        </ul>
+                                        <ul class="d-flex justify-content-between pb-2">
+                                            <li class="font-w500 text-dark"></li>
+                                            <li>Email : NA</li>
+                                        </ul>
+                                        <ul class="d-flex justify-content-between pb-2">
+                                            <li class="font-w500 text-dark"></li>
+                                            <li>Mobile : @item.l.leads_mobile</li>
+                                        </ul>
+                                        <ul class="d-flex justify-content-between pb-2">
+                                            <li class="font-w500 text-dark"></li>
+                                            <li>Sapcode : @item.l.leads_sapcode</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-footer rounded-0" style="    padding: 6px;   text-align: center;  background: #e4e4e4;    color: blue;">
+                                    <a href="#" id="@("x"+i)" class="text-primary show-more">Show More </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        i++;
+                    }
+                }
+
+
+            </div>
+
+
+        </div>
+        @section js
+{
+            <script>
+                $(document).ready(function () {
+                    $(".show-more").click(function () {
+                        bid = $(this).attr("id");
+                        //alert(bid);
+                        if ($(".leads" + bid).hasClass("show-more-height")) {
+                            $(this).text("Show Less");
+                        } else {
+                            $(this).text("Show More");
+                        }
+
+                        $(".leads" + bid).toggleClass("show-more-height");
+                    });
+
+                });
+            </script>
+
+        }

@@ -1,0 +1,221 @@
+﻿@{
+    ViewBag.Title = "HotLeads";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    #table2excel {
+        border: none;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #table2excel th {
+            background-color: #f9f9f9;
+            color: #000000b5;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px;
+            text-align: left;
+            border: none; /* removes all header lines */
+        }
+
+        #table2excel td {
+            border: none; /* removes all x/y lines */
+            padding: 8px;
+            color: #333;
+        }
+
+        #table2excel tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
+
+        #table2excel tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.previous, .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        background: transparent !important;
+        color: #181f39a8 !important;
+        border: 1px solid #181f392e !important;
+    }
+</style>
+
+
+<div class="container-fluid">
+    <div class="page-titles">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">Creative Wise Report</a></li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Creative Wise</h4>
+                </div>
+                <div class="card-body">
+                    @using (Html.BeginForm("CreativeWise", "Marketing", FormMethod.Post))
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>From:</label>
+                                @Html.TextBox("fromdate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt1.ToString("yyyy-MM-dd"), @required = "required" })
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>To:</label>
+                                @Html.TextBox("todate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt2.ToString("yyyy-MM-dd"), @required = "required" })
+                            </div>
+
+                            @if (Session["subadmin_type"] == null || Session["subadmin_type"].ToString() != "ReadOnly")
+                            {
+                                <div class="form-group col-md-4">
+                                    <label>Channel</label>
+                                    <select name="X_CHANNEL" class="form-control" style="width:300px">
+                                        <option value="">-- Select Channel --</option>
+                                        @foreach (var channel in ViewBag.Channels)
+                                        {
+                                            <option value="@channel" @(ViewBag.X_CHANNEL == channel ? "selected" : "")>@channel</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+
+                            <div class="form-group col-md-4">
+                                <label>Campaign Category</label>
+                                <select name="CampaignCategoryName" class="form-control">
+                                    <option value="">-- Select Category --</option>
+                                    @foreach (var category in ViewBag.CampaignCategories)
+                                    {
+                                        <option value="@category" @(ViewBag.CampaignCategoryName == category ? "selected" : "")>@category</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label>Sub Campaign Name</label>
+                                <select name="SubCampaignName" class="form-control">
+                                    <option value="">-- Select Sub Campaign --</option>
+                                    @foreach (var subCampaign in ViewBag.SubCampaigns)
+                                    {
+                                        <option value="@subCampaign" @(ViewBag.SubCampaignName == subCampaign ? "selected" : "")>@subCampaign</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-4" style="padding-top:28px;">
+                                <button type="submit" class="btn btn-warning ml-3">APPLY</button>
+                                <button type="button" id="btnexport" class="btn btn-warning ml-3">Export To Excel</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Creative Wise</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+
+                        <!-- ✅ Table without x/y axis lines -->
+
+
+                        <table class="table" id="table2excel">
+                            <thead>
+                                <tr>
+                                    <th style=" color:#00000066">S NO.</th>
+                                    <th style=" color:#00000066">CREATIVE ID</th>
+                                    <th style=" color:#00000066">SAPCODE</th>
+                                    <th style=" color:#00000066">SAP_NAME</th>
+                                    <th style=" color:#00000066">ROLE</th>
+                                    <th style=" color:#00000066">CHANNEL</th>
+                                    <th style=" color:#00000066">ShareCount</th>
+                                    <th style=" color:#00000066">Platform</th>
+                                    <th style=" color:#00000066">SHC_DATE</th>
+                                    <th style=" color:#00000066">CAMPAIGN NAME</th>
+                                    <th style=" color:#00000066">SUB CAMPAIGN NAME</th>
+                                    <th style=" color:#00000066">CREATIVE</th>
+                                    <th style=" color:#00000066">CAMPAIGN CATEGORY</th>
+                                    <th style=" color:#00000066">X_ZONE</th>
+                                    <th style=" color:#00000066">X_REGION</th>
+                                    <th style=" color:#00000066">X_SALES_UNIT_NM</th>
+                                    <th style=" color:#00000066">X_SALES_UNIT_CD</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                    foreach (var item in ViewBag.lstLeads)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@item.Creative_Id</td>
+                                            <td>@item.SHC_SAPCODE</td>
+                                            <td>@item.SAP_NAME</td>
+                                            <td>@item.ROLE</td>
+                                            <td>@item.X_CHANNEL</td>
+                                            <td>@item.ShareCount</td>
+                                            <td>@item.SHC_PLATEFORM</td>
+                                            <td>@item.SHC_DATE.ToString("MM-dd-yyyy")</td>
+                                            <td>@item.CampaignName</td>
+                                            <td>@item.SubCampaignName</td>
+                                            <td>@item.CreativeId</td>
+                                            <td>@item.CampaignCategoryName</td>
+                                            <td>@item.X_ZONE</td>
+                                            <td>@item.X_REGION</td>
+                                            <td>@item.X_SALES_UNIT_NM</td>
+                                            <td>@item.X_SALES_UNIT_CD</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section js {
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/js/jquery.table2excel.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#table2excel').DataTable({
+                paging: true,
+                pageLength: 10,
+                searching: false,
+                ordering: false,
+                info: true,
+                autoWidth: true
+            });
+
+            $("#btnexport").click(function () {
+                table.destroy();
+                $("#table2excel").table2excel({
+                    exclude: ".noExl",
+                    name: "Worksheet Name",
+                    filename: "LeadCampaign",
+                    fileext: ".xls"
+                });
+                table = $('#table2excel').DataTable({
+                    paging: true,
+                    pageLength: 10,
+                    searching: false,
+                    ordering: true,
+                    info: true,
+                    autoWidth: true
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,207 @@
+﻿@model RelianceMkt.Models.Lead
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    <link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <style>
+[data-sidebar-style="mini"] .nav-header .logo-abbr {
+    display: block;
+    max-width: 240px;
+}
+
+
+.nav-header {
+    width: 100% !important;
+}
+.authincation-content {
+
+    border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+}
+.note{
+background-color:#fffc;
+font-size:9px;
+color:black;
+}
+    </style>
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper" class="right-profile" style="background-image: url(/Content/images/bg.png); height: 100%;  overflow: hidden;}">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header shadow " style="width:100%;background-color:#fff;">
+            <a href="#" class="brand-logo">
+                <img class="logo-abbr" src="~/Content/images/logo1.png" alt="" style="max-width:100%">
+
+            </a>
+        </div>
+
+        <div class="content-body">
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+                    <center>
+                        <h3 class="text-red" style="    font-weight: 700;">Safegaurd your tomorrow,<br> take a step today.				</h3>
+                        <p class="text-black">
+                            Please ll in the following details to help us suggest
+                            a suitable plan for you.
+                        </p>
+                    </center>
+                    <div class="col-md-12 mb-30">
+                        <div class="authincation-content">
+                            <div class="row no-gutters">
+                                <div class="col-xl-12 ">
+                                    <div class="card-header " style="    display: inherit;	background-color:#185aa7"> <h4 class=" text-white"><center>Tell Us About You</center></h4>  </div>
+                                    <div class="auth-form">
+
+                                        @using (Html.BeginForm("Landingpage", "Marketing", FormMethod.Post))
+                                        {
+
+
+                                        <div class="form-group">
+                                            @Html.Hidden("SAPCODE", Request.QueryString["SAPCODE"])
+                                            @Html.Hidden("CREATIVEID", Request.QueryString["CREATIVEID"])
+                                            @Html.Hidden("PLATEFORM", Request.QueryString["PLATEFORM"])
+                                            <label class="mb-1"><strong>Full Name</strong></label>
+                                            @Html.TextBoxFor(x => x.leads_name, "", new { @class = "form-control", @required = "true" })
+                                            @*<input type="email" class="form-control" name="name">*@
+                                        </div>
+                                            <div class="form-group">
+                                                <label class="mb-1"><strong>Phone Number</strong></label>
+                                                @Html.TextBoxFor(x => x.leads_mobile, "", new { @class = "form-control", @required = "true", @type = "Number" })
+                                            </div>
+
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-danger btn-block">Submit</button>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="note p-3 mb-10">
+                            <div class="row no-gutters text-justify">
+                                <p>Reliance Nippon Life Insurance Company Limited</p>
+                                <p>
+                                    IRDAI Registration No. 121. Registered & Corporate Ofce: Unit Nos. 401B, 402, 403 & 404, 4
+                                    th Floor,
+                                    Inspire-BKC, G Block, BKC Main Road, Bandra Kurla Complex, Bandra East, Mumbai - 400051.
+                                    India. T +91 22 6896 5000. For more information or any grievance, 1. Call us between 9 am to 6
+                                    pm, Monday to Saturday (except public holidays) on our Toll-Free Number - 1800 102 1010 or 2.
+                                    Visit us atwww.reliancenipponlife.com 3. Email us at rnlife.customerservice@relianceada.com
+                                    4. Chat with us on our WhatsApp number (+91) 7208852700.
+                                </p><p>
+                                    Trade logo displayed above belongs to Anil Dhirubhai Ambani Ventures Private Limited & Nippon
+                                    Life Insurance Company and used by Reliance Nippon Life Insurance Company Limited under
+                                    license
+                                </p>
+
+                                <div class=" p-3 mb-10" style="background-color:#185aa7;font-size:7px">
+                                    <p class="text-white">
+                                        <b>BEWARE OF SPURIOUS PHONE CALLS AND FICTITIOUS/FRAUDULENT OFFERS:</b> IRDAI
+                                        claries to public that: 1. IRDAI or its ofcials do not involve in activities like sale of
+                                        any kind of insurance or nancial products nor invest premiums. 2. IRDAI does not
+                                        announce any bonus. Public receiving such phone calls are requested to lodge a
+                                        police complaint along with details of phone call, number
+                                    </p>
+                                </div>
+                                <div class="col-md-6" style="width:65%;font-size:6px">CIN: U66010MH2001PLC167089</div>
+                                <div class="col-md-6" style="float:right;width:35%;font-size:6px">Mktg/FBM_SalesLeads/V1/Oct22</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                &nbsp;
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
+
+
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    <script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Counter Up -->
+    <script src="~/Content/vendor/waypoints/jquery.waypoints.min.js"></script>
+    <script src="~/Content/vendor/jquery.counterup/jquery.counterup.min.js"></script>
+
+    <!-- Apex Chart -->
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+
+    <!-- Chart piety plugin files -->
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <!-- Chart Chartist plugin files -->
+    <script src="~/Content/vendor/chartist/js/chartist.min.js"></script>
+    <script src="~/Content/vendor/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
+    <script src="~/Content/js/plugins-init/chartist-init.js"></script>
+
+</body>
+</html>

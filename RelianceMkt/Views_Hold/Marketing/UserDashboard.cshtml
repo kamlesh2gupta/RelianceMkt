@@ -1,0 +1,1378 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reliance  - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    @*  <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">*@
+    <link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/header.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <link href="~/content/highcharts/css/highcharts.css" rel="stylesheet" />
+    <style>
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+        .bg-gray {
+            background-color: #ccc !important;
+        }
+
+        .bg-yellow {
+            background-color: #fdbf4f !important;
+        }
+
+        .nav-header {
+            width: 19rem;
+        }
+
+            .nav-header .logo-abbr {
+                max-width: 200px;
+            }
+
+        .nav-control {
+            right: 15rem;
+        }
+
+        .header .header-content {
+            height: 100%;
+            padding-left: 5.3125rem;
+            padding-right: 0.8rem;
+            align-items: center;
+            display: flex;
+            background: #5856CE;
+        }
+
+        [data-sidebar-style="overlay"] .nav-header .logo-abbr {
+            display: block;
+            margin-left: 55px;
+        }
+
+        .hamburger .line {
+            background: #5856CE;
+            display: block;
+            height: 3px;
+            border-radius: 3px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            margin-right: auto;
+            -webkit-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .page-titles {
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+
+            .page-titles .breadcrumb li {
+                font-size: 20px;
+            }
+
+            .page-titles .breadcrumb .breadcrumb-item + .breadcrumb-item:before {
+                content: "\e606";
+                font-family: 'simple-line-icons';
+                font-size: 15px;
+                color: #ff6d4d;
+                font-weight: 900;
+            }
+
+            .page-titles .breadcrumb li.active a {
+                color: #000;
+            }
+
+        .bg-green {
+            background: #418409 !important;
+        }
+
+        .widget-stat .media .media-body p {
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            font-family: 'Flaticon' !important;
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper" class="right-profile">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header">
+            <a href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]" class="brand-logo">
+                <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="">
+
+            </a>
+
+            <div class="nav-control" style="background:#fff">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <!--<div class="search_bar dropdown show">
+                                <div class="dropdown-menu p-0 m-0 show">
+                                    <form>
+                                        <input class="form-control" type="search" placeholder="Search Here" aria-label="Search">
+                                    </form>
+                                </div>
+                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.7871 22.7761L17.9548 16.9437C19.5193 15.145 20.4665 12.7982 20.4665 10.2333C20.4665 4.58714 15.8741 0 10.2333 0C4.58714 0 0 4.59246 0 10.2333C0 15.8741 4.59246 20.4665 10.2333 20.4665C12.7982 20.4665 15.145 19.5193 16.9437 17.9548L22.7761 23.7871C22.9144 23.9255 23.1007 24 23.2816 24C23.4625 24 23.6488 23.9308 23.7871 23.7871C24.0639 23.5104 24.0639 23.0528 23.7871 22.7761ZM1.43149 10.2333C1.43149 5.38004 5.38004 1.43681 10.2279 1.43681C15.0812 1.43681 19.0244 5.38537 19.0244 10.2333C19.0244 15.0812 15.0812 19.035 10.2279 19.035C5.38004 19.035 1.43149 15.0865 1.43149 10.2333Z" fill="#A4A4A4"/></svg>
+                                </span>
+                            </div>-->
+                        </div>
+
+                        <ul class="navbar-nav header-right">
+                            @if (Session["TYPE"].ToString() != "ARDM")
+                            {
+                                @*<li class="nav-item ">
+                                        <div class="btn-group mb-1">
+                                            <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                @ViewBag.zone
+                                            </button>
+
+                                            <div class="dropdown-menu">
+                                                @foreach (var item in ViewBag.lstDownline)
+                                                    {
+                                                        string toencode = "SAPCODE=" + item.Value;
+                                                        byte[] encData_byte = new byte[toencode.Length];
+                                                        encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                                        string encodedData = Convert.ToBase64String(encData_byte);
+                                                <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
+                                                    }
+                                            </div>
+
+                                        </div>
+                                    </li>*@
+                            }
+
+
+
+                            <li class="nav-item dropdown header-profile side">
+                                <a class="nav-link" href="#">
+                                    <div class="header-info">
+                                        <span>Hello, <strong>Samuel</strong></span>
+                                    </div>
+                                    <img src="~/Content/images/profile/pic1.jpg" width="20" alt="" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--********************************** Header end ti-comment-alt  ***********************************-->
+        <!--**********************************Sidebar start***********************************-->
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="deznav">
+            <div class="deznav-scroll">
+                <ul class="metismenu" id="menu">
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]" aria-expanded="false">
+                            <i class="flaticon-381-networking"></i>  Dashboard
+                        </a>
+
+                    </li>
+                    @*<li>
+                            <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                                <i class="flaticon-381-settings"></i> Master
+                            </a>
+                            <ul aria-expanded="false">
+                                <li><a href="~/Marketing/CampaignCategoryList">Categories </a></li>
+                                <li><a href="~/Marketing/campaignlist">Campaigns</a></li>
+                                <li><a href="~/Marketing/subcampaignlist">Sub-Campaigns</a></li>
+                                <li><a href="#">Creatives</a></li>
+                                <li><a href="#">Hot Leads</a></li>
+                                <li><a href="#">Shares</a></li>
+
+                            </ul>
+                        </li>*@
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/campaignview" aria-expanded="false">
+                            <i class="flaticon-381-notepad"></i>   Campaign
+                        </a>
+                    </li>
+                    @*<li>
+                            <a class="has-arrow ai-icon" href="~/Marketing/newcampaign" aria-expanded="false">
+                                <i class="flaticon-381-plus"></i> Create  Campaign
+                            </a>
+                        </li>*@
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/hotleadsuser" aria-expanded="false">
+                            <i class="flaticon-381-settings-2"></i> Hot Leads
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/calendarUser" aria-expanded="false">
+                            <i class="flaticon-381-controls-3"></i> Calendar
+                        </a>
+                    </li>
+                    <li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/UserLeaderBoard" aria-expanded="false">
+                            <i class="flaticon-381-television"></i> Leader Board
+                        </a>
+                    </li>
+                    @*<li>
+                        <a class="has-arrow ai-icon" href="~/Marketing/UserTimeLine" aria-expanded="false">
+                            <i class="flaticon-381-television"></i> Timeline
+                        </a>
+                    </li>*@
+
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/upcomingcampaignsuser" aria-expanded="false">
+                            <i class="flaticon-381-internet"></i>  Upcoming Campaigns
+                        </a>
+                    </li>
+                    <li>
+                        <a class="ai-icon" href="~/Marketing/LogoutUser" aria-expanded="false">
+                            <i class="flaticon-381-exit"></i>
+                            Logout
+                        </a>
+                    </li>
+
+
+
+                </ul>
+                <div class="copyright">
+                    <br />© All Rights Reserved</p>
+                    <p>By Reliance </p>
+
+                    <img class="img-thumbnail" src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="">
+
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+        <!--**********************************
+            Content body start
+        ***********************************-->
+
+        <div class="profile-sidebar dz-scroll" id="DZ_W_Sidebar">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h5 class="text-black">Profile</h5>
+                <a href="#" class="text-red text-info edit-profile-link">
+                    Edit
+                </a>
+                <a href="javascript:;" class="text-red d-none close-side">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                </a>
+            </div>
+            <div class="profile-img mb-4">
+                <img src="~/Content/images/profile/profile.png" width="140" height="140" alt="" />
+            </div>
+            <div class="profile-info-bx mb-4">
+                <h4 class="mb-1 fs-22">@ViewBag.username</h4>
+                <span>@Session["TYPE"]</span>
+            </div>
+
+            @*<div class="text-center mb-5">
+                    <a href="javascript:;" class="btn text-left light btn-dark d-block mb-3 "><i class="fa fa-instagram scale5 mr-3"></i>/samuelanderson.404</a>
+                    <a href="javascript:;" class="btn text-left light btn-dark d-block mb-3 "><i class="fa fa-twitter scale5 mr-3"></i>/samuel.404nderson</a>
+                    <a href="javascript:;" class="btn text-left light btn-dark d-block mb-4 "><i class="fa fa-facebook scale5 mr-3"></i>/talksamuel.404</a>
+                    <a href="#" class="btn btn-outline-dark d-block btn-lg">Edit Profile</a>
+                </div>*@
+            <hr />
+            <!--<div class="card-campaign mt-5">
+                <h5>Creative Campaign Tutorials Video</h5>
+                <a href="javascript:;" class="fa fa-play"></a>
+            </div>-->
+        </div>
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+
+
+
+
+                        @if (Session["TYPE"].ToString() != "ARDM")
+                        {
+
+                            <div class="btn-group btn-primary btn-block mb-1 btn-rounded" style="color: #fff !important;">
+                                <button class="btn  btn-sm dropdown-toggle text-white" type="button" data-toggle="dropdown">
+                                    @ViewBag.zone
+                                </button>
+
+                                <div class="dropdown-menu" style="width:100%;text-align:center;">
+                                    @foreach (var item in ViewBag.lstDownline)
+                                    {
+                                        string toencode = "SAPCODE=" + item.Value;
+                                        byte[] encData_byte = new byte[toencode.Length];
+                                        encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                        string encodedData = Convert.ToBase64String(encData_byte);
+                                        <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
+                                    }
+                                </div>
+
+                            </div>
+
+                        }
+
+                    </div>
+                </div>
+
+
+
+
+                @if (Session["LOGIN"].ToString() == "ARDM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            <!--<li class="breadcrumb-item active"><a href="javascript:void(0)">Profile</a></li>-->
+                        </ol>
+                    </div>
+                }
+                @if (Session["LOGIN"].ToString() == "ZM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "ZM")
+                            {
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.username</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "RM")
+                            {
+
+                                string toencode = "SAPCODE=" + ViewBag.ZM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string ZM = Convert.ToBase64String(encData_byte);
+                                <li class="breadcrumb-item "><a href="~/Marketing/UserDashboard?REF_KEY=@ZM">@ViewBag.ZM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.RM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "BM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.ZM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string ZM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item "><a href="~/Marketing/UserDashboard?REF_KEY=@ZM">@ViewBag.ZM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.BM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "ARDM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.ZM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string ZM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+                                <li class="breadcrumb-item "><a href="~/Marketing/UserDashboard?REF_KEY=@ZM">@ViewBag.ZM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.BM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+
+                @if (Session["LOGIN"].ToString() == "RM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "RM")
+                            {
+
+
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.RM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "BM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.BM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "ARDM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.RM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string RM = Convert.ToBase64String(encData_byte);
+
+                                toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@RM">@ViewBag.RM_NAME</a></li>
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.BM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+                @if (Session["LOGIN"].ToString() == "BM")
+                {
+                    <div class="page-titles">
+                        <ol class="breadcrumb">
+                            @if (Session["TYPE"].ToString() == "BM")
+                            {
+                                <li class="breadcrumb-item active"><a href="#">@ViewBag.BM_NAME</a></li>
+                            }
+                            else if (Session["TYPE"].ToString() == "ARDM")
+                            {
+                                string toencode = "SAPCODE=" + ViewBag.BM_CODE;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string BM = Convert.ToBase64String(encData_byte);
+
+                                <li class="breadcrumb-item"><a href="~/Marketing/UserDashboard?REF_KEY=@BM">@ViewBag.BM_NAME</a></li>
+                                <li class="breadcrumb-item active"><a href="javascript:void(0)">@ViewBag.ARDM_NAME</a></li>
+                            }
+
+
+                        </ol>
+                    </div>
+                }
+
+
+                <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
+                    <div class="mr-auto d-none d-lg-block">
+                        <h2 class="text-black font-w600 mb-1">Dashboard</h2>
+                        <p class="mb-0">Welcome to Creative Campaign Dashboard</p>
+                    </div>
+                    <div class="d-none d-lg-flex align-items-center">
+                        <div class="text-right">
+                            @Html.Partial("_PartialDateTime")
+                        </div>
+                        <a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
+                            <i class="las la-cog scale5"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-xxl-12">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-gray">
+                                    <div class="card-body  p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-yellow bg-green">
+                                                <i class="flaticon-381-share "></i>
+                                            </span>
+                                            <div class="media-body text-info text-right">
+                                                <p class="mb-1">Self Shares</p>
+                                                <h3 class="text-info">@ViewBag.selfshare</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-yellow">
+                                    <div class="card-body p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-yellow bg-red">
+                                                <i class="flaticon-381-database"></i>
+                                            </span>
+                                            <div class="media-body text-info text-right">
+                                                <p class="mb-1">Self Hot Leads</p>
+                                                <h3 class="text-info">@ViewBag.selflead</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-info">
+                                    <div class="card-body p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-white bg-yellow">
+                                                <i class="flaticon-381-networking-1"></i>
+                                            </span>
+                                            <div class="media-body text-white text-right ">
+                                                <p class="mb-1">Team Shares</p>
+                                                <h3 class="text-white">@ViewBag.teamshare</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <div class="widget-stat card bg-warning">
+                                    <div class="card-body p-4">
+                                        <div class="media">
+                                            <span class="mr-3 text-white bg-success">
+                                                <i class="flaticon-381-network"></i>
+                                            </span>
+                                            <div class="media-body text-white text-right">
+                                                <p class="mb-1">Team Hot Leads</p>
+                                                <h3 class="text-white">@ViewBag.teamslead</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @*<div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>RANK</th>
+                        <th>TOTAL SHARE</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in ViewBag.ShareLeaderBoard)
+                    {
+                        <tr>
+                            <td>@item.SHC_ID</td>
+                            <td>@item.SHC_SHARECOUNT</td>
+                        </tr>
+                    }
+                    <tr>
+                        <th colspan="2">Your Rank</th>
+                    </tr>
+                    @if (@ViewBag.ShareLeaderBoardMyRank != null)
+                    {
+                        <tr>
+                            <td>
+                                @ViewBag.ShareLeaderBoardMyRank.SHC_ID
+                            </td>
+                            <td>
+                                @ViewBag.ShareLeaderBoardMyRank.SHC_SHARECOUNT
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                NA
+                            </td>
+                            <td>
+                                NA
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>RANK</th>
+                        <th>TOTAL LEADS</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in ViewBag.LeadLeaderBoard)
+                    {
+                        <tr>
+                            <td>@item.leads_id</td>
+                            <td>@item.leads_sapcode</td>
+                        </tr>
+                    }
+                    <tr>
+                        <th colspan="2">Your Rank</th>
+                    </tr>
+                    @if (@ViewBag.LeadLeaderBoardMyRank != null)
+                    {
+                        <tr>
+                            <td>
+                                @ViewBag.LeadLeaderBoardMyRank.leads_id
+                            </td>
+                            <td>
+                                @ViewBag.LeadLeaderBoardMyRank.leads_sapcode
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                NA
+                            </td>
+                            <td>
+                                NA
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+            </table>
+        </div>*@
+
+
+                    <div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                        <div id="user-activity" class="card" style="background-color:#cccccc42">
+                            <div class="card-header border-0 pb-0 d-sm-flex d-block">
+                                <h4 class="card-title">Shares Activity - Platform</h4>
+                                <div class="card-action mb-sm-0 my-2">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#user1" role="tab">
+                                                Yesterday
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user2" role="tab">
+                                                MTD
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user3" role="tab">
+                                                QTD
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user4" role="tab">
+                                                YTD
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="user1" role="tabpanel">
+                                        <div id="share_yesterday"></div>
+                                        @*<div id="simple-pie" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                    <div class="tab-pane fade  show" id="user3" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                               
+                                                @Html.DropDownList("shareQTDYear", new List<SelectListItem>
+                                           {
+                                               new SelectListItem{Text="2022-23", Value="2022"},
+                                               new SelectListItem{Text="2023-24", Value="2023"}
+                                           }, new { @class = "form-control", @id = "shareQTDYear" })
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("shareQTDMonth", new List<SelectListItem>
+                                         {
+                                             new SelectListItem{Text="Qtr 1", Value="1"},
+                                             new SelectListItem{Text="Qtr 2", Value="2"},
+                                             new SelectListItem{Text="Qtr 3", Value="3"},
+                                             new SelectListItem{Text="Qtr 4", Value="4"}
+
+                                         }, new { @class = "form-control", @id = "shareQTDMonth" })
+                                            </div>
+                                        </div>
+                                        <div id="share_qtd"></div>
+                                        @*<div id="simple-pie1" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                 
+                                    <div class="tab-pane fade show" id="user2" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                @{ 
+                                                    string year = (System.DateTime.UtcNow.AddMinutes(330).Year).ToString();
+                                                    string month = (System.DateTime.UtcNow.AddMinutes(330).Month).ToString();
+                                                }
+                                                @Html.DropDownList("shareMTDYear", new List<SelectListItem>
+                                           {
+                                               new SelectListItem{Text="2022", Value="2022"},
+                                               new SelectListItem{Text="2023", Value="2023"}
+                                           }, new { @class = "form-control", @id = "shareMTDYear" })
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("shareMTDMonth", new List<SelectListItem>
+                                         {
+                                             new SelectListItem{Text="January", Value="1"},
+                                             new SelectListItem{Text="February", Value="2"},
+                                             new SelectListItem{Text="March", Value="3"},
+                                             new SelectListItem{Text="April", Value="4"},
+                                             new SelectListItem{Text="May", Value="5"},
+                                             new SelectListItem{Text="June", Value="6"},
+                                             new SelectListItem{Text="July", Value="7"},
+                                             new SelectListItem{Text="August", Value="8"},
+                                             new SelectListItem{Text="September", Value="9"},
+                                             new SelectListItem{Text="October", Value="10"},
+                                             new SelectListItem{Text="November", Value="11"},
+                                             new SelectListItem{Text="December", Value="12"},
+                                             
+                                         }, new { @class = "form-control", @id = "shareMTDMonth" })
+                                            </div>
+                                        </div>
+                                        
+                                       
+                                        <div id="share_mtd"></div>
+                                        @*<div id="simple-pie2" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                    <div class="tab-pane fade show" id="user4" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+
+                                                @Html.DropDownList("shareYTDYear", new List<SelectListItem>
+                                           {
+                                               new SelectListItem{Text="2022-23", Value="2022"},
+                                               new SelectListItem{Text="2023-24", Value="2023"}
+                                           }, new { @class = "form-control", @id = "shareYTDYear" })
+
+                                            </div>
+                                           
+                                        </div>
+                                        <div id="share_ytd"></div>
+                                        @*<div id="simple-pie3" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                        <div id="user-activity" class="card" style="background-color:#cccccc42">
+                            <div class="card-header border-0 pb-0 d-sm-flex d-block">
+                                <h4 class="card-title">Leads Activity - Platform</h4>
+                                <div class="card-action mb-sm-0 my-2">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#user5" role="tab">
+                                                Yesterday
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user6" role="tab">
+                                                MTD
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user7" role="tab">
+                                                QTD
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#user8" role="tab">
+                                                YTD
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="user5" role="tabpanel">
+
+                                        <div id="leads_yesterday"></div>
+
+                                        @*<div id="simple-pie" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                    <div class="tab-pane fade  show" id="user7" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+
+                                                @Html.DropDownList("leadQTDYear", new List<SelectListItem>
+                                           {
+                                               new SelectListItem{Text="2022-23", Value="2022"},
+                                               new SelectListItem{Text="2023-24", Value="2023"}
+                                           }, new { @class = "form-control", @id = "leadQTDYear" })
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadQTDMonth", new List<SelectListItem>
+                                         {
+                                             new SelectListItem{Text="Qtr 1", Value="1"},
+                                             new SelectListItem{Text="Qtr 2", Value="2"},
+                                             new SelectListItem{Text="Qtr 3", Value="3"},
+                                             new SelectListItem{Text="Qtr 4", Value="4"}
+
+                                         }, new { @class = "form-control", @id = "leadQTDMonth" })
+                                            </div>
+                                        </div>
+                                        <div id="leads_qtd"></div>
+                                        @*<div id="simple-pie1" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                    <div class="tab-pane fade  show" id="user6" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                               
+                                                @Html.DropDownList("leadMTDYear", new List<SelectListItem>
+                                           {
+                                               new SelectListItem{Text="2022", Value="2022"},
+                                               new SelectListItem{Text="2023", Value="2023"}
+                                           }, new { @class = "form-control", @id = "leadMTDYear" })
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DropDownList("leadMTDMonth", new List<SelectListItem>
+                                         {
+                                             new SelectListItem{Text="January", Value="1"},
+                                             new SelectListItem{Text="February", Value="2"},
+                                             new SelectListItem{Text="March", Value="3"},
+                                             new SelectListItem{Text="April", Value="4"},
+                                             new SelectListItem{Text="May", Value="5"},
+                                             new SelectListItem{Text="June", Value="6"},
+                                             new SelectListItem{Text="July", Value="7"},
+                                             new SelectListItem{Text="August", Value="8"},
+                                             new SelectListItem{Text="September", Value="9"},
+                                             new SelectListItem{Text="October", Value="10"},
+                                             new SelectListItem{Text="November", Value="11"},
+                                             new SelectListItem{Text="December", Value="12"},
+
+                                         }, new { @class = "form-control", @id = "leadMTDMonth" })
+                                            </div>
+                                        </div>
+                                        <div id="leads_mtd"></div>
+                                        @*<div id="simple-pie2" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                    <div class="tab-pane fade  show" id="user8" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6">
+
+                                                @Html.DropDownList("leadYTDYear", new List<SelectListItem>
+                                           {
+                                               new SelectListItem{Text="2022-23", Value="2022"},
+                                               new SelectListItem{Text="2023-24", Value="2023"}
+                                           }, new { @class = "form-control", @id = "leadYTDYear" })
+
+                                            </div>
+
+                                        </div>
+                                        <div id="leads_ytd"></div>
+                                        @*<div id="simple-pie3" class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
+                <div class="row">
+
+
+
+                    <div class="col-xl-6 col-xxl-6 col-sm-6">
+                        <div class="card">
+                            <h4 class="bg-info text-white text-center">Total Shares</h4>
+                            <div class="row">
+                                <div class="col-12 border-right">
+                                    <div class="pt-3 pb-3 pl-0 pr-0 text-center">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-xxl-6 col-sm-6">
+                        <div class="card">
+                            <h4 class="bg-info text-white text-center">Hot Leads</h4>
+                            <div class="row">
+                                <div class="col-12 border-right">
+                                    <div class="pt-3 pb-3 pl-0 pr-0 text-center">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+        </div>
+    </div>
+    </div>
+    <!--**********************************
+        Content body end
+    ***********************************-->
+    <!--**********************************
+        Footer start
+    ***********************************-->
+    <div class="footer">
+        <div class="copyright">
+            <p>
+                Copyright © Designed &amp; Developed by <a href="#" target="_blank">Reliance </a> 2020
+                @*<span>
+                        <img class="logo-abbr" src="~/Content/images/DigiMyinLogo.jpg" alt="">
+                    </span>*@
+            </p>
+
+
+        </div>
+
+    </div>
+    <!--**********************************
+        Footer end
+    ***********************************-->
+    <!--**********************************
+       Support ticket button start
+    ***********************************-->
+    <!--**********************************
+       Support ticket button end
+    ***********************************-->
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    <script src="~/Content/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <!---  <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>-->
+
+    <script src="~/Content/js/custom.min.js"></script>
+    <script src="~/Content/js/deznav-init.js"></script>
+
+    <!-- Chart Chartist plugin files -->
+    @*<script src="~/Content/vendor/chartist/js/chartist.min.js"></script>
+        <script src="~/Content/vendor/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
+        <script src="~/Content/js/plugins-init/chartist-init.js"></script>*@
+
+    <!-- Apex Chart-->
+    <!--<script src="~/Content/vendor/apexchart/apexchart.js"></script>-->
+    <!-- Chart piety plugin files -->
+    <!-- <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>-->
+    <!-- Dashboard 1 -->
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    @*<script src="~/Content/js/dashboard/compaign.js"></script>*@
+
+<script>
+    $(document).ready(function () {
+
+        var lastday = function (y, m) {
+            return new Date(y, m, 0).getDate();
+        }
+
+
+        var dateObjytd = new Date();
+
+        // subtract one day from current time                          
+        dateObjytd.setDate(dateObjytd.getDate() - 1);
+        // Get year, month, and day part from the date
+        var year = dateObjytd.toLocaleString("default", { year: "numeric" });
+        var month = dateObjytd.toLocaleString("default", { month: "2-digit" });
+        var day = dateObjytd.toLocaleString("default", { day: "2-digit" });
+
+        // Generate yyyy-mm-dd date string
+        var formattedDate = year + "-" + month + "-" + day;
+        GetShares(formattedDate, formattedDate, 'share_yesterday'); //Loads yesterday share pie chart
+        GetLeads(formattedDate, formattedDate, 'leads_yesterday');  //Loads yesterday Leads pie chart
+
+        // Current Month share activity Pie Chart
+        var lastdayofmonth = lastday(year, month)
+        var fromdate = year + '-' + month + '-01';
+        var todate = year + '-' + month + '-' + lastdayofmonth;
+        GetShares(fromdate, todate, 'share_mtd'); //Loads Current Month share pie chart
+        GetLeads(fromdate, todate, 'leads_mtd');  //Loads current month Leads pie chart
+
+        // Current Quarter share activity pie chart
+        var qtr;
+        if (month < 4) {
+            qtr = '4';
+            fromdate = year + '-01-01';
+            todate = year  + '-03-31';
+        }
+        else if (month < 7 && month > 3) {
+            qtr = '1'
+            fromdate = year + '-04-01';
+            todate = year + '-06-30';
+        }
+        else if (month < 10 && month > 6) {
+            qtr = '2'
+            fromdate = year + '-07-01';
+            todate = year + '-09-30';
+        }
+        else if (month <= 12 && month > 9) {
+            qtr = '3'
+            fromdate = year + '-10-01';
+            todate = year + '-12-31';
+        }
+        GetShares(fromdate, todate, 'share_qtd'); //Loads Current Qtr share pie chart
+        GetLeads(fromdate, todate, 'leads_qtd');  //Loads current Qtr Leads pie chart
+
+         // Current FY share activity pie chart
+        if (month < 4) {
+            fromdate = Number(year) - 1 + '-04-01';
+            todate = year + '-03-31';
+        }
+        else {
+            fromdate = year + '-04-01';
+            todate = Number(year)+1 + '-03-31';
+        }
+        GetShares(fromdate, todate, 'share_ytd'); //Loads Current FY share pie chart
+        GetLeads(fromdate, todate, 'leads_ytd');  //Loads current FY Leads pie chart
+       
+
+        $("#shareMTDMonth, #shareMTDYear").change(function () {
+           
+            var lastdayofmonth = lastday($("#shareMTDYear").val(), $("#shareMTDMonth").val())
+            //console.log(lastdayofmonth);
+            var fromdate = $("#shareMTDYear").val() + '-' +  $("#shareMTDMonth").val() + '-01' ;
+            var todate = $("#shareMTDYear").val() + '-' + $("#shareMTDMonth").val() + '-' + lastdayofmonth;
+            console.log(fromdate);
+            console.log(todate);
+            GetShares(fromdate, todate, 'share_mtd');
+        })
+
+        $("#shareQTDMonth, #shareQTDYear").change(function () {
+
+            var qtr = $("#shareQTDMonth").val();
+            var year = $("#shareQTDYear").val();
+            var fromdate ;
+            var todate;
+            if (qtr == "1") {
+                fromdate = year + '-04-01';
+                todate = year + '-06-30';
+            }
+            if (qtr == "2") {
+                fromdate = year + '-07-01';
+                todate = year + '-09-30';
+            }
+            if (qtr == "3") {
+                fromdate = year + '-10-01';
+                todate = year + '-12-31';
+            }
+            if (qtr == "4") {
+                fromdate = Number(year)+1 + '-01-01';
+                todate = Number(year) + 1 + '-03-31';
+                //alert(fromdate);
+            }
+
+           
+            GetShares(fromdate, todate, 'share_qtd');
+        })
+
+
+
+        $("#shareYTDYear").change(function () {
+
+           
+            var year = $("#shareYTDYear").val();
+            var fromdate;
+            var todate;
+            
+                fromdate = year + '-04-01';
+                todate = Number(year) + 1 + '-03-31';
+                //alert(fromdate);
+            
+
+            GetShares(fromdate, todate, 'share_ytd');
+        })
+
+
+
+
+        //get leads pie chart on change
+
+
+        $("#leadMTDMonth, #leadMTDYear").change(function () {
+            //alert();
+            var lastdayofmonth = lastday($("#leadMTDYear").val(), $("#leadMTDMonth").val())
+            //console.log(lastdayofmonth);
+            var fromdate = $("#leadMTDYear").val() + '-' + $("#leadMTDMonth").val() + '-01';
+            var todate = $("#leadMTDYear").val() + '-' + $("#leadMTDMonth").val() + '-' + lastdayofmonth;
+            console.log(fromdate);
+            console.log(todate);
+            GetLeads(fromdate, todate, 'leads_mtd');
+        })
+
+        $("#leadQTDMonth, #leadQTDYear").change(function () {
+
+            var qtr = $("#leadQTDMonth").val();
+            var year = $("#leadQTDYear").val();
+            var fromdate;
+            var todate;
+            if (qtr == "1") {
+                fromdate = year + '-04-01';
+                todate = year + '-06-30';
+            }
+            if (qtr == "2") {
+                fromdate = year + '-07-01';
+                todate = year + '-09-30';
+            }
+            if (qtr == "3") {
+                fromdate = year + '-10-01';
+                todate = year + '-12-31';
+            }
+            if (qtr == "4") {
+                fromdate = Number(year) + 1 + '-01-01';
+                todate = Number(year) + 1 + '-03-31';
+                //alert(fromdate);
+            }
+
+
+            GetLeads(fromdate, todate, 'leads_qtd');
+        })
+
+
+
+        $("#leadYTDYear").change(function () {
+
+
+            var year = $("#leadYTDYear").val();
+            var fromdate;
+            var todate;
+
+            fromdate = year + '-04-01';
+            todate = Number(year) + 1 + '-03-31';
+            //alert(fromdate);
+
+
+            GetLeads(fromdate, todate, 'leads_ytd');
+        })
+
+      
+        //console.log(typeof(result));
+    }); //end document.ready block
+
+
+    function GetShares(dt1, dt2, prm1) {
+        var events = new Array();
+        //debugger;
+        $.ajax({
+            url: '@Url.Action("GetPieChartShares","Marketing")',
+            dataType: 'json',
+            data: { fromdate: dt1, todate: dt2 },
+                success: function (response) {
+
+                    // Build the chart
+                    Highcharts.chart(prm1, {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            styledMode: true,
+                            ///className: false,
+                            type: 'pie'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        title: {
+                            text: 'Shares Activity'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.short_name}: <b>{point.percentage:.1f}%</b>'
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                //colors: pieColors,
+                                showInLegend: true,
+
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.short_name}</b><br>{point.percentage:.1f} %',
+                                    distance: -50,
+
+                                    filter: {
+                                        property: 'percentage',
+                                        operator: '>',
+                                        value: 4
+                                    }
+                                }
+                            }
+                        },
+                        series: [response]
+
+                    });
+
+                },//end success block
+                error: function (xhr, status) {
+                    alert(response.msg);
+                }
+        }
+        );//end ajax block
+
+    }
+
+
+    function GetLeads(dt1, dt2, prm1) {
+        var events = new Array();
+        //debugger;
+        $.ajax({
+            url: '@Url.Action("GetPieChartLeads","Marketing")',
+            dataType: 'json',
+            data: { fromdate: dt1, todate: dt2 },
+                success: function (response) {
+                    // Build the chart
+                    Highcharts.chart(prm1, {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            styledMode: true,
+                            ///className: false,
+                            type: 'pie'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        title: {
+                            text: 'Leads Activity'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.short_name}: <b>{point.percentage:.1f}%</b>'
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                //colors: pieColors,
+                                showInLegend: true,
+
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.short_name}</b><br>{point.percentage:.1f} %',
+                                    distance: -50,
+
+                                    filter: {
+                                        property: 'percentage',
+                                        operator: '>',
+                                        value: 4
+                                    }
+                                }
+                            }
+                        },
+                        series: [response]
+
+                    });
+
+                },//end success block
+                error: function (xhr, status) {
+                    alert(response.msg);
+                }
+        }
+        );//end ajax block
+
+    }
+
+   
+
+
+
+    $(function () {
+        "use strict";
+       // chart4
+        // Make monochrome colors
+        var pieColors = (function () {
+            var colors = [],
+                base = Highcharts.getOptions().colors[0],
+                i;
+            for (i = 0; i < 10; i += 1) {
+                // Start out with a darkened base color (negative brighten), and end
+                // up with a much brighter color
+                colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+            }
+            return colors;
+        }());
+
+
+      
+
+
+    });
+</script>
+
+     
+
+    <script src="~/Content/highcharts/js/highcharts.js"></script>
+    <script src="~/Content/highcharts/js/highcharts-more.js"></script>
+    <script src="~/Content/highcharts/js/variable-pie.js"></script>
+    <script src="~/Content/highcharts/js/solid-gauge.js"></script>
+    <script src="~/Content/highcharts/js/highcharts-3d.js"></script>
+    <script src="~/Content/highcharts/js/cylinder.js"></script>
+    <script src="~/Content/highcharts/js/funnel3d.js"></script>
+    <script src="~/Content/highcharts/js/exporting.js"></script>
+    <script src="~/Content/highcharts/js/export-data.js"></script>
+    <script src="~/Content/highcharts/js/accessibility.js"></script>
+
+
+
+
+
+</body>
+</html>

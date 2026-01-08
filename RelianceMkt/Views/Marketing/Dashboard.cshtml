@@ -1,0 +1,964 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reliance - Creative Campaign Dashboard</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
+    <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
+    <link href="~/Content/css/style.css" rel="stylesheet">
+    <link href="~/Content/css/header.css" rel="stylesheet">
+    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+[data-sidebar-style="mini"] .nav-header .logo-abbr {
+    display: block;
+    max-width: 240px;
+}
+
+.bg-gray {
+    background-color: #ccc !important;
+}
+
+.bg-yellow {
+    background-color: #fdbf4f !important;
+}
+
+/*========password reset=========*/
+.reset-btn {
+    background-color: #4CAF50; /* green background */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.reset-btn i {
+    margin-right: 5px; /* icon ke aur text ke beech gap */
+}
+
+/* Custom styles for dashboard cards */
+.widget-stat.card {
+    transition: all 0.3s ease;
+}
+
+.widget-stat.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-body .media {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-body .media-body {
+    flex: 1;
+}
+
+.card-body h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.card-body p {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Sidebar and header toggle styles */
+.deznav, .nav-header {
+    transition: transform 0.3s ease-in-out;
+    width: 250px; /* Adjust to match your sidebar/header width */
+    position: fixed;
+    left: 0;
+}
+
+.nav-header {
+    top: 0;
+    z-index: 1000; /* Ensure header is above sidebar */
+    height: 95px;
+}
+
+.deznav {
+    top: 0px; /* Start below header */
+    /* height: calc(100vh - 95px); */ /* Full height minus header */
+    margin-bottom: 1rem;
+}
+
+.sidebar-hidden {
+    transform: translateX(-100%); /* Slide out of view */
+}
+
+/* Content adjustment when sidebar and header are hidden */
+.content-body {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 250px; /* Match sidebar width */
+}
+
+.sidebar-hidden ~ .content-body {
+    margin-left: 0;
+}
+
+/* Hamburger to X animation */
+.hamburger.active .line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active .line:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active .line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Ensure hamburger is clickable */
+.nav-control .hamburger {
+    cursor: pointer;
+}
+
+/* Ensure header (navbar) stays in place */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0; /* Start from left edge when sidebar is hidden */
+    width: 100%;
+    z-index: 999;
+    transition: padding-left 0.3s ease-in-out;
+    padding-left: 250px; /* Match sidebar width */
+}
+
+.sidebar-hidden ~ .header {
+    padding-left: 0;
+}
+
+@*/* Ensure sidebar and header are visible by default on larger screens */
+@media (min-width: 768px) {
+    .deznav, .nav-header {
+        transform: translateX(0);
+    }
+}
+
+/* Optional: Hide sidebar and header by default on mobile */
+@media (max-width: 767px) {
+    .deznav, .nav-header {
+        transform: translateX(-100%);
+    }
+    .content-body {
+        margin-left: 0;
+    }
+    .header {
+        padding-left: 0;
+    }
+}*@
+
+/* ===== Sidebar Collapse Fix ===== */
+
+/* When sidebar is collapsed */
+.deznav.hide {
+    width: 80px !important; /* only icons visible */
+    overflow: hidden;
+}
+
+/* Hide sidebar menu text when collapsed */
+.deznav.hide .metismenu li a span,
+.deznav.hide .metismenu li a .menu-text,
+.deznav.hide .metismenu li a span:not(i) {
+    display: none !important;
+}
+
+/* Center icons when collapsed */
+.deznav.hide .metismenu li a i {
+    margin: 0 auto;
+    font-size: 1.3rem;
+    display: block;
+    text-align: center;
+}
+
+/* Adjust logo when collapsed */
+.nav-header.hide .logo-abbr {
+    max-width: 70px !important;
+}
+
+.nav-header.hide a img {
+    margin-left: 5px;
+}
+
+/* Content adjustment when sidebar collapses */
+.content-body.full {
+    margin-left: 80px !important; /* same as collapsed sidebar width */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Header alignment when sidebar collapses */
+.nav-header.hide {
+    width: 80px !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.header {
+    transition: padding-left 0.3s ease-in-out;
+}
+
+.header.full,
+.header.hide {
+    padding-left: 80px !important; /* match collapsed sidebar width */
+}
+
+/* Smooth animation */
+.deznav,
+.nav-header,
+.content-body {
+    transition: all 0.3s ease-in-out;
+}
+
+/* ===== NEW ADDITIONS BELOW (for your request) ===== */
+
+/* Hide only logo image, keep hamburger visible and centered */
+.nav-header.hide a img {
+    display: none !important;
+}
+
+.nav-header.hide .nav-control {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    width: 70%;
+}
+
+/* Keep hamburger centered in collapsed header */
+.nav-header.hide .nav-control .hamburger {
+    margin: 0 auto;
+}
+
+/* Hide copyright section when sidebar collapsed */
+.deznav.hide .copyright {
+    display: none !important;
+}
+
+/* Adjust nav-header width properly when collapsed */
+.nav-header.hide {
+    width: 80px !important;
+    overflow: hidden;
+    text-align: center;
+}
+
+        .nav-header.hide .nav-control {
+            cursor: pointer;
+            position: absolute;
+            right: 0.7rem;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            font-size: 1.4rem;
+            padding: 2px 0.5rem 0;
+            border-radius: 2px;
+        }
+
+</style>
+
+
+
+    <!--<style>
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
+
+        .bg-gray {
+            background-color: #ccc !important;
+        }
+
+        .bg-yellow {
+            background-color: #fdbf4f !important;
+        }
+
+        /*========password reset=========*/
+        .reset-btn {
+            background-color: #4CAF50; /* green background */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .reset-btn i {
+            margin-right: 5px; /* icon ke aur text ke beech gap */
+        }
+
+        /* Custom styles for dashboard cards */
+        .widget-stat.card {
+            transition: all 0.3s ease;
+        }
+
+        .widget-stat.card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body .media {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-body .media-body {
+            flex: 1;
+        }
+
+        .card-body h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .card-body p {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Sidebar and header toggle styles */
+        .deznav, .nav-header {
+            transition: transform 0.3s ease-in-out;
+            width: 250px; /* Adjust to match your sidebar/header width */
+            position: fixed;
+            left: 0;
+        }
+
+        .nav-header {
+            top: 0;
+            z-index: 1000; /* Ensure header is above sidebar */
+            height: 95px;
+        }
+
+        .deznav {
+            top: 0px; /* Start below header */
+            /* height: calc(100vh - 95px); */ /* Full height minus header */
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-hidden {
+            transform: translateX(-100%); /* Slide out of view */
+        }
+
+        /* Content adjustment when sidebar and header are hidden */
+        .content-body {
+            transition: margin-left 0.3s ease-in-out;
+            margin-left: 250px; /* Match sidebar width */
+        }
+
+        .sidebar-hidden ~ .content-body {
+            margin-left: 0;
+        }
+
+        /* Hamburger to X animation */
+        .hamburger.active .line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active .line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active .line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Ensure hamburger is clickable */
+        .nav-control .hamburger {
+            cursor: pointer;
+        }
+
+        /* Ensure header (navbar) stays in place */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0; /* Start from left edge when sidebar is hidden */
+            width: 100%;
+            z-index: 999;
+            transition: padding-left 0.3s ease-in-out;
+            padding-left: 250px; /* Match sidebar width */
+        }
+
+        .sidebar-hidden ~ .header {
+            padding-left: 0;
+        }-->
+    @*/* Ensure sidebar and header are visible by default on larger screens */
+        @media (min-width: 768px) {
+            .deznav, .nav-header {
+                transform: translateX(0);
+            }
+        }
+
+        /* Optional: Hide sidebar and header by default on mobile */
+        @media (max-width: 767px) {
+            .deznav, .nav-header {
+                transform: translateX(-100%);
+            }
+            .content-body {
+                margin-left: 0;
+            }
+            .header {
+                padding-left: 0;
+            }
+        }*@
+
+    <!--/* ===== Sidebar Collapse Fix ===== */
+
+        /* When sidebar is collapsed */
+        .deznav.hide {
+            width: 80px !important; /* only icons visible */
+            overflow: hidden;
+        }
+
+            /* Hide sidebar menu text when collapsed */
+            .deznav.hide .metismenu li a span,
+            .deznav.hide .metismenu li a .menu-text,
+            .deznav.hide .metismenu li a span:not(i) {
+                display: none !important;
+            }
+
+            /* Center icons when collapsed */
+            .deznav.hide .metismenu li a i {
+                margin: 0 auto;
+                font-size: 1.3rem;
+                display: block;
+                text-align: center;
+            }
+
+        /* Adjust logo when collapsed */
+        .nav-header.hide .logo-abbr {
+            max-width: 70px !important;
+        }
+
+        .nav-header.hide a img {
+            margin-left: 5px;
+        }
+
+        /* Content adjustment when sidebar collapses */
+        .content-body.full {
+            margin-left: 80px !important; /* same as collapsed sidebar width */
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Header alignment when sidebar collapses */
+        .nav-header.hide {
+            width: 80px !important;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .header {
+            transition: padding-left 0.3s ease-in-out;
+        }
+
+            .header.full,
+            .header.hide {
+                padding-left: 80px !important; /* match collapsed sidebar width */
+            }
+
+        /* Smooth animation */
+        .deznav,
+        .nav-header,
+        .content-body {
+            transition: all 0.3s ease-in-out;
+        }
+
+    </style>-->
+</head>
+
+<body>
+    <!--*******************
+        Preloader start
+    ********************-->
+    @*<div id="preloader">
+            <div class="sk-three-bounce">
+                <div class="sk-child sk-bounce1"></div>
+                <div class="sk-child sk-bounce2"></div>
+                <div class="sk-child sk-bounce3"></div>
+            </div>
+        </div>*@
+    <!--*******************
+        Preloader end
+    ********************-->
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header" style="background: #ff8f16; height: 95px;">
+            <a href="~/Marketing/Dashboard">
+                <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; max-width: 250px;">
+            </a>
+            <div class="nav-control" style="background:#fff">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+        <!--**********************************
+            Header start
+        ***********************************-->
+        <div class="header" style="height: 95px; background: #5856CE;">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                        <div class="header-left">
+                            <!-- Search bar commented out -->
+                        </div>
+                        <ul class="navbar-nav header-right">
+                            <li class="nav-item dropdown header-profile side">
+                                <a class="nav-link" href="#">
+                                    <div class="header-info">
+                                        <span>Hello, <strong>Samuel</strong></span>
+                                    </div>
+                                    <img src="~/Content/images/profile/pic1.jpg" width="20" alt="" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!--**********************************
+            Header end
+        ***********************************-->
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        <div class="deznav"style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh;">
+
+            <div class="deznav-scroll">
+                @{
+                    var userRole = Session["role"] as string;
+                    var subAdminType = Session["subadmin_type"] as string;
+
+                    // Role checks
+                    bool isAdmin = userRole == "Admin";
+                    bool isSubAdmin = userRole == "SubAdmin";
+                    bool isReadOnlySubAdmin = (isSubAdmin && subAdminType == "ReadOnly") || userRole == "Sub-Admin(Read-Only)";
+                    bool isCampaignCreator = (isSubAdmin && subAdminType == "CampaignCreator") || userRole == "Sub-Admin(Campaign Creator)";
+                    bool showAll = isAdmin || isSubAdmin;
+                }
+
+                <ul class="metismenu" id="menu">
+                    @if (isCampaignCreator || isReadOnlySubAdmin || isAdmin || isSubAdmin)
+                    {
+                        <li>
+                            <a href="~/Marketing/Dashboard" aria-expanded="false">
+                                <i class="flaticon-381-networking"></i> <span>Dashboard </span>
+</a>
+                        </li>
+                    }
+                    @if (isAdmin)
+                    {
+                        <li>
+                            <a href="~/Marketing/AddSubAdmin" aria-expanded="false">
+                                <i class="fas fa-user-cog"></i>  <span>Add SubAdmin </span>
+</a>
+                        </li>
+                        <li>
+                            <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                                <i class="flaticon-381-settings"></i> <span> Master </span>
+</a>
+                            <ul aria-expanded="false">
+                                <li><a href="~/Marketing/ChannelList">Channels</a></li>
+                                <li><a href="~/Marketing/CampaignCategoryList">Categories</a></li>
+                                <li><a href="~/Marketing/campaignlist">Campaigns</a></li>
+                                <li><a href="~/Marketing/subcampaignlist">Sub-Campaigns</a></li>
+                                <li><a href="~/Marketing/landingpagelist">Landing Page</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (isAdmin || isSubAdmin || isCampaignCreator)
+                    {
+                        <li>
+                            <a href="~/Marketing/campaignMult" aria-expanded="false">
+                                <i class="flaticon-381-notepad"></i>  <span>Campaign </span>
+</a>
+                        </li>
+                        <li>
+                            <a href="~/Marketing/newcampaign" aria-expanded="false">
+                                <i class="flaticon-381-plus"></i> <span> New Campaign </span>
+</a>
+                        </li>
+                    }
+                    @if (isAdmin || isCampaignCreator || isSubAdmin || isReadOnlySubAdmin)
+                    {
+                        <li>
+                            <a class="has-arrow ai-icon" href="#" aria-expanded="false">
+                                <i class="bi bi-file-earmark-text"></i>  <span>Report </span>
+</a>
+                            <ul aria-expanded="false">
+                                <li><a href="~/Marketing/LeadCampaign">Lead Campaign</a></li>
+                                <li><a href="~/Marketing/CreativeWise">Creative Wise</a></li>
+                                <li><a href="~/Marketing/AdminSharecount">Sharecount</a></li>
+                                <li><a href="~/Marketing/hotleads">Hot Leads</a></li>
+                                <li><a href="~/Marketing/DateWiseShare">Share</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (isAdmin || isSubAdmin || isCampaignCreator)
+                    {
+                        <li>
+                            <a href="~/Marketing/CentralBlast" aria-expanded="false">
+                                <i class="flaticon-381-share text-bg-dark me-2"></i>  <span>Central Blast </span>
+</a>
+                        </li>
+                    }
+                    @if (isAdmin || isSubAdmin || isCampaignCreator || isReadOnlySubAdmin)
+                    {
+                        <li>
+                            <a href="~/Marketing/ResetPassword" aria-expanded="false">
+                                <i class="fa fa-refresh"></i>  <span>Reset Password </span>
+</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="~/Marketing/Logout" aria-expanded="false">
+                            <i class="flaticon-381-exit"></i> <span> Logout </span>
+</a>
+                    </li>
+                </ul>
+                <div class="copyright">
+                    <br />© All Rights Reserved By Reliance
+
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body" style=" margin-top: 3rem;">
+            <!-- row -->
+            <div class="container-fluid">
+                <div class="form-head d-flex mb-4 align-items-start">
+                    <div class="mr-auto d-none d-lg-block">
+                        <h2 class="text-black font-w600 mb-1">Dashboard</h2>
+                        <p class="mb-0">Welcome to Creative Campaign Dashboard</p>
+                    </div>
+                    <div class="d-none d-lg-flex align-items-center">
+                        <div class="text-right">
+                            @Html.Partial("_PartialDateTime")
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-xxl-12">
+                        <div class="row">
+                            <!-- Categories Card -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                @if (userRole == "Admin")
+                                {
+                                    <a href="@Url.Action("CampaignCategoryList", "Marketing")" style="text-decoration:none;">
+                                        <div class="widget-stat card bg-gray h-100">
+                                            <div class="card-body p-4">
+                                                <div class="media align-items-center">
+                                                    <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                    <div class="media-body text-info text-right">
+                                                        <p class="mb-1">Categories</p>
+                                                        <h3 class="text-info">@ViewData["categories"]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="widget-stat card bg-gray h-100">
+                                        <div class="card-body p-4">
+                                            <div class="media align-items-center">
+                                                <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                <div class="media-body text-info text-right">
+                                                    <p class="mb-1">Categories</p>
+                                                    <h3 class="text-info">@ViewData["categories"]</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Campaign Card -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                @if (userRole == "Admin")
+                                {
+                                    <a href="@Url.Action("campaignMult", "Marketing")" style="text-decoration:none;">
+                                        <div class="widget-stat card bg-yellow h-100">
+                                            <div class="card-body p-4">
+                                                <div class="media align-items-center">
+                                                    <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                    <div class="media-body text-info text-right">
+                                                        <p class="mb-1">Campaign</p>
+                                                        <h3 class="text-info">@ViewData["campaigns"]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="widget-stat card bg-yellow h-100">
+                                        <div class="card-body p-4">
+                                            <div class="media align-items-center">
+                                                <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                <div class="media-body text-info text-right">
+                                                    <p class="mb-1">Campaign</p>
+                                                    <h3 class="text-info">@ViewData["campaigns"]</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Sub Campaign Card -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                @if (userRole == "Admin")
+                                {
+                                    <a href="@Url.Action("subcampaignlist", "Marketing")" style="text-decoration:none;">
+                                        <div class="widget-stat card bg-info h-100">
+                                            <div class="card-body p-4">
+                                                <div class="media align-items-center">
+                                                    <span class="mr-3"><i class="la la-users"></i></span>
+                                                    <div class="media-body text-white text-right">
+                                                        <p class="mb-1">Sub Campaign</p>
+                                                        <h3 class="text-white">@ViewData["subcampaigns"]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="widget-stat card bg-info h-100">
+                                        <div class="card-body p-4">
+                                            <div class="media align-items-center">
+                                                <span class="mr-3"><i class="la la-users"></i></span>
+                                                <div class="media-body text-white text-right">
+                                                    <p class="mb-1">Sub Campaign</p>
+                                                    <h3 class="text-white">@ViewData["subcampaigns"]</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Creatives Card -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                @if (userRole == "Admin")
+                                {
+                                    <a href="@Url.Action("CreativeWise", "Marketing")" style="text-decoration:none;">
+                                        <div class="widget-stat card bg-warning h-100">
+                                            <div class="card-body p-4">
+                                                <div class="media align-items-center">
+                                                    <span class="mr-3"><i class="la la-users"></i></span>
+                                                    <div class="media-body text-white text-right">
+                                                        <p class="mb-1">Creatives</p>
+                                                        <h3 class="text-white">@ViewData["creatives"]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="widget-stat card bg-warning h-100">
+                                        <div class="card-body p-4">
+                                            <div class="media align-items-center">
+                                                <span class="mr-3"><i class="la la-users"></i></span>
+                                                <div class="media-body text-white text-right">
+                                                    <p class="mb-1">Creatives</p>
+                                                    <h3 class="text-white">@ViewData["creatives"]</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Total Hot Leads Card -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                @if (userRole == "Admin")
+                                {
+                                    <a href="@Url.Action("HotLeads", "Marketing")" style="text-decoration:none;">
+                                        <div class="widget-stat card bg-gray h-100">
+                                            <div class="card-body p-4">
+                                                <div class="media align-items-center">
+                                                    <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                    <div class="media-body text-info text-right">
+                                                        <p class="mb-1">Total Hot Leads</p>
+                                                        <h3 class="text-info">@ViewData["totalleads"]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="widget-stat card bg-gray h-100">
+                                        <div class="card-body p-4">
+                                            <div class="media align-items-center">
+                                                <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                <div class="media-body text-info text-right">
+                                                    <p class="mb-1">Total Hot Leads</p>
+                                                    <h3 class="text-info">@ViewData["totalleads"]</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Total Shares Card -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                @if (userRole == "Admin")
+                                {
+                                    <a href="@Url.Action("AdminSharecount", "Marketing")" style="text-decoration:none;">
+                                        <div class="widget-stat card bg-yellow h-100">
+                                            <div class="card-body p-4">
+                                                <div class="media align-items-center">
+                                                    <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                    <div class="media-body text-info text-right">
+                                                        <p class="mb-1">Total Shares</p>
+                                                        <h3 class="text-info">@ViewData["totalshare"]</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="widget-stat card bg-yellow h-100">
+                                        <div class="card-body p-4">
+                                            <div class="media align-items-center">
+                                                <span class="mr-3 text-info"><i class="flaticon-381-user"></i></span>
+                                                <div class="media-body text-info text-right">
+                                                    <p class="mb-1">Total Shares</p>
+                                                    <h3 class="text-info">@ViewData["totalshare"]</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by Reliance 2020</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <script src="~/Content/vendor/global/global.min.js"></script>
+    <script src="~/Content/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script src="~/Content/js/deznav-init.js"></script>
+    <script src="~/Content/vendor/apexchart/apexchart.js"></script>
+    <script src="~/Content/vendor/peity/jquery.peity.min.js"></script>
+    <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+    <script src="~/Content/js/dashboard/compaign.js"></script>
+    <script src="~/Content/js/custom.min.js"></script>
+    @*<script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const hamburger = document.querySelector('.hamburger');
+                const sidebar = document.querySelector('.deznav');
+                const navHeader = document.querySelector('.nav-header');
+
+                hamburger.addEventListener('click', function () {
+                    sidebar.classList.toggle('sidebar-hidden');
+                    navHeader.classList.toggle('sidebar-hidden');
+                    hamburger.classList.toggle('active');
+                });
+            });
+        </script>*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.querySelector(".nav-control");
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header"); // 👈 header bhi liya
+            const content = document.querySelector(".content-body");
+
+            toggleBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("hide");
+                header.classList.toggle("hide");  // 👈 header bhi toggle hoga
+                content.classList.toggle("full");
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.querySelector(".deznav");
+            const header = document.querySelector(".nav-header");
+            const content = document.querySelector(".content-body");
+
+            function autoCollapse() {
+                if (window.innerWidth <= 991.98) {
+                    sidebar.classList.add("hide");
+                    header.classList.add("hide");
+                    content.classList.add("full");
+                } else {
+                    sidebar.classList.remove("hide");
+                    header.classList.remove("hide");
+                    content.classList.remove("full");
+                }
+            }
+
+            // Run on load
+            autoCollapse();
+
+            // Run on resize
+            window.addEventListener("resize", autoCollapse);
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿@{ 
+    decimal creative = 1;
+    
+    <div id="accordion-@ViewBag.cam_id" class="accordion accordion-primary">
+        @foreach (var campaign in ViewBag.lstpcampaign)
+        {
+            <div class="accordion__item">
+                <div class="accordion__header rounded-lg" data-toggle="collapse" data-target="#default_collapse-@campaign.campaign_id">
+                    <span class="accordion__header--text">@campaign.campaign_name</span>
+                    <span class="accordion__header--indicator"></span>
+                </div>
+                <div id="default_collapse-@campaign.campaign_id" class="collapse accordion__body @if (creative == 1) { @Html.Raw("show");
+                }" data-parent="#accordion-@ViewBag.cam_id">
+                    <div class="accordion__body--text">
+
+                        @{
+                            Html.RenderAction("GetUpCreative", "Marketing", new { @cam_id = campaign.campaign_id });
+                            creative = creative + 1;
+                         }
+                        
+                        
+                    </div>
+                </div>
+            </div>
+          }
+
+        </div>
+        
+}

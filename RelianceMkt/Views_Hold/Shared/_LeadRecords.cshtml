@@ -1,0 +1,61 @@
+﻿
+
+
+@if (ViewBag.rqstchannel.ToString().Trim().Length == 0 && ViewBag.rqstzone.ToString().Trim().Length == 0)
+{
+    <tr>
+        @*<td>@ViewBag.id</td>*@
+        <td>@ViewBag.channel</td>
+        <td>@ViewBag.zone</td>
+        <td>@ViewBag.sapcode</td>
+        <td>@ViewBag.sharecount</td>
+        <td>@ViewBag.lstLeads</td>
+
+    </tr>
+    
+}
+else if (ViewBag.rqstchannel != null && ViewBag.rqstzone.ToString().Trim().Length == 0)
+{
+    if (ViewBag.rqstchannel == ViewBag.channel)
+    {
+        <tr>
+            @*<td>@ViewBag.id</td>*@
+            <td>@ViewBag.channel</td>
+            <td>@ViewBag.zone</td>
+            <td>@ViewBag.sapcode</td>
+            <td>@ViewBag.sharecount</td>
+            <td>@ViewBag.lstLeads</td>
+
+        </tr>
+    }
+}
+else if (ViewBag.rqstchannel.ToString().Trim().Length == 0 && ViewBag.rqstzone != null)
+{
+    if (ViewBag.rqstzone == ViewBag.zone)
+    {
+        <tr>
+            @*<td>@ViewBag.id</td>*@
+            <td>@ViewBag.channel</td>
+            <td>@ViewBag.zone</td>
+            <td>@ViewBag.sapcode</td>
+            <td>@ViewBag.sharecount</td>
+            <td>@ViewBag.lstLeads</td>
+
+        </tr>
+    }
+}
+else if (ViewBag.rqstchannel != null && ViewBag.rqstzone != null)
+{
+    if (ViewBag.rqstzone == ViewBag.zone && ViewBag.rqstchannel == ViewBag.channel)
+    {
+        <tr>
+            @*<td>@ViewBag.id</td>*@
+            <td>@ViewBag.channel</td>
+            <td>@ViewBag.zone</td>
+            <td>@ViewBag.sapcode</td>
+            <td>@ViewBag.sharecount</td>
+            <td>@ViewBag.lstLeads</td>
+
+        </tr>
+    }
+}

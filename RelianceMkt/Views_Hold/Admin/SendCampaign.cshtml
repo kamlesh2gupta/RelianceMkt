@@ -1,0 +1,56 @@
+﻿@model RelianceMkt.Models.Digimyin_Send_Campaign
+@{
+    ViewBag.Title = "SendCampaign";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+            
+<div class="container-fluid">
+    <div class="row">
+        
+        <div class="col-xl-12 col-xxl-12 col-lg-12">
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-success solid alert-square"><strong>Message:- </strong> @ViewBag.Message</div>
+            }
+            <div class="row">
+                <div class="col-xl-12">
+                    @using (Html.BeginForm("ImportExcel", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="card">
+                            <div class="card-header pb-0 border-0">
+                                <h3 class="fs-20 text-black">Send campaign from excel</h3>
+                                <a href="~/Content/docs/Sample.xlsx" class="btn btn-danger btn-sm pull-right">Download Sample Data</a>
+                            </div>
+                            <div class="card-body">
+
+
+                                <div class="form-row">
+                                    <div class="form-group col-xl-6">
+                                        <label class="text-black font-w500 mb-3">Select Campaign:</label>
+                                        <span class="text-danger ml-1">*</span>
+                                        @Html.DropDownListFor(x => x.Campaign_Master_Id, new SelectList(ViewBag.lstcampaign, "campaign_master_id", "campaign_master_creative_caption"),
+                                         "Select Campaign", new { @class = "form-control", @required = "true" })
+
+
+                                    </div>
+                                    <div class="form-group col-xl-3">
+                                        <label class="text-black font-w500 mb-3">Choose File:</label>
+                                        <span class="text-danger ml-1">*</span>
+                                        @*@Html.TextBoxFor("ExcelFile", new { @type = "file", @class = "form-control", @required = "true" }) *@
+                                        <input type="file" id="file" name="file" class="form-control" />
+
+                                    </div>
+                                    <div class="form-group col-xl-3" style="padding-top:38px;">
+                                        <button type="submit" class="btn btn-primary ml-3">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+

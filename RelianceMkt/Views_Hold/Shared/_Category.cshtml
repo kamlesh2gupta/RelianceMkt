@@ -1,0 +1,20 @@
+﻿
+
+
+<div id="navpills2-@ViewBag.cat_id" class="tab-pane  @if (ViewBag.cat_id == 1){ @Html.Raw("active");}">
+    <div class="row">
+        <div class="col-md-12">
+            @{
+                decimal cam = 1;
+                foreach (var category in ViewBag.lstpCategory)
+                {
+                    
+                        Html.RenderAction("GetCampaign", "Marketing", new { @cam_cat_id = category.campaign_category_id });
+                    
+                    
+                }
+            }
+        </div>
+    </div>
+</div>
+
