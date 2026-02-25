@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
 using System.IO.Ports;
@@ -149,62 +150,151 @@ namespace RelianceMkt.Controllers
 
         //======================== login ============kamlesh========
 
+        //[HttpPost]
+        //public ActionResult Index(authentication data)
+        //{
+        //    // Query to check username, password
+        //    var qry = db.authentications
+        //        .FirstOrDefault(x => x.au_username == data.au_username && x.au_password == data.au_password);
+
+        //    if (qry != null)
+        //    {
+        //        // Store user details in session
+        //        Session["userid"] = qry.au_id.ToString();
+        //        Session["username"] = qry.au_username;
+        //        Session["role"] = qry.Role;
+        //        Session["subadmin_type"] = ""; // reset initially
+
+        //        // Admin and SubAdmin (normal)
+        //        if (qry.Role == "Admin" || qry.Role == "SubAdmin")
+        //        {
+        //            return RedirectToAction("Dashboard", "Marketing");
+        //        }
+        //        // Sub-Admin(Read-Only)
+        //        else if (qry.Role == "Sub-Admin(Read-Only)")
+        //        {
+        //            if (string.IsNullOrEmpty(qry.Subchannel))
+        //            {
+        //                TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
+        //                return View();
+        //            }
+
+        //            Session["subadmin_type"] = "ReadOnly";
+        //            Session["subchannel"] = qry.Subchannel; // Only for Read-Only
+
+        //            return RedirectToAction("Dashboard", "Marketing");
+        //        }
+        //        // Sub-Admin(Campaign Creator)
+        //        else if (qry.Role == "Sub-Admin(Campaign Creator)")
+        //        {
+        //            Session["subadmin_type"] = "CampaignCreator";
+        //            // ❌ No subchannel check here
+
+        //            return RedirectToAction("Dashboard", "Marketing");
+        //        }
+        //        else
+        //        {
+        //            TempData["warning"] = "Unauthorized role!";
+        //            return View();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TempData["warning"] = "Invalid credentials!";
+        //        return View();
+        //    }
+        //}
+
+
         [HttpPost]
         public ActionResult Index(authentication data)
         {
-            // Query to check username, password
+            // 1️⃣ User check
             var qry = db.authentications
-                .FirstOrDefault(x => x.au_username == data.au_username && x.au_password == data.au_password);
+                .FirstOrDefault(x => x.au_username == data.au_username
+                                  && x.au_password == data.au_password);
 
-            if (qry != null)
-            {
-                // Store user details in session
-                Session["userid"] = qry.au_id.ToString();
-                Session["username"] = qry.au_username;
-                Session["role"] = qry.Role;
-                Session["subadmin_type"] = ""; // reset initially
-
-                // Admin and SubAdmin (normal)
-                if (qry.Role == "Admin" || qry.Role == "SubAdmin")
-                {
-                    return RedirectToAction("Dashboard", "Marketing");
-                }
-                // Sub-Admin(Read-Only)
-                else if (qry.Role == "Sub-Admin(Read-Only)")
-                {
-                    if (string.IsNullOrEmpty(qry.Subchannel))
-                    {
-                        TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
-                        return View();
-                    }
-
-                    Session["subadmin_type"] = "ReadOnly";
-                    Session["subchannel"] = qry.Subchannel; // Only for Read-Only
-
-                    return RedirectToAction("Dashboard", "Marketing");
-                }
-                // Sub-Admin(Campaign Creator)
-                else if (qry.Role == "Sub-Admin(Campaign Creator)")
-                {
-                    Session["subadmin_type"] = "CampaignCreator";
-                    // ❌ No subchannel check here
-
-                    return RedirectToAction("Dashboard", "Marketing");
-                }
-                else
-                {
-                    TempData["warning"] = "Unauthorized role!";
-                    return View();
-                }
-            }
-            else
+            // ❌ Invalid credentials
+            if (qry == null)
             {
                 TempData["warning"] = "Invalid credentials!";
                 return View();
             }
+
+            // 2️⃣ SESSION SET (IMPORTANT)
+            Session["userid"] = qry.au_id;            // ❗ string में convert मत करो
+            Session["username"] = qry.au_username;
+            Session["role"] = qry.Role;
+            Session["subadmin_type"] = "";
+            Session["subchannel"] = null;
+
+            // 3️⃣ ROLE BASED REDIRECT
+
+            // ✅ Admin / SubAdmin (Normal)
+            if (qry.Role == "Admin" || qry.Role == "SubAdmin")
+            {
+                return RedirectToAction("Dashboard", "Marketing");
+            }
+
+            // ✅ Sub-Admin (Read Only)
+            if (qry.Role == "Sub-Admin(Read-Only)")
+            {
+                if (string.IsNullOrEmpty(qry.Subchannel))
+                {
+                    TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
+                    Session.Clear(); // ❗ session clear
+                    return RedirectToAction("Index");
+                }
+
+                Session["subadmin_type"] = "ReadOnly";
+                Session["subchannel"] = qry.Subchannel;
+
+                return RedirectToAction("Dashboard", "Marketing");
+            }
+
+            // ✅ Sub-Admin (Campaign Creator)
+            //if (qry.Role == "Sub-Admin(Campaign Creator)")
+            //{
+            //    if (string.IsNullOrEmpty(qry.Subchannel))
+            //    {
+            //        TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
+            //        Session.Clear(); // ❗ session clear
+            //        return RedirectToAction("Index");
+            //    }
+
+            //    Session["subadmin_type"] = "CampaignCreator";
+            //    Session["subchannel"] = qry.Subchannel;
+
+            //    return RedirectToAction("Dashboard", "Marketing");
+            //}
+            if (qry.Role == "Sub-Admin(Campaign Creator)")
+            {
+                // Campaign Creator ke liye subchannel required nahi hai
+                Session["subadmin_type"] = "CampaignCreator";
+                Session["subchannel"] = qry.Subchannel; // null bhi ho sakta hai
+
+                return RedirectToAction("Dashboard", "Marketing");
+            }
+            else if (qry.Role == "Sub-Admin")
+            {
+                // Normal Sub-Admin ke liye subchannel required hai
+                if (string.IsNullOrWhiteSpace(qry.Subchannel))
+                {
+                    TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
+                    return RedirectToAction("Index");
+                }
+
+                Session["subadmin_type"] = "SubAdmin";
+                Session["subchannel"] = qry.Subchannel;
+
+                return RedirectToAction("Dashboard", "Marketing");
+            }
+
+            // ❌ Unknown / Unauthorized role
+            TempData["warning"] = "Unauthorized role!";
+            Session.Clear();
+            return RedirectToAction("Index");
         }
-
-
 
 
 
@@ -329,12 +419,13 @@ namespace RelianceMkt.Controllers
             else
             {
                 ViewBag.lstCategory = db.campaign_category
-                                        .Where(x => x.campaign_category_delflag == null
+                                         .Where(x => x.campaign_category_delflag == null
                                                  && x.Campaign_Category_Status == "0") // 👈 Only active
                                         .OrderBy(x => x.campaign_category_name.ToLower())
                                         .ToList();
 
-                return View();
+                //return View();
+                return View(new RelianceMkt.Models.campaign_category());
             }
         }
 
@@ -419,6 +510,7 @@ namespace RelianceMkt.Controllers
                                        }).ToList();
 
                 return View();
+                //return View(new campaign());
             }
         }
 
@@ -591,6 +683,8 @@ namespace RelianceMkt.Controllers
 ).ToList();
 
             return View();
+            //return View(new subcampaign());
+
 
         }
         [HttpPost]
@@ -640,14 +734,15 @@ namespace RelianceMkt.Controllers
         public void SetData()
         {
 
-           string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+            //string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
 
-           //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             SqlConnection con = new SqlConnection(Constr);
-            string SAPCODE = Session["SAPCODE"].ToString();
-            string LOGIN = Session["LOGIN"].ToString();
-            string TYPE = Session["TYPE"].ToString();
+            string SAPCODE = Session["SAPCODE"]?.ToString();
+            string LOGIN = Session["LOGIN"]?.ToString();
+            string TYPE = Session["TYPE"]?.ToString();
 
 
             decimal selfshare = 0;
@@ -968,191 +1063,199 @@ namespace RelianceMkt.Controllers
 
         //====================================================================
 
-//        public ActionResult UserDashboard(string REF_Key)
-//        {
-//            // ===============================
-//            // 1️⃣ Decode REF_Key → SAPCODE
-//            // ===============================
-//            Session["REF_KEY"] = REF_Key;
-//            string SAPCODE = string.Empty;
+        //        public ActionResult UserDashboard(string REF_Key)
+        //        {
+        //            // ===============================
+        //            // 1️⃣ Decode REF_Key → SAPCODE
+        //            // ===============================
+        //            Session["REF_KEY"] = REF_Key;
+        //            string SAPCODE = string.Empty;
 
-//            var valueBytes = Convert.FromBase64String(REF_Key);
-//            string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+        //            var valueBytes = Convert.FromBase64String(REF_Key);
+        //            string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
 
-//            foreach (var item in str_REFKEY.Split('&'))
-//            {
-//                if (item.Contains("SAPCODE"))
-//                {
-//                    SAPCODE = item.Split('=')[1];
-//                }
-//            }
+        //            foreach (var item in str_REFKEY.Split('&'))
+        //            {
+        //                if (item.Contains("SAPCODE"))
+        //                {
+        //                    SAPCODE = item.Split('=')[1];
+        //                }
+        //            }
 
-//            Session["SAPCODE"] = SAPCODE;
+        //            Session["SAPCODE"] = SAPCODE;
 
-//            // ===============================
-//            // 2️⃣ Get user from hierarchy
-//            // ===============================
-//            var userData = db.NEW_TEMP_HIERARCHY.FirstOrDefault(x =>
-//                x.X_ZM_EMP_CD == SAPCODE ||
-//                x.X_RM_EMP_EMP_CD == SAPCODE ||
-//                x.X_BM_EMP_CD == SAPCODE ||
-//                x.X_SM_EMP_CD == SAPCODE ||
-//                x.AGENT_CODE == SAPCODE
-//            );
+        //            // ===============================
+        //            // 2️⃣ Get user from hierarchy
+        //            // ===============================
+        //            var userData = db.NEW_TEMP_HIERARCHY.FirstOrDefault(x =>
+        //                x.X_ZM_EMP_CD == SAPCODE ||
+        //                x.X_RM_EMP_EMP_CD == SAPCODE ||
+        //                x.X_BM_EMP_CD == SAPCODE ||
+        //                x.X_SM_EMP_CD == SAPCODE ||
+        //                x.AGENT_CODE == SAPCODE
+        //            );
 
-//            if (userData != null)
-//            {
-//                if (userData.X_ZM_EMP_CD == SAPCODE)
-//                {
-//                    Session["TYPE"] = "ZM";
-//                    if (Session["LOGIN"] == null)
-//                        Session["LOGIN"] = "ZM";
-//                }
-//                else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
-//                {
-//                    Session["TYPE"] = "RM";
-//                    if (Session["LOGIN"] == null)
-//                        Session["LOGIN"] = "RM";
-//                }
-//                else if (userData.X_BM_EMP_CD == SAPCODE)
-//                {
-//                    Session["TYPE"] = "BM";
-//                    if (Session["LOGIN"] == null)
-//                        Session["LOGIN"] = "BM";
-//                }
-//                else if (userData.X_SM_EMP_CD == SAPCODE)
-//                {
-//                    Session["TYPE"] = "ARDM";
-//                    if (Session["LOGIN"] == null)
-//                        Session["LOGIN"] = "ARDM";
-//                }
-//                else if (userData.AGENT_CODE == SAPCODE)
-//                {
-//                    Session["TYPE"] = "AGENT";
-//                    if (Session["LOGIN"] == null)
-//                        Session["LOGIN"] = "AGENT";
-//                }
+        //            if (userData != null)
+        //            {
+        //                if (userData.X_ZM_EMP_CD == SAPCODE)
+        //                {
+        //                    Session["TYPE"] = "ZM";
+        //                    if (Session["LOGIN"] == null)
+        //                        Session["LOGIN"] = "ZM";
+        //                }
+        //                else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
+        //                {
+        //                    Session["TYPE"] = "RM";
+        //                    if (Session["LOGIN"] == null)
+        //                        Session["LOGIN"] = "RM";
+        //                }
+        //                else if (userData.X_BM_EMP_CD == SAPCODE)
+        //                {
+        //                    Session["TYPE"] = "BM";
+        //                    if (Session["LOGIN"] == null)
+        //                        Session["LOGIN"] = "BM";
+        //                }
+        //                else if (userData.X_SM_EMP_CD == SAPCODE)
+        //                {
+        //                    Session["TYPE"] = "ARDM";
+        //                    if (Session["LOGIN"] == null)
+        //                        Session["LOGIN"] = "ARDM";
+        //                }
+        //                else if (userData.AGENT_CODE == SAPCODE)
+        //                {
+        //                    Session["TYPE"] = "AGENT";
+        //                    if (Session["LOGIN"] == null)
+        //                        Session["LOGIN"] = "AGENT";
+        //                }
 
-//                // 🔥 Set user's channel
-//                Session["X_CHANNEL"] = userData.X_CHANNEL;
-//            }
-//            else
-//            {
-//                Session.Clear();
-//            }
+        //                // 🔥 Set user's channel
+        //                Session["X_CHANNEL"] = userData.X_CHANNEL;
+        //            }
+        //            else
+        //            {
+        //                Session.Clear();
+        //            }
 
-//            // ===============================
-//            // 🔔 3️⃣ Notifications (Channel + SAPCODE)
-//            // ===============================
-//            string userChannel = Convert.ToString(Session["X_CHANNEL"]);
+        //            // ===============================
+        //            // 🔔 3️⃣ Notifications (Channel + SAPCODE)
+        //            // ===============================
+        //            string userChannel = Convert.ToString(Session["X_CHANNEL"]);
 
-//            var notifications = db.UserNotifications
-//                .Where(n =>
-//                    n.SAPCode == SAPCODE &&
-//                    n.Channel_code == userChannel &&
-//                    n.IsRead == false)
-//                .OrderByDescending(n => n.CreatedDate)
-//                .ToList();
+        //            var notifications = db.UserNotifications
+        //                .Where(n =>
+        //                    n.SAPCode == SAPCODE &&
+        //                    n.Channel_code == userChannel &&
+        //                    n.IsRead == false)
+        //                .OrderByDescending(n => n.CreatedDate)
+        //                .ToList();
 
-//            ViewBag.Notifications = notifications;
-//            ViewBag.NotificationCount = notifications.Count;
+        //            ViewBag.Notifications = notifications;
+        //            ViewBag.NotificationCount = notifications.Count;
 
-//            // ===============================
-//            // 4️⃣ Existing Dashboard Data
-//            // ===============================
-//            SetData();
+        //            // ===============================
+        //            // 4️⃣ Existing Dashboard Data
+        //            // ===============================
+        //            SetData();
 
-//            // Share leaderboard
-//            ViewBag.ShareLeaderBoard = db.ENGAGE_SHARECOUNT.SqlQuery(@"
-//        SELECT TOP 10 * FROM (
-//            SELECT 
-//                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) SHC_ID,
-//                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) SHC_SHARECOUNT,
-//                SHC_SAPCODE,
-//                '' SHC_PLATEFORM,
-//                CAST('2022-01-01' AS DATE) SHC_DATE,
-//                CREATIVE_ID
-//            FROM ENGAGE_SHARECOUNT
-//            GROUP BY SHC_SAPCODE, CREATIVE_ID
-//        ) A").ToList<ENGAGE_SHARECOUNT>();
+        //            // Share leaderboard
+        //            ViewBag.ShareLeaderBoard = db.ENGAGE_SHARECOUNT.SqlQuery(@"
+        //        SELECT TOP 10 * FROM (
+        //            SELECT 
+        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) SHC_ID,
+        //                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) SHC_SHARECOUNT,
+        //                SHC_SAPCODE,
+        //                '' SHC_PLATEFORM,
+        //                CAST('2022-01-01' AS DATE) SHC_DATE,
+        //                CREATIVE_ID
+        //            FROM ENGAGE_SHARECOUNT
+        //            GROUP BY SHC_SAPCODE, CREATIVE_ID
+        //        ) A").ToList<ENGAGE_SHARECOUNT>();
 
-//            ViewBag.ShareLeaderBoardMyRank = db.ENGAGE_SHARECOUNT.SqlQuery(@"
-//        SELECT * FROM (
-//            SELECT 
-//                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) SHC_ID,
-//                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) SHC_SHARECOUNT,
-//                SHC_SAPCODE,
-//                '' SHC_PLATEFORM,
-//                CAST('2022-01-01' AS DATE) SHC_DATE,
-//                CREATIVE_ID
-//            FROM ENGAGE_SHARECOUNT
-//            GROUP BY SHC_SAPCODE, CREATIVE_ID
-//        ) A WHERE A.SHC_SAPCODE = @SAPCODE",
-//                new SqlParameter("@SAPCODE", SAPCODE))
-//                .FirstOrDefault<ENGAGE_SHARECOUNT>();
+        //            ViewBag.ShareLeaderBoardMyRank = db.ENGAGE_SHARECOUNT.SqlQuery(@"
+        //        SELECT * FROM (
+        //            SELECT 
+        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) SHC_ID,
+        //                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) SHC_SHARECOUNT,
+        //                SHC_SAPCODE,
+        //                '' SHC_PLATEFORM,
+        //                CAST('2022-01-01' AS DATE) SHC_DATE,
+        //                CREATIVE_ID
+        //            FROM ENGAGE_SHARECOUNT
+        //            GROUP BY SHC_SAPCODE, CREATIVE_ID
+        //        ) A WHERE A.SHC_SAPCODE = @SAPCODE",
+        //                new SqlParameter("@SAPCODE", SAPCODE))
+        //                .FirstOrDefault<ENGAGE_SHARECOUNT>();
 
-//            // Leads leaderboard
-//            ViewBag.LeadLeaderBoardMyRank = db.Leads.SqlQuery(@"
-//    SELECT * FROM (
-//        SELECT 
-//            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS leads_id,
-//            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS leads_sapcode,
-//            '' AS LEADS_NAME,
-//            CAST(0 AS DECIMAL(18,2)) AS LEADS_MOBILE,
-//            CAST(0 AS DECIMAL(18,2)) AS LEADS_CREATIVEID,
-//            CAST(NULL AS DATETIME) AS LEADS_DATE,
-//            '' AS LEADS_PLATEFORM,
-//            leads_email,
-//            api_leads_id
-//        FROM leads
-//        GROUP BY leads_SAPCODE, leads_email, api_leads_id
-//    ) A
-//    WHERE A.leads_SAPCODE = @SAPCODE
-//", new SqlParameter("@SAPCODE", SAPCODE))
-//  .FirstOrDefault<Lead>();
-
-
-//            ViewBag.LeadLeaderBoardMyRank = db.Leads.SqlQuery(@"
-//        SELECT * FROM (
-//            SELECT 
-//                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) leads_id,
-//                CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) leads_sapcode,
-//                '' LEADS_NAME,
-//                0 LEADS_MOBILE,
-//                0 LEADS_CREATIVEID,
-//                '' LEADS_DATE,
-//                '' LEADS_PLATEFORM,
-//                leads_email,
-//                api_leads_id
-//            FROM leads
-//            GROUP BY leads_SAPCODE, leads_email, api_leads_id
-//        ) A WHERE A.leads_SAPCODE = @SAPCODE",
-//                new SqlParameter("@SAPCODE", SAPCODE))
-//                .FirstOrDefault<Lead>();
-
-//            return View();
-//        }
+        //            // Leads leaderboard
+        //            ViewBag.LeadLeaderBoardMyRank = db.Leads.SqlQuery(@"
+        //    SELECT * FROM (
+        //        SELECT 
+        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS leads_id,
+        //            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS leads_sapcode,
+        //            '' AS LEADS_NAME,
+        //            CAST(0 AS DECIMAL(18,2)) AS LEADS_MOBILE,
+        //            CAST(0 AS DECIMAL(18,2)) AS LEADS_CREATIVEID,
+        //            CAST(NULL AS DATETIME) AS LEADS_DATE,
+        //            '' AS LEADS_PLATEFORM,
+        //            leads_email,
+        //            api_leads_id
+        //        FROM leads
+        //        GROUP BY leads_SAPCODE, leads_email, api_leads_id
+        //    ) A
+        //    WHERE A.leads_SAPCODE = @SAPCODE
+        //", new SqlParameter("@SAPCODE", SAPCODE))
+        //  .FirstOrDefault<Lead>();
 
 
+        //            ViewBag.LeadLeaderBoardMyRank = db.Leads.SqlQuery(@"
+        //        SELECT * FROM (
+        //            SELECT 
+        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) leads_id,
+        //                CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) leads_sapcode,
+        //                '' LEADS_NAME,
+        //                0 LEADS_MOBILE,
+        //                0 LEADS_CREATIVEID,
+        //                '' LEADS_DATE,
+        //                '' LEADS_PLATEFORM,
+        //                leads_email,
+        //                api_leads_id
+        //            FROM leads
+        //            GROUP BY leads_SAPCODE, leads_email, api_leads_id
+        //        ) A WHERE A.leads_SAPCODE = @SAPCODE",
+        //                new SqlParameter("@SAPCODE", SAPCODE))
+        //                .FirstOrDefault<Lead>();
+
+        //            return View();
+        //        }
 
 
 
 
 
+        //====================================
         public ActionResult UserDashboard(string REF_Key)
         {
             try
             {
+                // 🔹 Always set REF_KEY first
+                if (!string.IsNullOrEmpty(REF_Key))
+                {
+                    Session["REF_KEY"] = REF_Key;
+                }
 
-
-                Session["REF_KEY"] = REF_Key;
                 string SAPCODE = string.Empty;
 
-                // Decode Base64 REF_Key
+                if (string.IsNullOrEmpty(REF_Key))
+                {
+                    ViewBag.Error = "Invalid Reference Key";
+                    return View();
+                }
+
+                // 🔹 Decode Base64 REF_Key
                 var valueBytes = Convert.FromBase64String(REF_Key);
                 string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
 
-                // Extract SAPCODE
+                // 🔹 Extract SAPCODE
                 string[] separate_params = str_REFKEY.Split('&');
                 foreach (var item in separate_params)
                 {
@@ -1162,9 +1265,11 @@ namespace RelianceMkt.Controllers
                     }
                 }
 
+                // 🔹 Set SAPCODE Session
                 Session["SAPCODE"] = SAPCODE;
+                Session["REF_KEY"] = REF_Key;
 
-                // 🔹 Determine user type and name from NEW_TEMP_HIERARCHY
+                // 🔹 Determine user type and name
                 string userType = string.Empty;
                 string userName = string.Empty;
 
@@ -1205,15 +1310,16 @@ namespace RelianceMkt.Controllers
                     }
                 }
 
+                // 🔹 Set Sessions
                 Session["TYPE"] = userType;
                 Session["USERNAME"] = userName;
-                if (Session["LOGIN"] == null) Session["LOGIN"] = userType;
+                Session["X_CHANNEL"] = userData?.X_CHANNEL;
+                Session["REF_KEY"] = REF_Key;
 
-                // 🔹 Get user's X_CHANNEL
-                var userChannel = userData?.X_CHANNEL;
-                Session["X_CHANNEL"] = userChannel;
+                if (Session["LOGIN"] == null)
+                    Session["LOGIN"] = userType;
 
-                // Set additional dashboard data (if any)
+                // 🔹 Set Dashboard Data
                 SetData();
 
                 // 🔹 Share Leaderboard
@@ -1264,9 +1370,11 @@ namespace RelianceMkt.Controllers
                     CAST('' AS DATETIME) AS LEADS_DATE,
                     '' AS LEADS_PLATEFORM,
                     leads_email,
-                    api_leads_id
+                    api_leads_id,
+                  api_response_json,
+                  LeadType
                 FROM leads
-                GROUP BY leads_SAPCODE, leads_email, api_leads_id
+                GROUP BY leads_SAPCODE, leads_email, api_leads_id,api_response_json, LeadType
             ) A
         ").ToList<Lead>();
 
@@ -1282,9 +1390,11 @@ namespace RelianceMkt.Controllers
                     CAST('' AS DATETIME) AS LEADS_DATE,
                     '' AS LEADS_PLATEFORM,
                     leads_email,
-                    api_leads_id
+                    api_leads_id,
+                  api_response_json,
+                  LeadType
                 FROM leads
-                GROUP BY leads_SAPCODE, leads_email, api_leads_id
+                GROUP BY leads_SAPCODE, leads_email, api_leads_id,api_response_json, LeadType
             ) A
             WHERE A.leads_SAPCODE = @SAPCODE",
                     new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<Lead>();
@@ -1297,12 +1407,181 @@ namespace RelianceMkt.Controllers
             catch (Exception ex)
             {
                 ViewBag.Error = "Something went wrong: " + ex.Message;
+
+                // ❌ Don't remove REF_KEY
                 Session.Remove("SAPCODE");
                 Session.Remove("LOGIN");
                 Session.Remove("TYPE");
+
                 return View();
             }
         }
+
+
+        //public ActionResult UserDashboard(string REF_Key)
+        //{
+        //    try
+        //    {
+
+
+        //        Session["REF_KEY"] = REF_Key;
+        //        string SAPCODE = string.Empty;
+
+        //        // Decode Base64 REF_Key
+        //        var valueBytes = Convert.FromBase64String(REF_Key);
+        //        string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+
+        //        // Extract SAPCODE
+        //        string[] separate_params = str_REFKEY.Split('&');
+        //        foreach (var item in separate_params)
+        //        {
+        //            if (item.Contains("SAPCODE"))
+        //            {
+        //                SAPCODE = item.Split('=')[1];
+        //            }
+        //        }
+
+        //        Session["SAPCODE"] = SAPCODE;
+
+        //        // 🔹 Determine user type and name from NEW_TEMP_HIERARCHY
+        //        string userType = string.Empty;
+        //        string userName = string.Empty;
+
+        //        var userData = db.NEW_TEMP_HIERARCHY
+        //            .Where(x => x.X_ZM_EMP_CD == SAPCODE
+        //                     || x.X_RM_EMP_EMP_CD == SAPCODE
+        //                     || x.X_BM_EMP_CD == SAPCODE
+        //                     || x.X_SM_EMP_CD == SAPCODE
+        //                     || x.AGENT_CODE == SAPCODE)
+        //            .FirstOrDefault();
+
+        //        if (userData != null)
+        //        {
+        //            if (userData.X_ZM_EMP_CD == SAPCODE)
+        //            {
+        //                userType = "ZM";
+        //                userName = userData.X_ZM_NM;
+        //            }
+        //            else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
+        //            {
+        //                userType = "RM";
+        //                userName = userData.X_RM_NM;
+        //            }
+        //            else if (userData.X_BM_EMP_CD == SAPCODE)
+        //            {
+        //                userType = "BM";
+        //                userName = userData.X_BM_NM;
+        //            }
+        //            else if (userData.X_SM_EMP_CD == SAPCODE)
+        //            {
+        //                userType = "ARDM";
+        //                userName = userData.X_SM_NM;
+        //            }
+        //            else if (userData.AGENT_CODE == SAPCODE)
+        //            {
+        //                userType = "AGENT";
+        //                userName = userData.AGENT_NAME;
+        //            }
+        //        }
+
+        //        Session["TYPE"] = userType;
+        //        Session["USERNAME"] = userName;
+        //        if (Session["LOGIN"] == null) Session["LOGIN"] = userType;
+
+        //        // 🔹 Get user's X_CHANNEL
+        //        var userChannel = userData?.X_CHANNEL;
+        //        Session["X_CHANNEL"] = userChannel;
+
+        //        // Set additional dashboard data (if any)
+        //        SetData();
+
+        //        // 🔹 Share Leaderboard
+        //        var qry = db.ENGAGE_SHARECOUNT.SqlQuery(@"
+        //    SELECT TOP 10 *
+        //    FROM (
+        //        SELECT 
+        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID',
+        //            CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT',
+        //            SHC_SAPCODE AS 'SHC_SAPCODE',
+        //            '' AS 'SHC_PLATEFORM',
+        //            CAST('2022-01-01' AS DATE) AS 'SHC_DATE',
+        //            CREATIVE_ID
+        //        FROM ENGAGE_SHARECOUNT
+        //        GROUP BY SHC_SAPCODE, CREATIVE_ID
+        //    ) A
+        //").ToList<ENGAGE_SHARECOUNT>();
+
+        //        var qry2 = db.ENGAGE_SHARECOUNT.SqlQuery(@"
+        //    SELECT *
+        //    FROM (
+        //        SELECT 
+        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID',
+        //            CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT',
+        //            SHC_SAPCODE AS 'SHC_SAPCODE',
+        //            '' AS 'SHC_PLATEFORM',
+        //            CAST('2022-01-01' AS DATE) AS 'SHC_DATE',
+        //            CREATIVE_ID
+        //        FROM ENGAGE_SHARECOUNT
+        //        GROUP BY SHC_SAPCODE, CREATIVE_ID
+        //    ) A
+        //    WHERE A.SHC_SAPCODE = @SAPCODE",
+        //            new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<ENGAGE_SHARECOUNT>();
+
+        //        ViewBag.ShareLeaderBoard = qry;
+        //        ViewBag.ShareLeaderBoardMyRank = qry2;
+
+        //        // 🔹 Leads Leaderboard
+        //        var qry3 = db.Leads.SqlQuery(@"
+        //    SELECT TOP 10 *
+        //    FROM (
+        //        SELECT 
+        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id',
+        //            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode',
+        //            '' AS LEADS_NAME,
+        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE,
+        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
+        //            CAST('' AS DATETIME) AS LEADS_DATE,
+        //            '' AS LEADS_PLATEFORM,
+        //            leads_email,
+        //            api_leads_id
+        //        FROM leads
+        //        GROUP BY leads_SAPCODE, leads_email, api_leads_id
+        //    ) A
+        //").ToList<Lead>();
+
+        //        var qry4 = db.Leads.SqlQuery(@"
+        //    SELECT *
+        //    FROM (
+        //        SELECT 
+        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id',
+        //            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode',
+        //            '' AS LEADS_NAME,
+        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE,
+        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
+        //            CAST('' AS DATETIME) AS LEADS_DATE,
+        //            '' AS LEADS_PLATEFORM,
+        //            leads_email,
+        //            api_leads_id
+        //        FROM leads
+        //        GROUP BY leads_SAPCODE, leads_email, api_leads_id
+        //    ) A
+        //    WHERE A.leads_SAPCODE = @SAPCODE",
+        //            new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<Lead>();
+
+        //        ViewBag.LeadLeaderBoard = qry3;
+        //        ViewBag.LeadLeaderBoardMyRank = qry4;
+
+        //        return View();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewBag.Error = "Something went wrong: " + ex.Message;
+        //        Session.Remove("SAPCODE");
+        //        Session.Remove("LOGIN");
+        //        Session.Remove("TYPE");
+        //        return View();
+        //    }
+        //}
 
 
         //===================================================
@@ -1512,9 +1791,39 @@ namespace RelianceMkt.Controllers
                 }
 
                 // 🔹 Get SAP code from session
+
+                //string sapCode = Session["SAPCODE"]?.ToString();
+                //if (string.IsNullOrEmpty(sapCode))
+                //    return Json(new { error = "SAPCODE not found in session" }, JsonRequestBehavior.AllowGet);
                 string sapCode = Session["SAPCODE"]?.ToString();
+
                 if (string.IsNullOrEmpty(sapCode))
-                    return Json(new { error = "SAPCODE not found in session" }, JsonRequestBehavior.AllowGet);
+                {
+                    string refKey = Session["REF_KEY"]?.ToString();
+
+                    if (!string.IsNullOrEmpty(refKey))
+                    {
+                        var valueBytes = Convert.FromBase64String(refKey);
+                        string decoded = System.Text.Encoding.UTF8.GetString(valueBytes);
+
+                        var parts = decoded.Split('&');
+
+                        foreach (var item in parts)
+                        {
+                            if (item.StartsWith("SAPCODE="))
+                            {
+                                sapCode = item.Replace("SAPCODE=", "");
+                                Session["SAPCODE"] = sapCode;  // session me store
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(sapCode))
+                {
+                    return Json(new { error = "SAPCODE not found" }, JsonRequestBehavior.AllowGet);
+                }
 
                 // 🔹 Platforms
                 var platforms = new[] { "WHATSAPP", "FACEBOOK", "INSTAGRAM", "TWITTER", "LINKEDIN" };
@@ -1855,204 +2164,210 @@ namespace RelianceMkt.Controllers
         //    }
         //==============================================================
 
-    //    public ActionResult campaignview()
-    //    {
-    //        SetData();
+        //    public ActionResult campaignview()
+        //    {
+        //        SetData();
 
-    //        // Status
-    //        ViewBag.lstStatus = new List<SelectListItem>()
-    //{
-    //    new SelectListItem{Text="Start", Value="Start"},
-    //    new SelectListItem{Text="Pause", Value="Pause"}
-    //};
+        //        // Status
+        //        ViewBag.lstStatus = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="Start", Value="Start"},
+        //    new SelectListItem{Text="Pause", Value="Pause"}
+        //};
 
-    //        ViewBag.lstchannels = db.channels
-    //            .Where(x => x.channel_delflag == null)
-    //            .ToList();
+        //        ViewBag.lstchannels = db.channels
+        //            .Where(x => x.channel_delflag == null)
+        //            .ToList();
 
-    //        ViewBag.lstcategory = db.campaign_category
-    //            .Where(x => x.campaign_category_delflag == null)
-    //            .ToList();
+        //        ViewBag.lstcategory = db.campaign_category
+        //            .Where(x => x.campaign_category_delflag == null)
+        //            .ToList();
 
-    //        ViewBag.lstcampaign = db.campaigns
-    //            .Where(x => x.campaign_delflag == null)
-    //            .ToList();
+        //        ViewBag.lstcampaign = db.campaigns
+        //            .Where(x => x.campaign_delflag == null)
+        //            .ToList();
 
-    //        ViewBag.lstsubcampaign = db.subcampaigns
-    //            .Where(x => x.subcampaign_delflag == null)
-    //            .ToList();
+        //        ViewBag.lstsubcampaign = db.subcampaigns
+        //            .Where(x => x.subcampaign_delflag == null)
+        //            .ToList();
 
-    //        ViewBag.lstlanguage = new List<SelectListItem>()
-    //{
-    //    new SelectListItem{Text="English", Value="English"},
-    //    new SelectListItem{Text="Hindi", Value="Hindi"},
-    //    new SelectListItem{Text="Marathi", Value="Marathi"},
-    //    new SelectListItem{Text="Tamil", Value="Tamil"}
-    //};
+        //        ViewBag.lstlanguage = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="English", Value="English"},
+        //    new SelectListItem{Text="Hindi", Value="Hindi"},
+        //    new SelectListItem{Text="Marathi", Value="Marathi"},
+        //    new SelectListItem{Text="Tamil", Value="Tamil"}
+        //};
 
-    //        ViewBag.lsttype = new List<SelectListItem>()
-    //{
-    //    new SelectListItem{Text="Creative", Value="Creative"},
-    //    new SelectListItem{Text="Video", Value="Video"},
-    //    new SelectListItem{Text="Blogs", Value="Blogs"}
-    //};
+        //        ViewBag.lsttype = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="Creative", Value="Creative"},
+        //    new SelectListItem{Text="Video", Value="Video"},
+        //    new SelectListItem{Text="Blogs", Value="Blogs"}
+        //};
 
-    //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
+        //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
 
-    //        // 🔹 SAPCODE based X_CHANNEL
-    //        string sapCode = (Session["SAPCODE"]?.ToString() ?? "").Trim();
-    //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
+        //        // 🔹 SAPCODE based X_CHANNEL
+        //        string sapCode = (Session["SAPCODE"]?.ToString() ?? "").Trim();
+        //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
 
-    //        // 🔴 Agar channel hi nahi mila → blank list
-    //        if (string.IsNullOrEmpty(userChannel))
-    //        {
-    //            ViewBag.lstAllCampaigns = new List<campaign_master>();
-    //            return View();
-    //        }
+        //        // 🔴 Agar channel hi nahi mila → blank list
+        //        if (string.IsNullOrEmpty(userChannel))
+        //        {
+        //            ViewBag.lstAllCampaigns = new List<campaign_master>();
+        //            return View();
+        //        }
 
-    //        var qry = db.campaign_master
-    //            .Where(x =>
-    //                (
-    //                    (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
-    //                    || x.campaign_master_start_date > dt
-    //                )
-    //                && x.channel_code != null
-    //                && x.channel_code.Trim().ToUpper() == userChannel
-    //            )
-    //            .OrderByDescending(x => x.campaign_master_id)
-    //            .ToList();
+        //        var qry = db.campaign_master
+        //            .Where(x =>
+        //                (
+        //                    (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
+        //                    || x.campaign_master_start_date > dt
+        //                )
+        //                && x.channel_code != null
+        //                && x.channel_code.Trim().ToUpper() == userChannel
+        //            )
+        //            .OrderByDescending(x => x.campaign_master_id)
+        //            .ToList();
 
-    //        ViewBag.lstAllCampaigns = qry;
+        //        ViewBag.lstAllCampaigns = qry;
 
-    //        return View();
-    //    }
-
-
-    //    [HttpPost]
-    //    public ActionResult campaignview(FormCollection form)
-    //    {
-    //        SetData();
-
-    //        ViewBag.lstStatus = new List<SelectListItem>()
-    //{
-    //    new SelectListItem{Text="Start", Value="Start"},
-    //    new SelectListItem{Text="Pause", Value="Pause"}
-    //};
-
-    //        ViewBag.lstlanguage = new List<SelectListItem>()
-    //{
-    //    new SelectListItem{Text="English", Value="English"},
-    //    new SelectListItem{Text="Hindi", Value="Hindi"},
-    //    new SelectListItem{Text="Marathi", Value="Marathi"},
-    //    new SelectListItem{Text="Tamil", Value="Tamil"}
-    //};
-
-    //        ViewBag.lsttype = new List<SelectListItem>()
-    //{
-    //    new SelectListItem{Text="Creative", Value="Creative"},
-    //    new SelectListItem{Text="Video", Value="Video"},
-    //    new SelectListItem{Text="Blogs", Value="Blogs"}
-    //};
-
-    //        var predicate = PredicateBuilder.True<campaign_master>();
-
-    //        if (!string.IsNullOrEmpty(form["channel"]))
-    //            predicate = predicate.And(x => x.channel_id == Convert.ToDecimal(form["channel"]));
-
-    //        if (!string.IsNullOrEmpty(form["category"]))
-    //            predicate = predicate.And(x => x.campaign_category_id == Convert.ToDecimal(form["category"]));
-
-    //        if (!string.IsNullOrEmpty(form["campaign"]))
-    //            predicate = predicate.And(x => x.campaign_id == Convert.ToDecimal(form["campaign"]));
-
-    //        if (!string.IsNullOrEmpty(form["subcampaign"]))
-    //            predicate = predicate.And(x => x.subcampaign_id == Convert.ToDecimal(form["subcampaign"]));
-
-    //        if (!string.IsNullOrEmpty(form["language"]))
-    //            predicate = predicate.And(x => x.campaign_master_lang == form["language"]);
-
-    //        if (!string.IsNullOrEmpty(form["campaigntype"]))
-    //            predicate = predicate.And(x => x.campaign_master_type == form["campaigntype"]);
-
-    //        if (!string.IsNullOrEmpty(form["campaignstatus"]))
-    //            predicate = predicate.And(x => x.camapaign_master_status == form["campaignstatus"]);
-
-    //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
-    //        predicate = predicate.And(x =>
-    //            x.camapaign_master_status == "Pause"
-    //            || (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
-    //            || x.campaign_master_start_date > dt
-    //        );
-
-    //        // 🔹 SAPCODE → X_CHANNEL security filter
-    //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
-
-    //        if (!string.IsNullOrEmpty(userChannel))
-    //        {
-    //            predicate = predicate.And(x =>
-    //                x.channel_code != null &&
-    //                x.channel_code.Trim().ToUpper() == userChannel
-    //            );
-    //        }
-    //        else
-    //        {
-    //            ViewBag.lstAllCampaigns = new List<campaign_master>();
-    //            return View();
-    //        }
-
-    //        ViewBag.lstAllCampaigns = db.campaign_master
-    //            .Where(predicate)
-    //            .OrderByDescending(x => x.campaign_master_id)
-    //            .ToList();
-
-    //        return View();
-    //    }
+        //        return View();
+        //    }
 
 
+        //    [HttpPost]
+        //    public ActionResult campaignview(FormCollection form)
+        //    {
+        //        SetData();
+
+        //        ViewBag.lstStatus = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="Start", Value="Start"},
+        //    new SelectListItem{Text="Pause", Value="Pause"}
+        //};
+
+        //        ViewBag.lstlanguage = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="English", Value="English"},
+        //    new SelectListItem{Text="Hindi", Value="Hindi"},
+        //    new SelectListItem{Text="Marathi", Value="Marathi"},
+        //    new SelectListItem{Text="Tamil", Value="Tamil"}
+        //};
+
+        //        ViewBag.lsttype = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="Creative", Value="Creative"},
+        //    new SelectListItem{Text="Video", Value="Video"},
+        //    new SelectListItem{Text="Blogs", Value="Blogs"}
+        //};
+
+        //        var predicate = PredicateBuilder.True<campaign_master>();
+
+        //        if (!string.IsNullOrEmpty(form["channel"]))
+        //            predicate = predicate.And(x => x.channel_id == Convert.ToDecimal(form["channel"]));
+
+        //        if (!string.IsNullOrEmpty(form["category"]))
+        //            predicate = predicate.And(x => x.campaign_category_id == Convert.ToDecimal(form["category"]));
+
+        //        if (!string.IsNullOrEmpty(form["campaign"]))
+        //            predicate = predicate.And(x => x.campaign_id == Convert.ToDecimal(form["campaign"]));
+
+        //        if (!string.IsNullOrEmpty(form["subcampaign"]))
+        //            predicate = predicate.And(x => x.subcampaign_id == Convert.ToDecimal(form["subcampaign"]));
+
+        //        if (!string.IsNullOrEmpty(form["language"]))
+        //            predicate = predicate.And(x => x.campaign_master_lang == form["language"]);
+
+        //        if (!string.IsNullOrEmpty(form["campaigntype"]))
+        //            predicate = predicate.And(x => x.campaign_master_type == form["campaigntype"]);
+
+        //        if (!string.IsNullOrEmpty(form["campaignstatus"]))
+        //            predicate = predicate.And(x => x.camapaign_master_status == form["campaignstatus"]);
+
+        //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
+        //        predicate = predicate.And(x =>
+        //            x.camapaign_master_status == "Pause"
+        //            || (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
+        //            || x.campaign_master_start_date > dt
+        //        );
+
+        //        // 🔹 SAPCODE → X_CHANNEL security filter
+        //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
+
+        //        if (!string.IsNullOrEmpty(userChannel))
+        //        {
+        //            predicate = predicate.And(x =>
+        //                x.channel_code != null &&
+        //                x.channel_code.Trim().ToUpper() == userChannel
+        //            );
+        //        }
+        //        else
+        //        {
+        //            ViewBag.lstAllCampaigns = new List<campaign_master>();
+        //            return View();
+        //        }
+
+        //        ViewBag.lstAllCampaigns = db.campaign_master
+        //            .Where(predicate)
+        //            .OrderByDescending(x => x.campaign_master_id)
+        //            .ToList();
+
+        //        return View();
+        //    }
+        //===========================================
         public ActionResult campaignview()
         {
             SetData();
 
             // Status
             List<SelectListItem> status = new List<SelectListItem>()
-        {
-            new SelectListItem{Text="Start", Value="Start"},
-            new SelectListItem{Text="Pause", Value="Pause"}
-        };
+    {
+        new SelectListItem{Text="Start", Value="Start"},
+        new SelectListItem{Text="Pause", Value="Pause"}
+    };
             ViewBag.lstStatus = status;
 
-            // Channels, Categories, etc.
-            ViewBag.lstchannels = db.channels.Where(x => x.channel_delflag == null).ToList();
+            // Channels
+            ViewBag.lstchannels = db.channels
+                                    .Where(x => x.channel_delflag == null)
+                                    .ToList();
 
+            // ✅ Categories (ONLY those having campaign_master data)
             var categories = db.campaign_category
-                               .Where(x => x.campaign_category_delflag == null)
-                               .ToList();
+                .Where(x => x.campaign_category_delflag == null
+                    && db.campaign_master
+                         .Any(c => c.campaign_category_id == x.campaign_category_id))
+                .ToList();
 
-            foreach (var cat in categories)
-            {
-                bool hasData = db.campaign_master.Any(c => c.campaign_category_id == cat.campaign_category_id);
-                cat.Campaign_Category_Status = hasData ? "0" : "1";
-            }
-            db.SaveChanges();
-            ViewBag.lstcategory = categories.Where(x => x.Campaign_Category_Status == "0").ToList();
+            ViewBag.lstcategory = categories;
 
-            ViewBag.lstcampaign = db.campaigns.Where(x => x.campaign_delflag == null).ToList();
-            ViewBag.lstsubcampaign = db.subcampaigns.Where(x => x.subcampaign_delflag == null).ToList();
+            // Campaigns
+            ViewBag.lstcampaign = db.campaigns
+                                    .Where(x => x.campaign_delflag == null)
+                                    .ToList();
 
-            // Languages & Types
+            ViewBag.lstsubcampaign = db.subcampaigns
+                                       .Where(x => x.subcampaign_delflag == null)
+                                       .ToList();
+
+            // Languages
             ViewBag.lstlanguage = new List<SelectListItem>()
-        {
-            new SelectListItem{Text="English", Value="English"},
-            new SelectListItem{Text="Hindi", Value="Hindi"},
-            new SelectListItem{Text="Marathi", Value="Marathi"},
-            new SelectListItem{Text="Tamil", Value="Tamil"}
-        };
+    {
+        new SelectListItem{Text="English", Value="English"},
+        new SelectListItem{Text="Hindi", Value="Hindi"},
+        new SelectListItem{Text="Marathi", Value="Marathi"},
+        new SelectListItem{Text="Tamil", Value="Tamil"}
+    };
+
+            // Types
             ViewBag.lsttype = new List<SelectListItem>()
-        {
-            new SelectListItem{Text="Creative", Value="Creative"},
-            new SelectListItem{Text="Video", Value="Video"},
-            new SelectListItem{Text="Blogs", Value="Blogs"}
-        };
+    {
+        new SelectListItem{Text="Creative", Value="Creative"},
+        new SelectListItem{Text="Video", Value="Video"},
+        new SelectListItem{Text="Blogs", Value="Blogs"}
+    };
 
             ViewBag.channel = "";
             ViewBag.category = "";
@@ -2063,13 +2378,17 @@ namespace RelianceMkt.Controllers
 
             DateTime dt = System.DateTime.UtcNow.AddMinutes(330);
 
-            // 🔹 Filter by user's X_CHANNEL
-            string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
+            string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "")
+                                 .Trim()
+                                 .ToUpper();
 
             var qry1 = db.campaign_master
-                         .Where(x => ((x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
-                                       || x.campaign_master_start_date > dt)
-                                     && x.channel_code.Trim().ToUpper() == userChannel) // normalize here
+                         .Where(x => (
+                                        (x.campaign_master_start_date <= dt
+                                         && x.campaign_master_end_date >= dt)
+                                        || x.campaign_master_start_date > dt
+                                     )
+                                     && x.channel_code.Trim().ToUpper() == userChannel)
                          .OrderByDescending(x => x.campaign_master_id)
                          .ToList();
 
@@ -2077,6 +2396,80 @@ namespace RelianceMkt.Controllers
 
             return View();
         }
+
+
+        //public ActionResult campaignview()
+        //{
+        //    SetData();
+
+        //    // Status
+        //    List<SelectListItem> status = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="Start", Value="Start"},
+        //    new SelectListItem{Text="Pause", Value="Pause"}
+        //};
+        //    ViewBag.lstStatus = status;
+
+        //    // Channels, Categories, etc.
+        //    ViewBag.lstchannels = db.channels.Where(x => x.channel_delflag == null).ToList();
+
+        //    var categories = db.campaign_category
+        //                       .Where(x => x.campaign_category_delflag == null)
+        //                       .ToList();
+
+        //    foreach (var cat in categories)
+        //    {
+        //        bool hasData = db.campaign_master.Any(c => c.campaign_category_id == cat.campaign_category_id);
+        //        cat.Campaign_Category_Status = hasData ? "0" : "1";
+        //    }
+        //    categories = categories
+        //    .Where(x => x.Campaign_Category_Status == "0")
+        //    .ToList();
+
+        //    db.SaveChanges();
+        //    ViewBag.lstcategory = categories.Where(x => x.Campaign_Category_Status == "0").ToList();
+
+        //    ViewBag.lstcampaign = db.campaigns.Where(x => x.campaign_delflag == null).ToList();
+        //    ViewBag.lstsubcampaign = db.subcampaigns.Where(x => x.subcampaign_delflag == null).ToList();
+
+        //    // Languages & Types
+        //    ViewBag.lstlanguage = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="English", Value="English"},
+        //    new SelectListItem{Text="Hindi", Value="Hindi"},
+        //    new SelectListItem{Text="Marathi", Value="Marathi"},
+        //    new SelectListItem{Text="Tamil", Value="Tamil"}
+        //};
+        //    ViewBag.lsttype = new List<SelectListItem>()
+        //{
+        //    new SelectListItem{Text="Creative", Value="Creative"},
+        //    new SelectListItem{Text="Video", Value="Video"},
+        //    new SelectListItem{Text="Blogs", Value="Blogs"}
+        //};
+
+        //    ViewBag.channel = "";
+        //    ViewBag.category = "";
+        //    ViewBag.campaign = "";
+        //    ViewBag.subcampaign = "";
+        //    ViewBag.language = "";
+        //    ViewBag.type = "";
+
+        //    DateTime dt = System.DateTime.UtcNow.AddMinutes(330);
+        //    //string sapCode = (Session["SAPCODE"]?.ToString() ?? "").Trim();
+        //    // 🔹 Filter by user's X_CHANNEL
+        //    string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
+
+        //    var qry1 = db.campaign_master
+        //                 .Where(x => ((x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
+        //                               || x.campaign_master_start_date > dt)
+        //                             && x.channel_code.Trim().ToUpper() == userChannel) // normalize here
+        //                 .OrderByDescending(x => x.campaign_master_id)
+        //                 .ToList();
+
+        //    ViewBag.lstAllCampaigns = qry1;
+
+        //    return View();
+        //}
 
 
 
@@ -2345,7 +2738,7 @@ namespace RelianceMkt.Controllers
                 List<SelectListItem> plateform = new List<SelectListItem>()
                 {
                     new SelectListItem{Text="Facebook", Value="Facebook"},
-                    new SelectListItem{Text="Whatsapp", Value="Whatsapp"},
+                     new SelectListItem{Text="Whatsapp", Value="Whatsapp"},
                     new SelectListItem{Text="Instagram", Value="Instagram"},
                     new SelectListItem{Text="Twitter", Value="Twitter"},
                     new SelectListItem{Text="Linkedin", Value="Linkedin"}
@@ -2501,7 +2894,7 @@ namespace RelianceMkt.Controllers
         {
             SetData();
             // Session["SAPCODE"] = SAPCODE;
-            string SAPCODE = Session["SAPCODE"].ToString();
+            string SAPCODE = Session["SAPCODE"]?.ToString();
             DateTime dt1 = System.DateTime.UtcNow.AddMinutes(330);
             DateTime dt2 = System.DateTime.UtcNow.AddMinutes(330);
 
@@ -2565,7 +2958,9 @@ namespace RelianceMkt.Controllers
         public ActionResult HotLeadsUser(string fromdate, string todate, string plateform)
         {
             SetData();
-            string SAPCODE = Session["SAPCODE"].ToString();
+            //string SAPCODE = Session["SAPCODE"].ToString();
+            string SAPCODE = Session["SAPCODE"]?.ToString();
+
             DateTime dt1 = Convert.ToDateTime(fromdate);
             DateTime dt2 = Convert.ToDateTime(todate);
 
@@ -3449,17 +3844,23 @@ namespace RelianceMkt.Controllers
 
 
 
+        public ActionResult SessionTimeOut()
+        {
+            ViewBag.Message = "Session Time Out. Please login again.";
+            return View();
+        }
 
 
         public ActionResult campaigndetailsuser(decimal CampaignMasterId)
         {
             try
             {
-                // Optional: Check if user session exists
-                if (Session["userid"] == null)
-                {
-                    return RedirectToAction("Index");
-                }
+                //// Optional: Check if user session exists
+                //if (Session["SAPCODE"] == null)
+                //{
+                //    return RedirectToAction("SessionTimeOut", "Marketing");
+                //}
+
 
                 // Load other dropdown data if needed
                 SetData();
@@ -3496,6 +3897,11 @@ namespace RelianceMkt.Controllers
         }
 
 
+
+
+
+
+
         //public ActionResult campaignfbshare(decimal CampaignMasterId,string SAPCODE, string CREATIVEID, string PLATEFORM)
         public ActionResult campaignfbshare(string PARAMS)
         {
@@ -3509,6 +3915,7 @@ namespace RelianceMkt.Controllers
             string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
 
             string[] separate_params = str_REFKEY.Split('&');
+
 
             foreach (var item in separate_params)
             {
@@ -3686,10 +4093,10 @@ namespace RelianceMkt.Controllers
 
                             defaultApi = false;
                             url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
-                            requestBody = "{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"__UseUserDefinedGuid__\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"" + qry.a.leads_mobile.ToString() + "\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"" + qry.c.campaign_name + "\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"" + qry.a.leads_name + "\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"Reliance Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemaName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"" + SAPCODE + "\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}";
-                            //  requestBody = "{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"__UseUserDefinedGuid__\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"Reliance Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemeName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}";
+                            requestBody = "{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"__UseUserDefinedGuid__\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"" + qry.a.leads_mobile.ToString() + "\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"" + qry.c.campaign_name + "\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"" + qry.a.leads_name + "\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"indusind Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemaName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"" + SAPCODE + "\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}";
+                            //  requestBody = "{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"__UseUserDefinedGuid__\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"indusind Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemeName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}";
 
-                            //  httpWReq.Headers["Origin"] = "https://karma.reliancenipponlife.com";
+                            //  httpWReq.Headers["Origin"] = "https://karma.indusindnipponlife.com";
                             // httpWReq.Headers["x-client-id"] = "22a0b4e5-940f-40a4-984d-6af1ac8e8c9e";
                         }
 
@@ -3698,7 +4105,7 @@ namespace RelianceMkt.Controllers
                         logger.Info("Request body Api is " + requestBody);
 
 
-                        //  string url = "https://karma.reliancenipponlife.com/v1.0/nlms/push-leads";
+                        //  string url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
                         //  string requestBody = "{\"userId\":\"" + qry.a.leads_sapcode + "\",\"sl\":{\"loginType\":\"\",\"leadFrom\":\"\",\"leadType\":\"" + leadtype + "\",\"leadSubType\":\"New Prospect\",\"advisorId\":\"\",\"gender\":\"Male\",\"maritialStatus\":\"Married\",\"name\":\"" + qry.a.leads_name + "\",\"dateOfBrith\":\"220924800000\",\"occupation\":\"Business\",\"incomeBand\":\"Up to 3 Lacs\",\"educationalGroup\":\"Below 10th Standard\",\"phoneNo\":\"" + qry.a.leads_mobile.ToString() + "\",\"alternatePhoneNo\":\"\",\"landline\":\"\",\"address\":\"\",\"state\":\"Maharastra\",\"city\":\"Mumbai\",\"postalcode\":\"\",\"emailId\":\"\",\"campaign\":\"" + qry.c.campaign_name + "\",\"deviceId\":\"\",\"leadSource\":\"\",\"leadSubSource\":\"\",\"longitute\":\"\",\"latitude\":\"\",\"ageBand\":\"\",\"pan\":\"\",\"verticals\":\"\",\"prospectType\":\"\",\"lifeStage\":\"\",\"source\":\"\",\"whatsappNo\":\"\",\"isExistingCustomer\":\"\",\"channel\":\"\",\"isWithWelcomeCode\":\"\",\"spId\":\"\",\"asmId\":\"\",\"spName\":\"\",\"asmName\":\"\",\"branchCode\":\"\",\"branchName\":\"\",\"callType\":\"\",\"vertical\":\"ISG\"}}";
 
                         // string requestBody = "{\"userId\":\"" + qry.a.leads_sapcode + "\",\"loginType\":\"Individual\",\"leadType\":\"" + leadtype + "\",\"leadProfileType\":\"\",\"leadSubType\":\"New Prospect\",\"leadSource\":\"Customer Portal\",\"leadSubSource\":\"\",\"gender\":\"Male\",\"maritialStatus\":\"Married\",\"name\":\"" + qry.a.leads_name + "\",\"isExistingCustomer\":\"Y\",\"policyNo\":\"\",\"dateOfBrith\":\"28-AUG-1969\",\"occupation\":\"\",\"incomeBand\":\"_3_lacs_to_6_lacs\",\"lifeStage\":\"Married\",\"educationalGroup\":\"\",\"phoneNo\":\"" + qry.a.leads_mobile.ToString() + "\",\"landline\":\"\",\"alternatePhoneNo\":\"\",\"whatsappNo\":\"\",\"address\":\"203-204/2A, Brindaban II,\",\"state\":\"Maharastra\",\"city\":\"Mumbai\",\"postalcode\":\"400093\",\"emailId\":\"\",\"campaign\":\"Customer Portal\",\"ageBand\":\"\",\"vertical\":\"\",\"callType\":\"\",\"spId\":\"\",\"spName\":\"\",\"teleCallerName\":\"\",\"teleCallerId\":\"\",\"asmId\":\"\",\"asmName\":\"\",\"advisorName\":\"Ashu Gupta test\",\"advisorId\":\"70000099\",\"pan\":\"AUEPS2835F\",\"linkedLead\":[]}";
@@ -3769,7 +4176,7 @@ namespace RelianceMkt.Controllers
                         {
                             var client = new HttpClient();
                             var request = new HttpRequestMessage(HttpMethod.Post, "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27");
-                            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"__UseUserDefinedGuid__\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"Reliance Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemeName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
+                            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"__UseUserDefinedGuid__\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"indusind Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemaName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
                             logger.Info(content);
                             request.Content = content;
                             var response = await client.SendAsync(request);
@@ -3806,30 +4213,542 @@ namespace RelianceMkt.Controllers
         //Added new method by vikas singh
 
 
-        public async Task<string> TestAPI()
+        //public async Task<string> TestAPI()
+        //{
+        //    using (var client = new HttpClient())
+        //    {
+        //        var request = new HttpRequestMessage(
+        //            HttpMethod.Post,
+        //            "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27"
+        //        );
+
+        //        var jsonBody = "{ YOUR CLEAN JSON BODY }";
+
+        //        request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json"); 
+
+        //        var response = await client.SendAsync(request);
+        //        var result = await response.Content.ReadAsStringAsync();
+
+        //        try
+        //        {
+        //            var apiResult = JsonConvert.DeserializeObject<LeadSquaredResponse>(result);
+        //            return apiResult?.RequestId; // 🔥 always return RequestId
+        //        }
+        //        catch
+        //        {
+        //            return "PARSE_FAILED";
+        //        }
+        //    }
+        //}
+
+
+
+        //public async Task<string> TestAPI()
+        //{
+        //    var r = "inside api";
+        //    var client = new HttpClient();
+        //    client.DefaultRequestHeaders.ConnectionClose = true;
+        //    var request = new HttpRequestMessage(HttpMethod.Post, "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27");
+        //    var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"_UseUserDefinedGuid_\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"indusind Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemaName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
+        //    request.Content = content;
+        //    try
+        //    {
+        //        r = "before send";
+        //        var response = await client.SendAsync(request);
+        //        r = "after send";
+        //        response.EnsureSuccessStatusCode();
+        //        r = await response.Content.ReadAsStringAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        r = ex.Message;
+        //        r = ex.StackTrace;
+        //    }
+        //    return r;
+        //    //Console.WriteLine(await response.Content.ReadAsStringAsync());
+        //}
+
+        //===================correct code =================================================
+
+        private static readonly HttpClient _client = new HttpClient
         {
-            var r = "inside api";
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.ConnectionClose = true;
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27");
-            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"_UseUserDefinedGuid_\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"Reliance Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemeName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
-            request.Content = content;
-            try
-            {
-                r = "before send";
-                var response = await client.SendAsync(request);
-                r = "after send";
-                response.EnsureSuccessStatusCode();
-                r = await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception ex)
-            {
-                r = ex.Message;
-                r = ex.StackTrace;
-            }
-            return r;
-            //Console.WriteLine(await response.Content.ReadAsStringAsync());
+            Timeout = TimeSpan.FromSeconds(30)
+        };
+
+
+        //    public async Task<string> TestAPI()
+        //    {
+        //        var url =
+        //            "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture" +
+        //            "?accessKey=u$re5470b019cbada9931f9d41d27261f60" +
+        //            "&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
+
+        //        var jsonBody = @"
+        //{
+        //  ""LeadDetails"": [
+        //    { ""Attribute"": ""SearchBy"", ""Value"": ""Phone"" },
+        //    { ""Attribute"": ""Source"", ""Value"": ""DIGIMYIN"" },
+        //    { ""Attribute"": ""Phone"", ""Value"": ""9875478985"" }
+        //  ],
+        //  ""Opportunity"": {
+        //    ""OpportunityEventCode"": 12000,
+        //    ""OpportunityNote"": ""Opportunity"",
+        //    ""OverwriteFields"": true,
+        //    ""DoNotPostDuplicateActivity"": false,
+        //    ""DoNotChangeOwner"": true,
+        //    ""Fields"": [
+        //      { ""SchemaName"": ""mx_Custom_27"", ""Value"": ""New Lead"" },
+        //      { ""SchemaName"": ""Status"", ""Value"": ""Open"" }
+        //    ]
+        //  }
+        //}";
+
+        //        var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        //        var response = await _client.PostAsync(url, content);
+        //        var responseJson = await response.Content.ReadAsStringAsync();
+
+        //        var apiResult = JsonConvert.DeserializeObject<LeadSquaredResponse>(responseJson);
+
+        //        // ✅ Safe return (RequestId / RequestID / fallback)
+        //        return apiResult?.RequestId
+        //            ?? apiResult?.RequestId
+        //            ?? "";
+        //    }
+
+
+
+      //===================================================
+
+
+        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI(string name,string mobile,string sapcode,string SapName)
+        {
+            var url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture" +
+                      "?accessKey=u$re5470b019cbada9931f9d41d27261f60" +
+                      "&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
+
+            var jsonBody = $@"
+{{
+  ""LeadDetails"": [
+    {{ ""Attribute"": ""SearchBy"", ""Value"": ""Phone"" }},
+    {{ ""Attribute"": ""__UseUserDefinedGuid__"", ""Value"": ""true"" }},
+    {{ ""Attribute"": ""Source"", ""Value"": ""DigiMyin"" }},
+    {{ ""Attribute"": ""FirstName"", ""Value"": ""{name}"" }},
+    {{ ""Attribute"": ""Phone"", ""Value"": ""{mobile}"" }}
+  ],
+  ""Opportunity"": {{
+    ""OpportunityEventCode"": 12000,
+    ""OpportunityNote"": ""Opportunity"",
+    ""OverwriteFields"": true,
+    ""DoNotPostDuplicateActivity"": false,
+    ""DoNotChangeOwner"": true,
+    ""Fields"": [
+      {{ ""SchemaName"": ""mx_Custom_2"", ""Value"": ""New Lead"" }},
+      {{ ""SchemaName"": ""Status"", ""Value"": ""Open"" }},
+      {{ ""SchemaName"": ""mx_Custom_11"", ""Value"": ""Digimyin"" }},
+      {{ ""SchemaName"": ""mx_Custom_1"", ""Value"": ""{name}"" }},
+      {{ ""SchemaName"": ""mx_Custom_35"", ""Value"": ""Mukhedkar Complex, Shivaji Putala, Vazirabad, Nanded, Maharashtra, India 431601"" }},
+      {{
+        ""SchemaName"": ""mx_Custom_36"",
+        ""Value"": """",
+        ""Fields"": [
+          {{ ""SchemaName"": ""mx_CustomObject_1"", ""Value"": ""{sapcode}"" }},
+          {{ ""SchemaName"": ""mx_CustomObject_2"", ""Value"": ""{SapName}"" }},
+          {{ ""SchemaName"": ""mx_CustomObject_3"", ""Value"": ""777777"" }}
+        ]
+      }},
+      {{ ""SchemaName"": ""mx_Custom_32"", ""Value"": ""431601"" }},
+      {{ ""SchemaName"": ""mx_Custom_13"", ""Value"": ""1971-12-11"" }},
+      {{ ""SchemaName"": ""mx_Custom_12"", ""Value"": ""New Business"" }},
+      {{ ""SchemaName"": ""mx_Custom_43"", ""Value"": "" Indusind Nippon Life Super Suraksha"" }},
+      {{ ""SchemaName"": ""mx_Custom_44"", ""Value"": ""Health Plan"" }},
+      {{ ""SchemaName"": ""mx_Custom_45"", ""Value"": ""188"" }},
+      {{ ""SchemaName"": ""mx_Custom_15"", ""Value"": ""20-50 Lacs"" }},
+      {{ ""SchemaName"": ""mx_Custom_27"", ""Value"": ""API"" }},
+      {{ ""SchemaName"": ""mx_Custom_54"", ""Value"": ""Individual"" }},
+      {{
+        ""SchemaName"": ""mx_Custom_46"",
+        ""Value"": """",
+        ""Fields"": [
+          {{ ""SchemaName"": ""mx_CustomObject_1"", ""Value"": ""API"" }},
+          {{ ""SchemaName"": ""mx_CustomObject_2"", ""Value"": ""DM"" }}
+        ] 
+      }}
+    ]
+  }}
+}}";
+
+            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            var response = await _client.PostAsync(url, content);
+            var responseJson = await response.Content.ReadAsStringAsync();
+
+            var obj = JsonConvert.DeserializeObject<LeadSquaredResponse>(responseJson);
+
+            return (obj, responseJson);
         }
+
+        private string CleanName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return string.Empty;
+
+            // Only Alphabets + Space allowed
+            return Regex.Replace(name, @"[^a-zA-Z\s]", "").Trim();
+        }
+
+
+        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI_SE(
+            string name,
+            string mobile,
+            string sapcode,
+            string SapName,string categoryName)
+        {
+            var url = "https://sa3dev.reliancenipponlife.com/v1.0/nlms/push-leads";
+
+            // 🔥 Clean Data (API strict validation karta hai)
+            string cleanedName = Regex.Replace(name ?? "", @"[^a-zA-Z\s]", "").Trim();
+            string cleanMobile = Regex.Replace(mobile ?? "", @"\D", "");
+
+                            var jsonBody = $@"
+                {{
+                    ""userId"": ""9050022"",
+                    ""name"": ""Sunil Sarsande"",
+                    ""phoneNo"": ""9890455817"",
+                    ""apiSource"": ""digimyin"",
+                    ""loginType"": ""Individual"",
+                    ""leadType"": ""{categoryName}""
+                }}";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            // 🔥 Required Headers
+            request.Headers.Add("x-client-id", "22a0b4e5-940f-40a4-984d-6af1ac8e8c9e");
+            request.Headers.TryAddWithoutValidation("x-token", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJJZCI6IjExMTExMSIsImRldmljZUlkIjoiNDkyNTBkMDUzM2JjZTkxMSJ9LCJpYXQiOjE3MjA0NjEyMzUsImV4cCI6MTcyMDQ5MDAzNX0.gdImEjRsw-XR-BaYckwiE1zRjhuhLB1RmnDPnRJMyFIbDENP-udS56M27N5GpaRSP9ffpFH_fKEtUEFawEvE3ckvGth5fKEXZW0eIcbMLGfKPJ4DS3U_zoeqXG_4bvaGjaUCFCvZxS2rf5P5e_Yg3_OJzuhq4IvuruUEfHLwnAJYP-s0qi0RmPGyUH1C0rGcjlCW8dP6V0_DyHDYeivuA6-vkjJGaYPvP2kbM3zQP9vxDg9hfayv5y7Cp5oFUbrvylCD6k9rTClMlPpyUn2MLFfvVSHxKgFVCvI844RLAaUG78hFI4Sf-gJVUiCiO3T4JHjNqBExFqZI4zNdF1uMmw");   // 👈 Add this
+            request.Headers.Add("origin", "https://sa3dev.reliancenipponlife.com");
+
+            request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            var response = await _client.SendAsync(request);
+            var responseJson = await response.Content.ReadAsStringAsync();
+
+            LeadSquaredResponse apiResponse = new LeadSquaredResponse();
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    dynamic obj = JsonConvert.DeserializeObject(responseJson);
+
+                    apiResponse.Status = 1;
+                    apiResponse.RequestId = obj?.id ?? obj?.leadId ?? Guid.NewGuid().ToString();
+                }
+                catch
+                {
+                    apiResponse.Status = 1;
+                    apiResponse.RequestId = Guid.NewGuid().ToString();
+                }
+            }
+            else
+            {
+                apiResponse.Status = 0;
+                apiResponse.RequestId = null;
+                apiResponse.ExceptionMessage = responseJson;
+            }
+
+            return (apiResponse, responseJson);
+        }
+
+
+
+
+
+
+
+        //==============================================================================
+
+
+
+
+
+
+        //        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI()
+        //        {
+        //            var url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture" +
+        //                      "?accessKey=u$re5470b019cbada9931f9d41d27261f60" +
+        //                      "&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
+
+        //            var jsonBody = @"
+        //{
+        //  ""LeadDetails"": [
+        //    { ""Attribute"": ""SearchBy"", ""Value"": ""Phone"" },
+        //    { ""Attribute"": ""__UseUserDefinedGuid__"", ""Value"": ""true"" },
+        //    { ""Attribute"": ""Source"", ""Value"": ""DigiMyin"" },
+        //    { ""Attribute"": ""Phone"", ""Value"": ""7738223341"" }
+        //  ],
+        //  ""Opportunity"": {
+        //    ""OpportunityEventCode"": 12000,
+        //    ""OpportunityNote"": ""Opportunity"",
+        //    ""OverwriteFields"": true,
+        //    ""DoNotPostDuplicateActivity"": false,
+        //    ""DoNotChangeOwner"": true,
+        //    ""Fields"": [
+        //      { ""SchemaName"": ""mx_Custom_2"", ""Value"": ""New Lead"" },
+        //      { ""SchemaName"": ""Status"", ""Value"": ""Open"" },
+        //      { ""SchemaName"": ""mx_Custom_11"", ""Value"": ""Navyug"" },
+        //      { ""SchemaName"": ""mx_Custom_1"", ""Value"": ""DM Test"" },
+        //      { ""SchemaName"": ""mx_Custom_35"", ""Value"": ""Mukhedkar Complex, Shivaji Putala, Vazirabad, Nanded, Maharashtra, India 431601"" },
+        //      {
+        //        ""SchemaName"": ""mx_Custom_36"",
+        //        ""Value"": """",
+        //        ""Fields"": [
+        //          { ""SchemaName"": ""mx_CustomObject_1"", ""Value"": ""70642064"" },
+        //          { ""SchemaName"": ""mx_CustomObject_2"", ""Value"": ""Kamlesh"" },
+        //          { ""SchemaName"": ""mx_CustomObject_3"", ""Value"": ""777777"" }
+        //        ]
+        //      },
+        //      { ""SchemaName"": ""mx_Custom_32"", ""Value"": ""431601"" },
+        //      { ""SchemaName"": ""mx_Custom_13"", ""Value"": ""1971-12-11"" },
+        //      { ""SchemaName"": ""mx_Custom_12"", ""Value"": ""New Business"" },
+        //      { ""SchemaName"": ""mx_Custom_43"", ""Value"": ""Reliance Nippon Life Super Suraksha"" },
+        //      { ""SchemaName"": ""mx_Custom_44"", ""Value"": ""Health Plan"" },
+        //      { ""SchemaName"": ""mx_Custom_45"", ""Value"": ""188"" },
+        //      { ""SchemaName"": ""mx_Custom_15"", ""Value"": ""20-50 Lacs"" },
+        //      { ""SchemaName"": ""mx_Custom_27"", ""Value"": ""Navyug leads"" },
+        //      { ""SchemaName"": ""mx_Custom_54"", ""Value"": ""Individual"" },
+        //      {
+        //        ""SchemaName"": ""mx_Custom_46"",
+        //        ""Value"": """",
+        //        ""Fields"": [
+        //          { ""SchemaName"": ""mx_CustomObject_1"", ""Value"": ""API"" },
+        //          { ""SchemaName"": ""mx_CustomObject_2"", ""Value"": ""DM"" }
+        //        ]
+        //      }
+        //    ]
+        //  }
+        //}";
+
+        //            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        //            var response = await _client.PostAsync(url, content);
+        //            var responseJson = await response.Content.ReadAsStringAsync();
+
+        //            var obj = JsonConvert.DeserializeObject<LeadSquaredResponse>(responseJson);
+
+        //            return (obj, responseJson);
+        //        }
+
+        //=======================================================correct cht=================
+        //  public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI()
+        //        {
+        //            var url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture" +
+        //                      "?accessKey=u$re5470b019cbada9931f9d41d27261f60" +
+        //                      "&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
+
+        //            var jsonBody = @"
+        //{
+        //  ""LeadDetails"": [
+        //    { ""Attribute"": ""SearchBy"", ""Value"": ""Phone"" },
+        //    { ""Attribute"": ""_UseUserDefinedGuid_"", ""Value"": ""true"" },
+        //    { ""Attribute"": ""Source"", ""Value"": ""DIGIMYIN"" },
+        //    { ""Attribute"": ""Phone"", ""Value"": ""7738223341"" }
+        //  ],
+        //  ""Opportunity"": {
+        //    ""OpportunityEventCode"": 12000,
+        //    ""OpportunityNote"": ""Opportunity"",
+        //    ""OverwriteFields"": true,
+        //    ""DoNotPostDuplicateActivity"": false,
+        //    ""DoNotChangeOwner"": true,
+        //    ""Fields"": [
+        //      { ""SchemaName"": ""mx_Custom_2"", ""Value"": ""New Lead"" },
+        //      { ""SchemaName"": ""Status"", ""Value"": ""Open"" },
+        //      { ""SchemaName"": ""mx_Custom_11"", ""Value"": ""Navyug"" },
+        //      { ""SchemaName"": ""mx_Custom_1"", ""Value"": ""DM Test"" },
+        //      { ""SchemaName"": ""mx_Custom_35"", ""Value"": ""Mukhedkar Complex, Shivaji Putala, Vazirabad, Nanded, Maharashtra, India 431601"" },
+        //      { ""SchemaName"": ""mx_Custom_36.mx_CustomObject_1"", ""Value"": ""70301675"" },
+        //      { ""SchemaName"": ""mx_Custom_32"", ""Value"": ""431601"" },
+        //      { ""SchemaName"": ""mx_Custom_13"", ""Value"": ""1971-12-11"" },
+        //      { ""SchemaName"": ""mx_Custom_12"", ""Value"": ""New Business"" },
+        //      { ""SchemaName"": ""mx_Custom_43"", ""Value"": ""Reliance Nippon Life Super Suraksha"" },
+        //      { ""SchemaName"": ""mx_Custom_44"", ""Value"": ""Health Plan"" },
+        //      { ""SchemaName"": ""mx_Custom_45"", ""Value"": ""188"" },
+        //      { ""SchemaName"": ""mx_Custom_15"", ""Value"": ""20-50 Lacs"" },
+        //      { ""SchemaName"": ""mx_Custom_27"", ""Value"": ""Navyug leads"" },
+        //      { ""SchemaName"": ""mx_Custom_54"", ""Value"": ""Individual/Renewal/Business/CDA"" },
+        //      {
+        //        ""SchemaName"": ""mx_Custom_46"",
+        //        ""Value"": """",
+        //        ""Fields"": [
+        //          { ""SchemaName"": ""mx_CustomObject_1"", ""Value"": ""API"" },
+        //          { ""SchemaName"": ""mx_CustomObject_2"", ""Value"": ""DM"" }
+        //        ]
+        //      }
+        //    ]
+        //  }
+        //}";
+
+        //            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        //            var response = await _client.PostAsync(url, content);
+        //            var responseJson = await response.Content.ReadAsStringAsync();
+
+        //            var obj = JsonConvert.DeserializeObject<LeadSquaredResponse>(responseJson);
+
+        //            return (obj, responseJson);
+        //        }
+        //===========================correct amir===============================================================
+        //        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI()
+        //        {
+        //            //var url =
+        //            //    "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture" +
+        //            //    "?accessKey=u$re5470b019cbada9931f9d41d27261f60" +
+        //            //    "&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
+
+        //            var url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
+
+        //            //            var jsonBody = @"
+        //            //{
+        //            //  ""LeadDetails"": [
+        //            //    { ""Attribute"": ""SearchBy"", ""Value"": ""Phone"" },
+        //            //    { ""Attribute"": ""Source"", ""Value"": ""DIGIMYIN"" },
+        //            //    { ""Attribute"": ""Phone"", ""Value"": ""9875478985"" }
+        //            //  ],
+        //            //  ""Opportunity"": {
+        //            //    ""OpportunityEventCode"": 12000,
+        //            //    ""OpportunityNote"": ""Opportunity"",
+        //            //    ""OverwriteFields"": true,
+        //            //    ""DoNotPostDuplicateActivity"": false,
+        //            //    ""DoNotChangeOwner"": true,
+        //            //    ""Fields"": [
+        //            //      { ""SchemaName"": ""mx_Custom_27"", ""Value"": ""New Lead"" },
+        //            //      { ""SchemaName"": ""Status"", ""Value"": ""Open"" }
+        //            //    ]
+        //            //  }
+        //            //}";
+        //            var jsonBody = @"
+        //{
+        //    ""LeadDetails"": [
+        //        {
+        //            ""Attribute"": ""SearchBy"",
+        //            ""Value"": ""Phone""
+        //        },
+        //        {
+        //            ""Attribute"": ""__UseUserDefinedGuid__"",
+        //            ""Value"": ""DIGIMYIN""
+        //        },
+        //        {
+        //            ""Attribute"": ""Source"", 
+        //            ""Value"": ""9875478985""
+        //        },
+        //        {
+        //            ""Attribute"": ""Phone"",
+        //            ""Value"": ""7738223341""
+        //        }
+
+        //    ],
+        //    ""Opportunity"": {
+        //        ""OpportunityEventCode"": 12000,
+        //        ""OpportunityNote"": ""Opportunity"",
+        //        ""OverwriteFields"": true,
+        //        ""DoNotPostDuplicateActivity"": false,
+        //        ""DoNotChangeOwner"": true, //These fields to be kept static
+        //        ""Fields"": [
+        //            {
+        //                ""SchemaName"": ""mx_Custom_2"",
+        //                ""Value"": ""New Lead""
+        //            },
+        //            {
+        //                ""SchemaName"": ""Status"",
+        //                ""Value"": ""Open""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_11"",
+        //                ""Value"": ""Navyug""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_1"",
+        //                ""Value"": ""DM Test""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_35"",
+        //                ""Value"": ""Mukhedkar Complex, Shivaji Putala, Vazirabad,
+        //Nanded, Maharashtra, India 431601""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_36.mx_CustomObject_1"",
+        //                ""Value"": ""70301675""
+        //            },
+
+
+        //     {
+        //                ""SchemaName"": ""mx_Custom_32"",
+        //                ""Value"": ""431601""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_13"",
+        //                ""Value"": ""1971-12-11""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_12"", 
+        //                ""Value"": ""New Business""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_43"", 
+        //                ""Value"": ""Reliance Nippon Life Super Suraksha""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_44"", 
+        //                ""Value"": ""Health Plan""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_45"",
+        //                ""Value"": ""188"" //Plan No
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_15"", 
+        //                ""Value"": ""20-50 Lacs""
+        //            },
+        //            {
+        //                ""SchemaName"": ""mx_Custom_27"", 
+        //                ""Value"": ""Navyug leads""
+        //            },
+        //     {
+        //                ""SchemaName"": ""mx_Custom_54"",
+        //                ""Value"": ""Individual/Renewal/Business/CDA""
+        //            },
+
+        //            {
+        //                ""SchemaName"": ""mx_Custom_46"",
+        //                ""Value"": """",
+        //                ""Fields"": [
+        //                    {
+        //                        ""SchemaName"": ""mx_CustomObject_1"",
+        //                        ""Value"": ""API"" //To be static
+        //                    },
+        //                    {
+        //                        ""SchemaName"": ""mx_CustomObject_2"",
+        //                        ""Value"": ""DM"" //To be static
+        //                    }
+        //                ]
+        //            }
+        //        ]
+        //    }
+        //}";
+
+
+        //            var content = new StringContent(jsonBody, Encoding.UTF8, "application /json");
+        //            var response = await _client.PostAsync(url, content);
+
+        //            var responseJson = await response.Content.ReadAsStringAsync();
+
+        //            var obj = JsonConvert.DeserializeObject<LeadSquaredResponse>(responseJson);
+
+        //            return (obj, responseJson);
+        //        }
+
+
+
+
 
         public async Task<string> TestAPI1()
         {
@@ -3839,7 +4758,7 @@ namespace RelianceMkt.Controllers
             client.Timeout = TimeSpan.FromMinutes(5);
             var url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27");
-            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"_UseUserDefinedGuid_\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"Reliance Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemeName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
+            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"_UseUserDefinedGuid_\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"indusind Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemaName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
             request.Content = content;
             try
             {
@@ -3866,7 +4785,7 @@ namespace RelianceMkt.Controllers
             client.BaseAddress = new Uri("https://api-in21.leadsquared.com/v2/OpportunityManagement.svc");
             var url = "/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27";
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture?accessKey=u$re5470b019cbada9931f9d41d27261f60&secretKey=5dc21cf82842f7bdccc8c220df4683d8ef2eab27");
-            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"_UseUserDefinedGuid_\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"Reliance Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemeName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
+            var content = new StringContent("{\"LeadDetails\":[{\"Attribute\":\"SearchBy\",\"Value\":\"Phone\"},{\"Attribute\":\"_UseUserDefinedGuid_\",\"Value\":\"true\"},{\"Attribute\":\"Source\",\"Value\":\"DIGIMYIN\"},{\"Attribute\":\"Phone\",\"Value\":\"9875478985\"}],\"Opportunity\":{\"OpportunityEventCode\":12000,\"OpportunityNote\":\"Opportunity\",\"OverwriteFields\":true,\"DoNotPostDuplicateActivity\":false,\"DoNotChangeOwner\":true,\"Fields\":[{\"SchemaName\":\"mx_Custom_2\",\"Value\":\"New Lead\"},{\"SchemaName\":\"Status\",\"Value\":\"Open\"},{\"SchemaName\":\"mx_Custom_11\",\"Value\":\"Product Campaign\"},{\"SchemaName\":\"mx_Custom_1\",\"Value\":\"vikas\"},{\"SchemaName\":\"mx_Custom_35\",\"Value\":\"\"},{\"SchemaName\":\"mx_Custom_13\",\"Value\":\"1990-01-01\"},{\"SchemaName\":\"mx_Custom_12\",\"Value\":\"New Business\"},{\"SchemaName\":\"mx_Custom_43\",\"Value\":\"indusind Nippon Life Super Suraksha\"},{\"SchemaName\":\"mx_Custom_44\",\"Value\":\"Health Plan\"},{\"SchemaName\":\"mx_Custom_45\",\"Value\":\"188\"},{\"SchemaName\":\"mx_Custom_15\",\"Value\":\"Up To 3 Lacs\"},{\"SchemaName\":\"mx_Custom_54\",\"Value\":\"Individual\"},{\"SchemaName\":\"mx_Custom_27\",\"Value\":\"DIGIMYIN\"},{\"SchemaName\":\"mx_Custom_46\",\"Value\":\"\",\"Fields\":[{\"SchemaName\":\"mx_CustomObject_1\",\"Value\":\"API\"},{\"SchemaName\":\"mx_Custom_36.mx_CustomObject_1\",\"Value\":\"70657623\"},{\"SchemaName\":\"mx_CustomObject_2\",\"Value\":\"DM\"}]}]}}", null, "application/json");
             request.Content = content;
             try
             {
@@ -3898,6 +4817,7 @@ namespace RelianceMkt.Controllers
             //string requestBody = "{\"ASM_FLS_Code\":\"\",\"Aadhaar\":\"\",\"AddedByBM_YN\":\"\",\"Added_By\":\"258743\",\"Address\":\"\",\"Address_1\":\"\",\"Address_2\":\"\",\"Address_3\":\"\",\"Advisor_Code\":\"\",\"AgeGroup\":\"\",\"Alternate_Number\":\"\",\"AnnualIncome\":\"\",\"AppointmentDate\":\"\",\"AppointmentTime\":\"\",\"BankName\":\"\",\"BranchCode\":\"\",\"BranchName\":\"\",\"CCECode\":\"\",\"CRMLeadType\":\"\",\"CallType\":\"\",\"Campaign\":\"TEST 19 JAN\",\"City\":\"\",\"Commute_Time\":\"\",\"CustomerBaseBBC\":\"\",\"DOB\":\"\",\"DOB_Changed\":\"\",\"Dependents\":\"\",\"Device_Id\":\"\",\"Educational_Background\":\"\",\"Email_ID\":\"\",\"FLS_Sapcode\":\"\",\"From_Address\":\"\",\"From_Latitude\":\"\",\"From_Longitude\":\"\",\"Gender\":\"\",\"Income\":\"\",\"InsLoginType\":\"\",\"Is_Updated\":\"\",\"Landline\":\"\",\"Latitude\":\"\",\"LeadInfo_Remarks\":\"\",\"Lead_From_Contact_List\":\"\",\"Lead_Source\":\"\",\"Lead_Status\":\"\",\"Lead_Sub_Source\":\"\",\"Lead_Sub_Type\":\"\",\"Lead_Type\":\"Recruitment\",\"LifeStage\":\"\",\"Longitude\":\"\",\"Marital_Status\":\"\",\"Mobile\":\"8080905083\",\"Name\":\"ASHUTOSH\",\"OTP\":\"\",\"OTPSentYN\":\"\",\"Occupation\":\"\",\"Occupation_Remarks\":\"\",\"Pin_Code\":\"\",\"Policy_Number\":\"\",\"RNLICCustomer_YN\":\"\",\"Reference_LeadID\":\"\",\"Reference_YN\":\"\",\"Referred_By\":\"\",\"SP_Code\":\"\",\"Source_From\":\"SMC Invest/SMC Sales\",\"State\":\"\",\"Sub_Activity_Options\":\"\",\"Sync_Txn_Id\":\"\",\"Sync_by\":\"123456\",\"User_Role\":\"\",\"Variance_Lat_Long\":\"\",\"Verification_Type\":\"\",\"Verticals_SPR\":\"\",\"WithoutWelcomeCodeYN\":\"\"}";
 
             string url = "https://karma.reliancenipponlife.com/v1.0/nlms/push-leads";
+            //string url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
             string requestBody = "{\"userId\":\"\",\"sl\":{\"loginType\":\"\",\"leadFrom\":\"\",\"leadType\":\"\",\"leadSubType\":\"\",\"advisorId\":\"\",\"gender\":\"\",\"maritialStatus\":\"\",\"name\":\"\",\"dateOfBrith\":\"\",\"occupation\":\"\",\"incomeBand\":\"\",\"educationalGroup\":\"\",\"phoneNo\":\"\",\"alternatePhoneNo\":\"\",\"landline\":\"\",\"address\":\" \",\"state\":\"\",\"city\":\"\",\"postalcode\":\"\",\"emailId\":\"\",\"campaign\":\"\",\"deviceId\":\"\",\"leadSource\":\"\",\"leadSubSource\":\"\",\"longitute\":\"\",\"latitude\":\"\",\"ageBand\":\"\",\"pan\":\"\",\"verticals\":\"\",\"prospectType\":\"\",\"lifeStage\":\"\",\"source\":\"\",\"whatsappNo\":\"\",\"isExistingCustomer\":\"\",\"channel\":\"\",\"isWithWelcomeCode\",\"spId\":\"\",\"asmId\":\"\",\"spName\":\"\",\"asmName\":\"\",\"branchCode\":\"\",\"branchName\":\"\",\"callType\":\"\",\"vertical\":\"ISG\"}}";
 
             // string requestBody = "{\"userId\":\"70000099\",\"loginType\":\"Individual\",\"leadType\":\"New Business\",\"leadProfileType\":\"\",\"leadSubType\":\"New Prospect\",\"leadSource\":\"Customer Portal\",\"leadSubSource\":\"\",\"gender\":\"Male\",\"maritialStatus\":\"Married\",\"name\":\"Ravish Pandey\",\"isExistingCustomer\":\"Y\",\"policyNo\":\"\",\"dateOfBrith\":\"28-AUG-1969\",\"occupation\":\"\",\"incomeBand\":\"_3_lacs_to_6_lacs\",\"lifeStage\":\"Married\",\"educationalGroup\":\"\",\"phoneNo\":\"9503740233\",\"landline\":\"\",\"alternatePhoneNo\":\"\",\"whatsappNo\":\"\",\"address\":\"203-204/2A, Brindaban II,\",\"state\":\"\",\"city\":\"\",\"postalcode\":\"400093\",\"emailId\":\"\",\"campaign\":\"Customer Portal\",\"ageBand\":\"\",\"vertical\":\"\",\"callType\":\"\",\"spId\":\"\",\"spName\":\"\",\"teleCallerName\":\"\",\"teleCallerId\":\"\",\"asmId\":\"\",\"asmName\":\"\",\"advisorName\":\"Ashu Gupta test\",\"advisorId\":\"70000099\",\"pan\":\"AUEPS2835F\",\"linkedLead\":[]}";
@@ -4023,7 +4943,7 @@ namespace RelianceMkt.Controllers
                     {
                         client.Headers[HttpRequestHeader.ContentType] = "text/plain";
                         string json = Newtonsoft.Json.JsonConvert.SerializeObject(emailJson);
-                        client.UploadString("https://extapi.reliancenipponlife.com/EmailService/send", "POST", json);
+                        client.UploadString("https://extapi.indusindnipponlife.com/EmailService/send", "POST", json);
                     }
                 }
                 else // Send SMS
@@ -4234,13 +5154,15 @@ namespace RelianceMkt.Controllers
                     ViewBag.lstcampaign = new List<SelectListItem>();
                     ViewBag.lstsubcampaign = new List<SelectListItem>();
                 }
-                 
+
                 return View();
             }
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = "Something went wrong: " + ex.Message;
-                return View();
+                //return View();
+                return View(new campaign());
+
             }
         }
 
@@ -6287,8 +7209,8 @@ string input_name, string input_mobile, string input_email)
                     // Sample Rows
                     string[][] sampleRows = new string[][]
                     {
-                new string[] { "1", "Kamlesh", "7488310252", "Customer", "125987", "Sanjay", "AG" },
-                new string[] { "2", "Vikas", "67676767656", "Ex-Customers", "987562", "Abhishek", "AG" }
+                new string[] { "1", "Kamlesh", "9818889998", "Customer", "125987", "Sanjay", "AG" },
+                new string[] { "2", "Vikas", "9818889998", "Ex-Customers", "987562", "Abhishek", "AG" }
                     };
 
                     foreach (var rowData in sampleRows)
@@ -6408,7 +7330,7 @@ string input_name, string input_mobile, string input_email)
         //====================================
 
         [HttpPost]
-        public async Task<ActionResult> UploadExcel( HttpPostedFileBase excelFile,string CampaignName,string status)
+        public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName, string status)
         {
             ServerLog("===== UploadExcel START =====");
 
@@ -6456,8 +7378,9 @@ string input_name, string input_mobile, string input_email)
 
                     int totalRows = sheetData.Elements<Row>().Count();
                     ServerLog("Total rows found (including header): " + totalRows);
-                    string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                   // string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+                    //string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                    // string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+                    string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
 
                     //string conStr =
@@ -7004,7 +7927,7 @@ string input_name, string input_mobile, string input_email)
                 recipient = mobileNumber,
                 corelationId = "1234667",
                 context = new {
-                    waba_var1 =CampaignName     
+                    waba_var1 =CampaignName
 
                 }
             }
@@ -7279,7 +8202,7 @@ string input_name, string input_mobile, string input_email)
         {
 
             List<CustomModel.JSONEvent> data = new List<CustomModel.JSONEvent>();
-            string sapcode = Session["SAPCODE"].ToString();
+            string sapcode = Session["SAPCODE"]?.ToString();
 
             var query = (from p in db.ENGAGE_SHARECOUNT
                          where p.SHC_SAPCODE == sapcode
@@ -7385,7 +8308,7 @@ string input_name, string input_mobile, string input_email)
             DateTime dt1 = Convert.ToDateTime(fromdate);
             DateTime dt2 = Convert.ToDateTime(todate);
 
-            string sapcode = Session["SAPCODE"].ToString();
+            string sapcode = Session["SAPCODE"]?.ToString();
 
             var query = (from p in db.Leads
                          where p.leads_sapcode == sapcode
@@ -7426,51 +8349,495 @@ string input_name, string input_mobile, string input_email)
 
         }
 
-        public ActionResult Landingpage(string SAPCODE, string creativeid)
+        [HttpGet]
+        public ActionResult Landingpage(string PARAMS)
         {
+            Lead model = new Lead();
 
-            return View();
+            if (!string.IsNullOrEmpty(PARAMS))
+            {
+                string decodedParams = Encoding.UTF8.GetString(Convert.FromBase64String(PARAMS));
+                var values = HttpUtility.ParseQueryString(decodedParams);
+
+                ViewBag.SAPCODE = values["SAPCODE"];
+                ViewBag.CREATIVEID = values["CREATIVEID"];
+                ViewBag.PLATEFORM = values["PLATEFORM"];
+
+                // Get CampaignMasterId from parameters
+                decimal campaignMasterId;
+                if (decimal.TryParse(values["CampaignMasterId"], out campaignMasterId))
+                {
+                    // Fetch campaign details from database
+                    var campaign = db.campaign_master
+                                   .Where(c => c.campaign_master_id == campaignMasterId)
+                                   .FirstOrDefault();
+
+                    if (campaign != null)
+                    {
+                        // OG basic data
+                        ViewBag.CampaignTitle = campaign.campaign_master_creative_caption;
+                        ViewBag.CampaignDescription = campaign.campaign_master_description;
+                        ViewBag.CampaignTags = campaign.campaign_master_tags;
+                        ViewBag.LandingPageUrl = campaign.campaign_master_landing_page;
+
+                        // -------- FIX STARTS HERE --------
+
+                        // ===== Correct base URL (ngrok / live / local) =====
+                        string scheme = Request.Headers["X-Forwarded-Proto"] ?? Request.Url.Scheme;
+                        string host = Request.Headers["X-Forwarded-Host"] ?? Request.Url.Authority;
+
+                        // IMPORTANT: Application path ( /Digimyin )
+                        string appPath = Url.Content("~/").TrimEnd('/');
+
+                        string baseUrl = scheme + "://" + host + appPath;
+
+                        // ===== OG Image =====
+                        if (!string.IsNullOrEmpty(campaign.campaign_master_images))
+                        {
+                            string[] images = campaign.campaign_master_images.Split(',');
+
+                            if (images.Length > 0 && !string.IsNullOrWhiteSpace(images[0]))
+                            {
+                                string imageName = images[0].Trim();
+
+                                ViewBag.CampaignImageUrl =
+                                    baseUrl + "/Content/images/campaign/" + imageName;
+                            }
+                        }
 
 
+                        // -------- FIX ENDS HERE --------
+
+                        // Store campaign object if needed
+                        ViewBag.Campaign = campaign;
+                    }
+                }
+            }
+
+            return View(model);
         }
 
+
+
+
+        //public ActionResult Landingpage(string SAPCODE, string creativeid)
+        //{
+
+        //    return View();
+
+
+        //}
+        //    [HttpPost]
+        //public async Task<ActionResult> Landingpage(
+        //Lead data,
+        //string SAPCODE,
+        //string CREATIVEID,
+        //string PLATEFORM)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        data.leads_creativeid = Convert.ToDecimal(CREATIVEID);
+
+        //        bool isDuplicate = db.Leads.Any(l =>
+        //            l.leads_mobile == data.leads_mobile &&
+        //            l.leads_creativeid == data.leads_creativeid);
+
+        //        if (!isDuplicate)
+        //        {
+        //            // 🔹 LeadSquared API call
+        //            string requestId = await TestAPI();
+
+        //            data.leads_date = DateTime.UtcNow.AddMinutes(330);
+        //            data.leads_sapcode = SAPCODE;
+        //            data.leads_plateform = PLATEFORM;
+
+        //            // 🔥 RequestId save here
+        //            data.api_leads_id = requestId;
+
+        //            db.Leads.Add(data);
+        //            db.SaveChanges();
+
+        //            TempData["alert"] = "Show";
+
+        //            return RedirectToAction("Landingpage", new
+        //            {
+        //                SAPCODE = SAPCODE,
+        //                CREATIVEID = CREATIVEID,
+        //                PLATEFORM = PLATEFORM
+        //            });
+        //        }
+        //        else
+        //        {
+        //            TempData["alert"] = "Duplicate entry found";
+        //        }
+        //    }
+
+        //    return View();
+        //}
+
+        private bool ValidateLead(
+    Lead data,
+    decimal creativeId,
+    ModelStateDictionary modelState,
+    out string errorMessage)
+        {
+            errorMessage = "";
+
+            // 🔹 Duplicate check
+            bool isDuplicate = db.Leads.Any(l =>
+                l.leads_mobile == data.leads_mobile &&
+                l.leads_creativeid == creativeId);
+
+            if (isDuplicate)
+            {
+                errorMessage = "Lead with the same mobile number and creative ID already exists.";
+                modelState.AddModelError("leads_mobile", errorMessage);
+                return false;
+            }
+
+            // 🔹 Mobile validation
+            if (string.IsNullOrEmpty(data.leads_mobile?.ToString()))
+            {
+                errorMessage = "Enter Your Mobile Number";
+                modelState.AddModelError("leads_mobile", errorMessage);
+                return false;
+            }
+
+            string mobileRegex = @"^([0-9]{10})$";
+            if (!Regex.IsMatch(data.leads_mobile.ToString(), mobileRegex))
+            {
+                errorMessage = "Enter a valid Mobile Number";
+                modelState.AddModelError("leads_mobile", errorMessage);
+                return false;
+            }
+
+            return true;
+        }
+
+        //================================= correct code just abhi running=======================
 
 
         [HttpPost]
-        public ActionResult Landingpage(Lead data, string SAPCODE, string CREATIVEID, string PLATEFORM)
+        public async Task<ActionResult> Landingpage(Lead data, string SAPCODE, string CREATIVEID, string PLATEFORM)
         {
-            if (ModelState.IsValid)
+            try
             {
-                bool isDuplicate = db.Leads.Any(l => l.leads_mobile == data.leads_mobile && l.leads_creativeid == data.leads_creativeid);
-                if (!isDuplicate)
+                if (!ModelState.IsValid)
                 {
-                    data.leads_date = System.DateTime.UtcNow.AddMinutes(330);
-                    data.leads_sapcode = SAPCODE;
-                    data.leads_creativeid = Convert.ToDecimal(CREATIVEID);
-                    data.leads_plateform = PLATEFORM;
-
-                    db.Leads.Add(data);
-
-                    if (db.SaveChanges() > 0)
-                    {
-                        TempData["alert"] = "Show";
-                        return RedirectToAction("Landingpage", new { @SAPCODE = SAPCODE, @CREATIVEID = CREATIVEID, @PLATEFORM = PLATEFORM });
-                    }
-                    else
-                    {
-                        // If duplicate, handle accordingly (e.g., show error message)
-                        ModelState.AddModelError("", "Duplicate entry found for mobile and creative ID.");
-                        TempData["alert"] = "Duplicate entry found for mobile and creative ID.";
-                    }
-
+                    TempData["SwalType"] = "error";
+                    TempData["SwalMessage"] = "Please fill all required details correctly.";
+                    return View(data);
                 }
+
+                if (!decimal.TryParse(CREATIVEID, out decimal creativeId))
+                {
+                    TempData["SwalType"] = "error";
+                    TempData["SwalMessage"] = "Invalid campaign. Please try again.";
+                    return View(data);
+                }
+
+                data.leads_creativeid = creativeId;
+
+                if (!ValidateLead(data, creativeId, ModelState, out string validationMsg))
+                {
+                    TempData["SwalType"] = "warning";
+                    TempData["SwalMessage"] = validationMsg;
+                    return View(data);
+                }
+
+                // 🔹 Get Hierarchy Data
+                var empData = db.NEW_TEMP_HIERARCHY
+                    .FirstOrDefault(x =>
+                        x.X_BM_EMP_CD == SAPCODE ||
+                        x.X_ZM_EMP_CD == SAPCODE ||
+                        x.X_RM_EMP_EMP_CD == SAPCODE ||
+                        x.X_SM_EMP_CD == SAPCODE);
+
+                if (empData == null)
+                {
+                    TempData["SwalType"] = "error";
+                    TempData["SwalMessage"] = "Invalid SAP Code.";
+                    return View(data);
+                }
+
+                string sapName = "";
+                string channelCode = empData.X_CHANNEL?.Trim().ToUpper();
+
+                if (empData.X_BM_EMP_CD == SAPCODE)
+                    sapName = empData.X_BM_NM;
+                else if (empData.X_ZM_EMP_CD == SAPCODE)
+                    sapName = empData.X_ZM_NM;
+                else if (empData.X_RM_EMP_EMP_CD == SAPCODE)
+                    sapName = empData.X_RM_NM;
+                else if (empData.X_SM_EMP_CD == SAPCODE)
+                    sapName = empData.X_SM_NM;
+
+                if (string.IsNullOrEmpty(channelCode))
+                {
+                    TempData["SwalType"] = "error";
+                    TempData["SwalMessage"] = "Channel not found.";
+                    return View(data);
+                }
+
+                // 🔹 Fetch Category Name
+                var categoryName = (from cm in db.campaign_master
+                                    join cc in db.campaign_category
+                                    on cm.campaign_category_id equals cc.campaign_category_id
+                                    where cm.channel_code == channelCode
+                                    select cc.campaign_category_name)
+                                    .FirstOrDefault();
+
+                if (string.IsNullOrEmpty(categoryName))
+                {
+                    TempData["SwalType"] = "error";
+                    TempData["SwalMessage"] = "Category not mapped for this channel.";
+                    return View(data);
+                }
+
+                var lsqChannels = new List<string> { "AG", "DB", "DL", "DP", "PC", "PM" };
+                var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
+
+                string apiRequestId = null;
+                string rawJson = "";
+
+                // 🔥 Channel Wise API Call
+                if (lsqChannels.Contains(channelCode))
+                {
+                    var result = await TestAPI(
+                        data.leads_name,
+                        data.leads_mobile.ToString(),
+                        SAPCODE,
+                        sapName);
+
+                    apiRequestId = result.Response?.RequestId;
+                    rawJson = result.RawJson;
+                }
+                else if (seChannels.Contains(channelCode))
+                {
+                    var result = await TestAPI_SE(
+                        data.leads_name,
+                        data.leads_mobile.ToString(),
+                        SAPCODE,
+                        sapName,
+                        categoryName);
+
+                    apiRequestId = result.Response?.RequestId;
+                    rawJson = null;
+                }
+                else
+                {
+                    TempData["SwalType"] = "error";
+                    TempData["SwalMessage"] = "Channel not mapped properly.";
+                    return View(data);
+                }
+
+                // 🔹 Save Data
+                data.leads_date = DateTime.UtcNow.AddMinutes(330);
+                data.leads_sapcode = SAPCODE;
+                data.leads_plateform = PLATEFORM;
+
+                data.api_leads_id = apiRequestId;          // null allowed
+                data.api_response_json = rawJson;         // empty allowed
+
+                data.LeadType = categoryName;             // 🔥 Campaign Category Name Save Here
+
+                db.Leads.Add(data);
+                db.SaveChanges();
+
+                TempData["SwalType"] = "success";
+                TempData["SwalMessage"] = "Thank you! Your details have been submitted successfully.";
+
+                return RedirectToAction("Landingpage", new
+                {
+                    SAPCODE,
+                    CREATIVEID,
+                    PLATEFORM
+                });
             }
-            TempData["alert"] = "Hide";
-            return View();
-
-
-
+            catch (Exception ex)
+            {
+                TempData["SwalType"] = "error";
+                TempData["SwalMessage"] = "Something went wrong. Please try again.";
+                return View(data);
+            }
         }
+
+
+
+
+
+
+
+
+
+        //=================================kamlesh====
+        //[HttpPost]
+        //public async Task<ActionResult> Landingpage(Lead data, string SAPCODE, string CREATIVEID, string PLATEFORM)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        TempData["SwalType"] = "error";
+        //        TempData["SwalMessage"] = "Please fill all required details correctly.";
+        //        return View(data);
+        //    }
+
+        //    if (!decimal.TryParse(CREATIVEID, out decimal creativeId))
+        //    {
+        //        TempData["SwalType"] = "error";
+        //        TempData["SwalMessage"] = "Invalid campaign. Please try again.";
+        //        return View(data);
+        //    }
+
+        //    data.leads_creativeid = creativeId;
+
+        //    if (!ValidateLead(data, creativeId, ModelState, out string validationMsg))
+        //    {
+        //        TempData["SwalType"] = "warning";
+        //        TempData["SwalMessage"] = validationMsg;
+        //        return View(data);
+        //    }
+
+        //    // 🔹 Get Employee Data
+        //    var empData = db.NEW_TEMP_HIERARCHY
+        //        .FirstOrDefault(x =>
+        //            x.X_BM_EMP_CD == SAPCODE ||
+        //            x.X_ZM_EMP_CD == SAPCODE ||
+        //            x.X_RM_EMP_EMP_CD == SAPCODE ||
+        //            x.X_SM_EMP_CD == SAPCODE);
+        //    string channelCode = "";
+        //    string sapName = "";
+
+        //    if (empData != null)
+        //    {
+        //        // 🔹 Set SAP Name
+        //        if (empData.X_BM_EMP_CD == SAPCODE)
+        //            sapName = empData.X_BM_NM;
+
+        //        else if (empData.X_ZM_EMP_CD == SAPCODE)
+        //            sapName = empData.X_ZM_NM;
+
+        //        else if (empData.X_RM_EMP_EMP_CD == SAPCODE)
+        //            sapName = empData.X_RM_NM;
+
+        //        else if (empData.X_SM_EMP_CD == SAPCODE)
+        //            sapName = empData.X_SM_NM;
+
+        //        // 🔹 FIXED CHANNEL CODE LINE
+        //        channelCode = (empData.X_CHANNEL ?? "").Trim().ToUpper();
+        //    }
+
+
+        //    //string sapName = "";
+        //    //string channelCode = "";
+
+        //    //if (empData != null)
+        //    //{
+        //    //    if (empData.X_BM_EMP_CD == SAPCODE)
+        //    //    {
+        //    //        sapName = empData.X_BM_NM;
+        //    //        channelCode = empData.CHANNEL_CODE;
+        //    //    }
+        //    //    else if (empData.X_ZM_EMP_CD == SAPCODE)
+        //    //    {
+        //    //        sapName = empData.X_ZM_NM;
+        //    //        channelCode = empData.CHANNEL_CODE;
+        //    //    }
+        //    //    else if (empData.X_RM_EMP_EMP_CD == SAPCODE)
+        //    //    {
+        //    //        sapName = empData.X_RM_NM;
+        //    //        channelCode = empData.CHANNEL_CODE;
+        //    //    }
+        //    //    else if (empData.X_SM_EMP_CD == SAPCODE)
+        //    //    {
+        //    //        sapName = empData.X_SM_NM;
+        //    //        channelCode = empData.CHANNEL_CODE;
+        //    //    }
+        //    //}
+
+        //    ViewBag.LeadName = data.leads_name;
+        //    ViewBag.LeadMobile = data.leads_mobile;
+        //    ViewBag.LeadSapCode = SAPCODE;
+        //    ViewBag.SapName = sapName;
+
+        //    string rawApiResponse = "";
+
+        //    // ✅ SPECIAL CHANNEL CONDITION
+        //    var specialChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" ,"AG" };
+
+        //    if (specialChannels.Contains(channelCode))
+        //    {
+        //        using (var client = new HttpClient())
+        //        {
+        //            client.DefaultRequestHeaders.Add("x-client-id", "22a0b4e5-940f-40a4-984d-6af1ac8e8c9e");
+        //            client.DefaultRequestHeaders.Add("origin", "https://sa3dev.reliancenipponlife.com");
+
+        //            var requestBody = new
+        //            {
+        //                userId = SAPCODE,
+        //                name = data.leads_name,
+        //                phoneNo = data.leads_mobile.ToString(),
+        //                apiSource = "digimyin",
+        //                loginType = "Individual",
+        //                leadType = data.LeadType,
+        //            };
+
+        //            var content = new StringContent(
+        //                Newtonsoft.Json.JsonConvert.SerializeObject(requestBody),
+        //                Encoding.UTF8,
+        //                "application/json");
+
+        //            var response = await client.PostAsync(
+        //                "https://sa3dev.reliancenipponlife.com/v1.0/nlms/push-leads",
+        //                content);
+
+        //            rawApiResponse = await response.Content.ReadAsStringAsync();
+        //        }
+
+        //        // ✅ Save API response in leads_email column
+        //        data.leads_email = rawApiResponse;
+        //    }
+        //    else
+        //    {
+        //        // 🔹 Existing API
+        //        var apiResult = await TestAPI(
+        //            data.leads_name,
+        //            data.leads_mobile.ToString(),
+        //            SAPCODE,
+        //            sapName);
+
+        //        if (apiResult.Response == null)
+        //        {
+        //            TempData["SwalType"] = "error";
+        //            TempData["SwalMessage"] = "Unable to process your request right now. Please try again later.";
+        //            return View(data);
+        //        }
+
+        //        data.api_leads_id = apiResult.Response.RequestId;
+        //        data.api_response_json = apiResult.RawJson;
+        //    }
+
+        //    data.leads_date = DateTime.UtcNow.AddMinutes(330);
+        //    data.leads_sapcode = SAPCODE;
+        //    data.leads_plateform = PLATEFORM;
+
+        //    db.Leads.Add(data);
+        //    db.SaveChanges();
+
+        //    TempData["SwalType"] = "success";
+        //    TempData["SwalMessage"] = "Thank you! Your details have been submitted successfully.";
+
+        //    return RedirectToAction("Landingpage", new
+        //    {
+        //        SAPCODE,
+        //        CREATIVEID,
+        //        PLATEFORM
+        //    });
+        //}
+
+
+
+        //=================================================
+
 
         public ActionResult LandingPageList()
         {
@@ -7779,39 +9146,160 @@ string input_name, string input_mobile, string input_email)
 
 
 
+        //==========================================
+
 
         public ActionResult UserLeaderBoard()
         {
-            var qry = db.ENGAGE_SHARECOUNT
-                .SqlQuery("SELECT TOP 10 * FROM (SELECT CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID', CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT', SHC_SAPCODE AS 'SHC_SAPCODE', '' as 'SHC_PLATEFORM', CREATIVE_ID, CAST('2022-01-01' AS DATE) AS 'SHC_DATE' FROM ENGAGE_SHARECOUNT GROUP BY SHC_SAPCODE, CREATIVE_ID) A")
-                .ToList<ENGAGE_SHARECOUNT>();
+            string Ref = Session["REF_KEY"]?.ToString();
+            string sapCode = string.Empty;
+
+            if (!string.IsNullOrEmpty(Ref))
+            {
+                var valueBytes = Convert.FromBase64String(Ref);
+                string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+
+                string[] separate_params = str_REFKEY.Split('&');
+                foreach (var item in separate_params)
+                {
+                    if (item.Contains("SAPCODE"))
+                        sapCode = item.Split('=')[1];
+                }
+            }
+
+            Session["SAPCODE"] = sapCode;
+
+            db.Database.CommandTimeout = 180;
+
+            /* ================= LOAD HIERARCHY ONCE ================= */
+
+            var hierarchy = db.NEW_TEMP_HIERARCHY
+                .Select(x => new {
+                    x.AGENT_CODE,
+                    x.AGENT_NAME,
+                    x.X_BM_EMP_CD,
+                    x.X_BM_NM,
+                    x.X_ZM_EMP_CD,
+                    x.X_ZM_NM,
+                    x.X_RM_EMP_EMP_CD,
+                    x.X_RM_NM,
+                    x.X_SM_EMP_CD,
+                    x.X_SM_NM
+                })
+                .ToList();
 
 
-            var qry2 = db.ENGAGE_SHARECOUNT
-                .SqlQuery("SELECT  * FROM (SELECT CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID', CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT', SHC_SAPCODE AS 'SHC_SAPCODE', '' as 'SHC_PLATEFORM', CREATIVE_ID, CAST('2022-01-01' AS DATE) AS 'SHC_DATE' FROM ENGAGE_SHARECOUNT GROUP BY SHC_SAPCODE, CREATIVE_ID) A WHERE A.SHC_SAPCODE = @SAPCODE", new SqlParameter("@SAPCODE", Session["SAPCODE"]))
-                .FirstOrDefault<ENGAGE_SHARECOUNT>();
+            /* ================= SHARE LEADERBOARD ================= */
 
-            ViewBag.ShareLeaderBoard = qry;
+            var topShares = db.Database.SqlQuery<ENGAGE_SHARECOUNT>(@"
+        SELECT TOP 10
+            CONVERT(DECIMAL(18,0), ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC)) AS SHC_ID,
+            CONVERT(DECIMAL(18,0), COUNT(*)) AS SHC_SHARECOUNT,
+            SHC_SAPCODE,
+            '' AS SHC_PLATEFORM,
+            CONVERT(DECIMAL(18,0),0) AS CREATIVE_ID,
+            GETDATE() AS SHC_DATE
+        FROM ENGAGE_SHARECOUNT
+        GROUP BY SHC_SAPCODE
+        ORDER BY COUNT(*) DESC
+    ").ToList();
 
-            ViewBag.ShareLeaderBoardMyRank = qry2;
+            foreach (var item in topShares)
+            {
+                var code = item.SHC_SAPCODE?.Trim();
+
+                var emp = hierarchy.FirstOrDefault(h =>
+                    (h.AGENT_CODE != null && h.AGENT_CODE.Trim() == code) ||
+                    (h.X_BM_EMP_CD != null && h.X_BM_EMP_CD.Trim() == code) ||
+                    (h.X_ZM_EMP_CD != null && h.X_ZM_EMP_CD.Trim() == code) ||
+                    (h.X_RM_EMP_EMP_CD != null && h.X_RM_EMP_EMP_CD.Trim() == code) ||
+                    (h.X_SM_EMP_CD != null && h.X_SM_EMP_CD.Trim() == code)
+                );
+
+                if (emp != null)
+                {
+                    if (emp.AGENT_CODE?.Trim() == code)
+                        item.SHC_PLATEFORM = emp.AGENT_NAME;
+                    else if (emp.X_BM_EMP_CD?.Trim() == code)
+                        item.SHC_PLATEFORM = emp.X_BM_NM;
+                    else if (emp.X_ZM_EMP_CD?.Trim() == code)
+                        item.SHC_PLATEFORM = emp.X_ZM_NM;
+                    else if (emp.X_RM_EMP_EMP_CD?.Trim() == code)
+                        item.SHC_PLATEFORM = emp.X_RM_NM;
+                    else if (emp.X_SM_EMP_CD?.Trim() == code)
+                        item.SHC_PLATEFORM = emp.X_SM_NM;
+                }
+                else
+                {
+                    item.SHC_PLATEFORM = code;
+                }
+            }
+
+            ViewBag.ShareLeaderBoard = topShares;
+            ViewBag.ShareLeaderBoardMyRank =
+                topShares.FirstOrDefault(x => x.SHC_SAPCODE == sapCode);
 
 
-            var qry3 = db.Leads
-                .SqlQuery("SELECT TOP 10 * FROM (SELECT CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC)AS NUMERIC(18,0)) AS 'leads_id', CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode', '' AS LEADS_NAME, CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE, CAST(0 AS NUMERIC(18,0))  AS LEADS_CREATIVEID, CAST('' AS DATETIME)  AS LEADS_DATE, '' AS LEADS_PLATEFORM, leads_email, api_leads_id FROM leads GROUP BY leads_SAPCODE, leads_email, api_leads_id) A")
-                .ToList<Lead>();
-            ViewBag.LeadLeaderBoard = qry3;
+            /* ================= LEADS LEADERBOARD ================= */
 
-            var qry4 = db.Leads
-                .SqlQuery("SELECT  * FROM (SELECT CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC)AS NUMERIC(18,0)) AS 'leads_id', CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode', '' AS LEADS_NAME, CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE, CAST(0 AS NUMERIC(18,0))  AS LEADS_CREATIVEID, CAST('' AS DATETIME)  AS LEADS_DATE, '' AS LEADS_PLATEFORM,leads_email, api_leads_id FROM leads GROUP BY leads_SAPCODE, leads_email, api_leads_id) A  WHERE A.leads_SAPCODE = @SAPCODE", new SqlParameter("@SAPCODE", Session["SAPCODE"]))
-                .FirstOrDefault<Lead>();
+            var topLeads = db.Database.SqlQuery<Lead>(@"
+        SELECT TOP 10
+            CONVERT(DECIMAL(18,0), COUNT(*)) AS leads_id,
+            leads_SAPCODE AS leads_sapcode,
+            '' AS leads_name,
+            CONVERT(DECIMAL(18,0),0) AS LEADS_MOBILE,
+            CONVERT(DECIMAL(18,0),0) AS LEADS_CREATIVEID,
+            GETDATE() AS LEADS_DATE,
+            '' AS LEADS_PLATEFORM,
+            '' AS leads_email,
+            '' AS api_leads_id,
+            '' AS api_response_json,
+            '' AS LeadType
+        FROM leads
+        GROUP BY leads_SAPCODE
+        ORDER BY COUNT(*) DESC
+    ").ToList();
 
+            foreach (var item in topLeads)
+            {
+                var code = item.leads_sapcode?.Trim();
 
+                var emp = hierarchy.FirstOrDefault(h =>
+                    (h.AGENT_CODE != null && h.AGENT_CODE.Trim() == code) ||
+                    (h.X_BM_EMP_CD != null && h.X_BM_EMP_CD.Trim() == code) ||
+                    (h.X_ZM_EMP_CD != null && h.X_ZM_EMP_CD.Trim() == code) ||
+                    (h.X_RM_EMP_EMP_CD != null && h.X_RM_EMP_EMP_CD.Trim() == code) ||
+                    (h.X_SM_EMP_CD != null && h.X_SM_EMP_CD.Trim() == code)
+                );
 
-            ViewBag.LeadLeaderBoardMyRank = qry4;
+                if (emp != null)
+                {
+                    if (emp.AGENT_CODE?.Trim() == code)
+                        item.leads_name = emp.AGENT_NAME;
+                    else if (emp.X_BM_EMP_CD?.Trim() == code)
+                        item.leads_name = emp.X_BM_NM;
+                    else if (emp.X_ZM_EMP_CD?.Trim() == code)
+                        item.leads_name = emp.X_ZM_NM;
+                    else if (emp.X_RM_EMP_EMP_CD?.Trim() == code)
+                        item.leads_name = emp.X_RM_NM;
+                    else if (emp.X_SM_EMP_CD?.Trim() == code)
+                        item.leads_name = emp.X_SM_NM;
+                }
+                else
+                {
+                    item.leads_name = "NA";   // 👈 yaha change kiya
+                }
+            }
+
+            ViewBag.LeadLeaderBoard = topLeads;
+            ViewBag.LeadLeaderBoardMyRank =
+                topLeads.FirstOrDefault(x => x.leads_sapcode == sapCode);
+
             return View();
         }
 
 
+        //=========================================
         /****START - CHANNEL ****/
         //public ActionResult ChannelList()
         //{
@@ -7903,6 +9391,8 @@ string input_name, string input_mobile, string input_email)
         //============================correct code ==============
 
         public ActionResult ChannelList()
+
+
         {
             if (Session["userid"] == null)
             {
@@ -7926,7 +9416,9 @@ string input_name, string input_mobile, string input_email)
                                        .OrderBy(x => x.Text)  // dropdown bhi alphabet me
                                        .ToList();
 
-            return View();
+            //return View();
+            return View(new channel());
+
         }
 
 
@@ -7967,6 +9459,23 @@ string input_name, string input_mobile, string input_email)
             return View(data);
         }
 
+        [HttpGet]
+        public JsonResult GetChannelDesc(string channel)
+        {
+            var desc = db.NEW_TEMP_HIERARCHY
+                .Where(x => x.X_CHANNEL == channel)
+                .Select(x => x.X_CHANNEL_DESC)
+                .FirstOrDefault();
+
+            return Json(desc, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
+
+
+        //============================================================================
         //public ActionResult ChannelList()
         //{
         //    if (Session["userid"] == null)
@@ -8462,12 +9971,12 @@ string input_name, string input_mobile, string input_email)
             //    .OrderBy(c => c)
             //    .ToList();
 
-                    ViewBag.CampaignCategories = db.campaign_category
-            .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
-            .Select(c => c.campaign_category_name)
-            .OrderBy(name => name)
-                .Distinct()
-            .ToList();
+            ViewBag.CampaignCategories = db.campaign_category
+    .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
+    .Select(c => c.campaign_category_name)
+    .OrderBy(name => name)
+        .Distinct()
+    .ToList();
 
 
 
@@ -8480,12 +9989,12 @@ string input_name, string input_mobile, string input_email)
             //    .OrderBy(s => s)
             //    .ToList();
 
-                    ViewBag.SubCampaigns = db.subcampaigns
-            .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
-            .Select(s => s.subcampaign_name)
-            .Distinct()
-            .OrderBy(name => name)
-            .ToList();
+            ViewBag.SubCampaigns = db.subcampaigns
+    .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
+    .Select(s => s.subcampaign_name)
+    .Distinct()
+    .OrderBy(name => name)
+    .ToList();
 
 
             ViewBag.dt1 = dt1;
@@ -8536,24 +10045,24 @@ string input_name, string input_mobile, string input_email)
             //    .Distinct()
             //    .OrderBy(c => c)
             //    .ToList();
-                        ViewBag.CampaignCategories = db.campaign_category
-              .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
-              .Select(c => c.campaign_category_name)
-              .OrderBy(name => name)
-              .Distinct()
-              .ToList();
+            ViewBag.CampaignCategories = db.campaign_category
+  .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
+  .Select(c => c.campaign_category_name)
+  .OrderBy(name => name)
+  .Distinct()
+  .ToList();
 
             //ViewBag.SubCampaigns = db.subcampaigns
             //    .Select(s => s.subcampaign_name)
             //    .Distinct()
             //    .OrderBy(s => s)
             //    .ToList();
-                    ViewBag.SubCampaigns = db.subcampaigns
-            .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
-            .Select(s => s.subcampaign_name)
-            .Distinct()
-            .OrderBy(name => name)
-            .ToList();
+            ViewBag.SubCampaigns = db.subcampaigns
+    .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
+    .Select(s => s.subcampaign_name)
+    .Distinct()
+    .OrderBy(name => name)
+    .ToList();
 
 
             ViewBag.dt1 = dt1;
@@ -8653,19 +10162,19 @@ string input_name, string input_mobile, string input_email)
             ViewBag.Channels = db.NEW_TEMP_HIERARCHY.Select(x => x.X_CHANNEL).Distinct().ToList();
             //ViewBag.CampaignCategories = db.campaign_category.Select(x => x.campaign_category_name).ToList();
 
-                    ViewBag.CampaignCategories = db.campaign_category
-            .Where(x => x.campaign_category_delflag == null
-                     && x.Campaign_Category_Status == "0")
-            .Select(x => x.campaign_category_name)
-            .OrderBy(x => x)
-            .ToList();
+            ViewBag.CampaignCategories = db.campaign_category
+    .Where(x => x.campaign_category_delflag == null
+             && x.Campaign_Category_Status == "0")
+    .Select(x => x.campaign_category_name)
+    .OrderBy(x => x)
+    .ToList();
 
             //ViewBag.SubCampaigns = db.subcampaigns.Select(x => x.subcampaign_name).ToList();
-                    ViewBag.SubCampaigns = db.subcampaigns
-            .Where(x => x.subcampaign_delflag == null)
-            .Select(x => x.subcampaign_name)
-            .OrderBy(x => x)
-            .ToList();
+            ViewBag.SubCampaigns = db.subcampaigns
+    .Where(x => x.subcampaign_delflag == null)
+    .Select(x => x.subcampaign_name)
+    .OrderBy(x => x)
+    .ToList();
 
 
             ViewBag.dt1 = dt1;
@@ -8722,12 +10231,12 @@ string input_name, string input_mobile, string input_email)
              .OrderBy(x => x)
              .ToList();
 
-          
-                ViewBag.SubCampaigns = db.subcampaigns
-            .Where(x => x.subcampaign_delflag == null)
-            .Select(x => x.subcampaign_name)
-            .OrderBy(x => x)
-            .ToList();
+
+            ViewBag.SubCampaigns = db.subcampaigns
+        .Where(x => x.subcampaign_delflag == null)
+        .Select(x => x.subcampaign_name)
+        .OrderBy(x => x)
+        .ToList();
 
 
             ViewBag.dt1 = dt1;

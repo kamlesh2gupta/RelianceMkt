@@ -1,0 +1,52 @@
+﻿@*@{
+        ViewBag.Title = "Session Time Out";
+    }
+
+    <div class="container mt-5">
+        <div class="alert alert-danger text-center p-4">
+            <h4>⚠ Session Time Out</h4>
+            <p>@ViewBag.Message</p>
+
+        </div>
+    </div>*@
+@{
+    ViewBag.Title = "Session Time Out";
+}
+
+<style>
+    .session-timeout-wrapper {
+        min-height: 100vh; /* full screen height */
+        width: 100%;
+        background: #5a0707; /* full page red background (Bootstrap danger) */
+        display: flex;
+        justify-content: center; /* horizontal center */
+        align-items: center; /* vertical center */
+    }
+
+    .session-box {
+        background: #ffffff;
+        padding: 40px 60px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+        .session-box h4 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #5a0707;
+        }
+
+        .session-box p {
+            font-size: 18px;
+            margin: 0;
+            color: #333;
+        }
+</style>
+
+<div class="session-timeout-wrapper">
+    <div class="session-box">
+        <h4>⚠ Session Time Out</h4>
+        <p>@ViewBag.Message</p>
+    </div>
+</div>

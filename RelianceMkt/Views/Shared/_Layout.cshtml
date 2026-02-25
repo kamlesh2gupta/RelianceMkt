@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     @RenderSection("meta", false)
-    <title>Reliance  - Creative Campaign Dashboard</title>
+<title>Indusind - Creative Campaign Dashboard</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
     <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -74,8 +74,9 @@
         /* Sidebar */
         .deznav {
             width: 250px;
-            position:fixed;
+            position: fixed;
             transition: all 0.3s ease;
+            background: #832625;
         }
 
             .deznav.hide {
@@ -135,6 +136,43 @@
         .content-body.full {
             margin-left: 80px; /* Adjust content margin when sidebar is collapsed */
         }
+          /* //================text color-profile side bar===============*/
+   /* Sidebar menu text default white */
+   .deznav .metismenu > li > a,
+   .deznav .metismenu li a span,
+   .deznav .metismenu li a i {
+       color: #ffffff !important;
+   }
+
+       /* Hover par text black */
+       .deznav .metismenu > li > a:hover,
+       .deznav .metismenu li a:hover span,
+       .deznav .metismenu li a:hover i {
+           color: #000000 !important;
+       }
+
+   /* Sub-menu items */
+   .deznav .metismenu ul li a {
+       color: #ffffff !important;
+   }
+
+       .deznav .metismenu ul li a:hover {
+           color: #000000 !important;
+       }
+
+        /* ACTIVE / OPEN PAGE - text BLACK */
+        .deznav .metismenu li.active > a,
+        .deznav .metismenu li.active > a span,
+        .deznav .metismenu li.active > a i {
+            color: #000000 !important;
+        }
+
+        /* ACTIVE sub-menu item */
+        .deznav .metismenu ul li.active > a {
+            color: #000000 !important;
+        }
+
+
     </style>
     
     @*<style>
@@ -205,7 +243,7 @@
         Nav header start
     ***********************************-->
     @*//===Edit by kamlesh===*@
-    <div class="nav-header" style="background: #ff8f16; height: 95px;">
+    <div class="nav-header" style="background: #fff; height: 95px;">
         @*//==end here====//*@
         @*<a href="~/Marketing/UserDashboard">
                 <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; max-width: 182px;">
@@ -231,8 +269,8 @@
     <!--<div class="header-content" style="height: 95px;">-->
     @*//===end here===*@
     <!--<nav class="navbar navbar-expand">-->
-    <div class="header" style="padding-left:0rem; position:fixed; top:0; left:0; width:100%; height:95px; background:#ff8f16; display:flex; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-        <div class="header-content" style="height:95px; width:100%; display:flex; align-items:center;">
+    <div class="header" style="padding-left: 0rem; position: fixed; top: 0; left: 0; width: 100%; height: 95px; background: #832625; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); ">
+        <div class="header-content" style="height: 95px; width: 100%; background: #832625; display: flex; align-items: center; ">
             <nav class="navbar navbar-expand" style="width:100%;">
                 <div class="collapse navbar-collapse justify-content-between">
                     <div class="header-left">
@@ -421,7 +459,7 @@
             </ul>
 
             <div class="copyright">
-                <br />© All Rights Reserved By Reliance
+                <br />© All Rights Reserved By IndusInd Nippon Life Insurance Company Limited
             </div>
         </div>
 
@@ -471,7 +509,7 @@
         ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by Reliance 2020</p>
+                <p>Copyright © Designed &amp; Developed by IndusInd Nippon Life Insurance Company Limited</p>
             </div>
         </div>
         <!--**********************************

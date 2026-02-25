@@ -80,7 +80,7 @@
             else if (System.DateTime.UtcNow.AddMinutes(330) > item.campaign_master_end_date)
             {
                 <spam class="badge badge-rounded badge-danger">Stopped</spam>
-            }
+            } 
             else
             {
                 <spam class="badge badge-rounded badge-info">Upcoming</spam>
@@ -123,10 +123,14 @@
                             <a class="btn btn-outline-dark p-3 text-ov" href="javascript:void(0);"><i class="fa fa-copy"></i>  @item.campaign_master_landing_page</a>
                         </div>-->
                         <div class="col-md-4 text-center  my-2">
-                            <a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">
+                            @*<a href="~/Marketing/campaigndetailsuser?CampaignMasterId=@item.campaign_master_id">*@
+                              <a href="@Url.Action("campaigndetailsuser", "Marketing", new { CampaignMasterId = item.campaign_master_id })">
+
                                 <button type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="bd-example-modal-lg">
-                                <span class="btn-icon-left text-info">
-                                    <i class="fa fa-eye color-info"></i></span>View</button>
+                                    <span class="btn-icon-left text-info">
+                                        <i class="fa fa-eye color-info"></i>
+                                    </span>View
+                                </button>
                             </a>
 
                         </div>

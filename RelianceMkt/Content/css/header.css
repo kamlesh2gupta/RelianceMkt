@@ -23,7 +23,8 @@
     padding-right: 1.875rem;
     align-items: center;
     display: flex;
-    background: #5856CE;
+    background: #832625;
+    ;
 }
 
 [data-sidebar-style="mini"] .nav-header .logo-abbr {

@@ -2182,7 +2182,7 @@
     <Content Include="Content\images\DigiMyinLogo.jpg" />
     <Content Include="Content\images\digimyinlogo_png.png" />
     <Content Include="Content\images\favicon.ico" />
-    <Content Include="Content\images\favicon.png" />
+    <Content Include="Content\images\favicon1.png" />
     <Content Include="Content\images\home.jpg" />
     <Content Include="Content\images\Home.png" />
     <Content Include="Content\images\home1.jpg" />
@@ -2195,6 +2195,7 @@
     <Content Include="Content\images\magic icon.png" />
     <Content Include="Content\images\map-2.png" />
     <Content Include="Content\images\me.png" />
+    <Content Include="Content\images\favicon.png" />
     <Content Include="Content\images\photo.jpg" />
     <Content Include="Content\images\photo2.jfif" />
     <Content Include="Content\images\product\1.jpg" />
@@ -3228,7 +3229,7 @@
     <Content Include="Views\Marketing\CentralBlast.cshtml" />
     <Content Include="Views\Marketing\ResetPassword.cshtml" />
     <Content Include="Views\Marketing\campaignMult.cshtml" />
-    <None Include="Views\Marketing\CentralBlast.cshtml22" />
+    <None Include="Views\Marketing\SessionTimeOut.cshtml" />
     <Content Include="Views\Marketing\EditcampaignCentralBlast.cshtml" />
   </ItemGroup>
   <ItemGroup>

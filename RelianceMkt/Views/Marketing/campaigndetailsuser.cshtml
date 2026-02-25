@@ -1,8 +1,54 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "campaigndetails";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
+
+    bool isLocal = Request.Url.Host.ToLower().Contains("localhost");
+
+    string scheme = Request.Headers["X-Forwarded-Proto"] ?? Request.Url.Scheme;
+    string host = Request.Headers["X-Forwarded-Host"] ?? Request.Url.Authority;
+    string baseUrl = scheme + "://" + host;
 }
+
+@{
+    string campaignId = ViewBag.lstAllCampaigns.cm.campaign_master_id.ToString();
+    string creativeId = ViewBag.lstAllCampaigns.cm.campaign_master_id.ToString();
+    string Ref = Session["REF_KEY"].ToString();
+    string sapCode = string.Empty;
+     
+    // Decode Base64 REF_Key
+    var valueBytes = Convert.FromBase64String(Ref);
+    string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+
+    // Extract SAPCODE
+    string[] separate_params = str_REFKEY.Split('&');
+    foreach (var item in separate_params)
+    {
+        if (item.Contains("SAPCODE"))
+        {
+            sapCode = item.Split('=')[1];
+        }
+    }
+
+    Session["SAPCODE"] = sapCode;
+
+    Func<string, string> buildUrl = (platform) =>
+baseUrl + "/Digimyin/Marketing/Landingpage?PARAMS=" +
+Convert.ToBase64String(
+    System.Text.Encoding.UTF8.GetBytes(
+        "CampaignMasterId=" + campaignId +
+        "&CREATIVEID=" + creativeId +
+        "&SAPCODE=" + sapCode +
+        "&PLATEFORM=" + platform
+    )
+);
+
+    string urlWA = buildUrl("WHATSAPP");
+    string urlFB = buildUrl("FACEBOOK");
+    string urlTW = buildUrl("TWITTER");
+    string urlLN = buildUrl("LINKEDIN");
+    string urlIG = buildUrl("INSTAGRAM");
+}
+
 <style>
     .bg-green {
         background: #4caf50 !important;
@@ -28,7 +74,7 @@
                 @Html.Partial("_PartialDateTime")
             </div>
             @*<a class="ml-4 text-white p-3 rounded border text-center width100 bg-danger" href="~/Marketing/campaignview?SAPCODE=@Session["SAPCODE"]">
-        <i class="las la-arrow-left"></i><span>Back</span>*@
+                <i class="las la-arrow-left"></i><span>Back</span>*@
 
             <a href="~/Marketing/campaignview?SAPCODE=@Session["SAPCODE"]" class="las la-arrow-left btn btn-secondary ml-4 text-white p-3">
                 <span>Back</span>
@@ -115,232 +161,241 @@
                     }
 
 
+
+
                     <div class="col-xl-12">
                         <div class="flex-wrap d-flex align-items-center justify-content-between">
                             @if (status == "Ongoing")
                             {
 
-                                string qryparam_wa = "CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=WHATSAPP";
-                                byte[] toEncodeAsBytes_wa = System.Text.ASCIIEncoding.ASCII.GetBytes(qryparam_wa);
 
-                                string returnValue_wa = System.Convert.ToBase64String(toEncodeAsBytes_wa);
-                                string url_wa = "https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=" + returnValue_wa;
+                                string url_wa = urlWA;       // For WhatsApp
+                                string url_other = urlIG;    // For Instagram / Other use
 
-
-                                string qryparam_other = "CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=OTHER";
-                                byte[] toEncodeAsBytes_other = System.Text.ASCIIEncoding.ASCII.GetBytes(qryparam_other);
-
-                                string returnValue_other = System.Convert.ToBase64String(toEncodeAsBytes_other);
-                                string url_other = "https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=" + returnValue_other;
 
                                 <input type="hidden" value="@url_other" id="hiddenURLWhatsapp" />
                                 if (ViewBag.lstAllCampaigns.cm.campaign_master_whatsapp == true)
                                 {
-                                    <a onclick="ShareCount(@Session["SAPCODE"], 'WHATSAPP', @ViewBag.lstAllCampaigns.cm.campaign_master_id)" href="whatsapp://send?text=@ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption
-                                       Click here to view more @url_wa" target="_blank">
-                                        <div class="d-flex flex-wrap">
-                                            <div class="d-flex mb-3 mr-3 align-items-center bgl-primary p-0 p-lg-2 pr-lg-3 rounded">
-                                                <i class="lab la-whatsapp social-icon bg-green mr-0 mr-lg-3 text-white"></i>
-                                                <div class="d-none d-lg-block">
-                                                    <h5 class="text-black fs-18 mb-0">Whatsapp</h5>
-                                                </div>
+                                    string waText =
+                                        ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption + "\n\n" +
+                                        "Click here to view more\n" + urlWA;
+
+                                    string waShareUrl =
+                                        "https://api.whatsapp.com/send?text=" +
+                                        System.Web.HttpUtility.UrlEncode(waText);
+
+                                    <a target="_blank"
+                                       href="@waShareUrl"
+                                       onclick="ShareCount('@sapCode','WHATSAPP',@campaignId)">
+                                        <div class="d-flex mb-3 mr-3 align-items-center bgl-primary p-0 p-lg-2 pr-lg-3 rounded">
+                                            <i class="lab la-whatsapp social-icon bg-green mr-0 mr-lg-3 text-white"></i>
+                                            <div class="d-none d-lg-block">
+                                                <h5 class="text-black fs-18 mb-0">Whatsapp</h5>
                                             </div>
                                         </div>
                                     </a>
+
                                 }
+
+
 
                                 if (ViewBag.lstAllCampaigns.cm.campaign_master_instagram == true)
                                 {
-                                    <a href="#" onclick="ShareCount(@Session["SAPCODE"], 'INSTAGRAM', @ViewBag.lstAllCampaigns.cm.campaign_master_id)">
+                                    <a href="javascript:void(0)"
+                                       onclick="copyToClipboard('@urlIG'); ShareCount('@sapCode','INSTAGRAM',@campaignId)">
                                         <div class="d-flex mr-3 mb-3 align-items-center bgl-secondary p-0 p-lg-2 pr-lg-3 rounded">
                                             <i class="lab la-instagram social-icon bg-secondary mr-0 mr-lg-3 text-white"></i>
                                             <div class="d-none d-lg-block">
                                                 <h5 class="text-black fs-18 mb-0">Instagram</h5>
-
                                             </div>
                                         </div>
                                     </a>
                                 }
                                 if (ViewBag.lstAllCampaigns.cm.campaign_master_facebook == true)
                                 {
-                                    <div class="" data-href="https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?CampaignMasterId=@ViewBag.lstAllCampaigns.cm.campaign_master_id&CREATIVEID=@ViewBag.lstAllCampaigns.cm.campaign_master_id&SAPCODE=@Session["SAPCODE"]&PLATEFORM=FACEBOOK"
-                                         data-layout="button" data-size="small">
-                                        @{
-                                            string qryparam = "CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=FACEBOOK";
-                                            byte[] toEncodeAsBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(qryparam);
+                                    string facebookFinalUrl = "";
 
-                                            string returnValue = System.Convert.ToBase64String(toEncodeAsBytes);
-                                            string url = "https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=" + returnValue + "&src=sdkpreparse";
+                                    if (isLocal)
+                                    {
+                                        // Localhost pe direct Landing Page open hoga
+                                        facebookFinalUrl = urlFB;
+                                    }
+                                    else
+                                    {
+                                        // Server pe Facebook share dialog open hoga
+                                        facebookFinalUrl = "https://www.facebook.com/sharer/sharer.php?u=" +
+                                            System.Web.HttpUtility.UrlEncode(urlFB);
+                                    }
+
+
+                                    <a target="_blank"
+                                       href="@facebookFinalUrl"
+                                       onclick="ShareCount('@sapCode','FACEBOOK',@campaignId)"
+                                       class="fb-xfbml-parse-ignore">
+                                        <div class="d-flex mr-3 mb-3 align-items-center bgl-info p-0 p-lg-2 pr-lg-3 rounded">
+                                            <i class="lab la-facebook-f social-icon bg-info mr-0 mr-lg-3 text-white"></i>
+                                            <div class="d-none d-lg-block">
+                                                <h5 class="text-black fs-18 mb-0">Facebook</h5>
+                                            </div>
+                                        </div>
+                                    </a>
 
 
 
-                                            <a target="_blank" onclick="ShareCount(@Session["SAPCODE"], 'FACEBOOK', @ViewBag.lstAllCampaigns.cm.campaign_master_id)" href="https://www.facebook.com/sharer/sharer.php?u=@HttpContext.Current.Server.UrlEncode(url)"
-                                               class="fb-xfbml-parse-ignore">
-                                                <div class="d-flex mr-3 mb-3 align-items-center bgl-info p-0 p-lg-2 pr-lg-3 rounded">
-                                                    <i class="lab la-facebook-f social-icon bg-info mr-0 mr-lg-3 text-white"></i>
-                                                    <div class="d-none d-lg-block">
-                                                        <h5 class="text-black fs-18 mb-0">Facebook 
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        }
-                                    </div>
-                                            }
+
+                                }
+
+
+
                                 if (ViewBag.lstAllCampaigns.cm.campaign_master_twitter == true)
                                 {
+                                    string twitterShareUrl =
+                                        "https://twitter.com/intent/tweet?text=" +
+                                        System.Web.HttpUtility.UrlEncode(ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption) +
+                                        "&url=" +
+                                        System.Web.HttpUtility.UrlEncode(urlTW);
 
-                                    string qryparam_twitter = "CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=TWITTER";
-                                    byte[] toEncodeAsBytes_twitter = System.Text.ASCIIEncoding.ASCII.GetBytes(qryparam_twitter);
-
-                                    string returnValue_twitter = System.Convert.ToBase64String(toEncodeAsBytes_twitter);
-                                    //string url_twitter = "https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=" + returnValue_wa;
-                                    <a onclick="ShareCount(@Session["SAPCODE"], 'TWITTER', @ViewBag.lstAllCampaigns.cm.campaign_master_id)" href="https://twitter.com/intent/tweet?text=@ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption%0Ahttps://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=@returnValue_twitter" target="_blank">
-
+                                    <a target="_blank"
+                                       href="@twitterShareUrl"
+                                       onclick="ShareCount('@sapCode','TWITTER',@campaignId)">
                                         <div class="d-flex mb-3 align-items-center bgl-success p-0 p-lg-2 pr-lg-3 rounded">
-                                            <i class="lab la-twitter social-icon bg-success mr-0 mr-lg-3  text-white"></i>
+                                            <i class="lab la-twitter social-icon bg-success mr-0 mr-lg-3 text-white"></i>
                                             <div class="d-none d-lg-block">
                                                 <h5 class="text-black fs-18 mb-0">Twitter</h5>
-
                                             </div>
-
                                         </div>
-
                                     </a>
+
                                 }
-                                           
+
                                 if (ViewBag.lstAllCampaigns.cm.campaign_master_linkedin == true)
                                 {
+                                    string linkedinShareUrl =
+                                        "https://www.linkedin.com/sharing/share-offsite/?url=" +
+                                        System.Web.HttpUtility.UrlEncode(urlLN);
 
-
-
-                                    string qryparam_linkedin = "CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=LINKEDIN";
-                                    byte[] toEncodeAsBytes_linkedin = System.Text.ASCIIEncoding.ASCII.GetBytes(qryparam_linkedin);
-
-                                    string returnValue_linkedin = System.Convert.ToBase64String(toEncodeAsBytes_linkedin);
-
-
-
-
-                                    <a title="Share on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=@returnValue_linkedin&title=Nippon&summary=hello&source=Nursingcenter" onclick="popupwindowAtCenter(this.href,'Share on Linked In',600,600);return false;">
-                                        <div class="d-flex flex-wrap">
-                                            <div class="d-flex mb-3 mr-3 align-items-center bgl-primary p-0 p-lg-2 pr-lg-3 rounded">
-                                                <i class="lab la-linkedin social-icon bg-info mr-0 mr-lg-3 text-white"></i>
-                                                <div class="d-none d-lg-block">
-                                                    <h5 class="text-black fs-18 mb-0">LinkedIn</h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    }
-                                }
-                                else
-                                {
-                                    <a href="#">
-
-                                        <div class="d-flex flex-wrap">
-                                            <div class="d-flex mb-3 mr-3 align-items-center bgl-primary p-0 p-lg-2 pr-lg-3 rounded">
-                                                <i class="lab la-whatsapp social-icon bg-green mr-0 mr-lg-3 text-white"></i>
-                                                <div class="d-none d-lg-block">
-                                                    <h5 class="text-black fs-18 mb-0">Whatsapp</h5>
-
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </a>
-
-                                    <a href="#" onclick="ShareCount(@Session["SAPCODE"], 'INSTAGRAM', @ViewBag.lstAllCampaigns.cm.campaign_master_id)">
-                                        <div class="d-flex mr-3 mb-3 align-items-center bgl-secondary p-0 p-lg-2 pr-lg-3 rounded">
-                                            <i class="lab la-instagram social-icon bg-secondary mr-0 mr-lg-3 text-white"></i>
+                                    <a target="_blank"
+                                       href="@linkedinShareUrl"
+                                       onclick="ShareCount('@sapCode','LINKEDIN',@campaignId)">
+                                        <div class="d-flex mb-3 mr-3 align-items-center bgl-primary p-0 p-lg-2 pr-lg-3 rounded">
+                                            <i class="lab la-linkedin social-icon bg-info mr-0 mr-lg-3 text-white"></i>
                                             <div class="d-none d-lg-block">
-                                                <h5 class="text-black fs-18 mb-0">Instagram</h5>
-
+                                                <h5 class="text-black fs-18 mb-0">LinkedIn</h5>
                                             </div>
                                         </div>
                                     </a>
 
-                                    <div class="" data-href="https://salesassistpivc.reliancenipponlife.com/Digimyin2/campaignfbshare?CampaignMasterId=@ViewBag.lstAllCampaigns.cm.campaign_master_id&CREATIVEID=@ViewBag.lstAllCampaigns.cm.campaign_master_id&SAPCODE=@Session["SAPCODE"]&PLATEFORM=FACEBOOK"
-                                         data-layout="button" data-size="small">
-                                        @{
-                                            string url = "https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=FACEBOOK&src=sdkpreparse";
+                                }
+                            }
+                            else
+                            {
+                                <a href="#">
 
-                                            <a target="_blank" href="#"
-                                               class="fb-xfbml-parse-ignore">
-                                                <div class="d-flex mr-3 mb-3 align-items-center bgl-info p-0 p-lg-2 pr-lg-3 rounded">
-                                                    <i class="lab la-facebook-f social-icon bg-info mr-0 mr-lg-3 text-white"></i>
-                                                    <div class="d-none d-lg-block">
-                                                        <h5 class="text-black fs-18 mb-0">Facebook</h5>
+                                    <div class="d-flex flex-wrap">
+                                        <div class="d-flex mb-3 mr-3 align-items-center bgl-primary p-0 p-lg-2 pr-lg-3 rounded">
+                                            <i class="lab la-whatsapp social-icon bg-green mr-0 mr-lg-3 text-white"></i>
+                                            <div class="d-none d-lg-block">
+                                                <h5 class="text-black fs-18 mb-0">Whatsapp</h5>
 
-                                                    </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </a>
+
+                                <a href="#" onclick="ShareCount(@Session["SAPCODE"], 'INSTAGRAM', @ViewBag.lstAllCampaigns.cm.campaign_master_id)">
+                                    <div class="d-flex mr-3 mb-3 align-items-center bgl-secondary p-0 p-lg-2 pr-lg-3 rounded">
+                                        <i class="lab la-instagram social-icon bg-secondary mr-0 mr-lg-3 text-white"></i>
+                                        <div class="d-none d-lg-block">
+                                            <h5 class="text-black fs-18 mb-0">Instagram</h5>
+
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <div class="" data-href="https://dsp.indusindnipponlife.com/Digimyin/Landingpage?CampaignMasterId=@ViewBag.lstAllCampaigns.cm.campaign_master_id&CREATIVEID=@ViewBag.lstAllCampaigns.cm.campaign_master_id&SAPCODE=@Session["SAPCODE"]&PLATEFORM=FACEBOOK"
+                                     data-layout="button" data-size="small">
+                                    @{
+                                        //string url = "https://dsp.indusindnipponlife.com/Digimyin/Marketing/campaignfbshare?CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=FACEBOOK&src=sdkpreparse";
+                                        string url = "https://dsp.indusindnipponlife.com/Digimyin/Marketing/Landingpage?CampaignMasterId=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&CREATIVEID=" + @ViewBag.lstAllCampaigns.cm.campaign_master_id + "&SAPCODE=" + @Session["SAPCODE"] + "&PLATEFORM=FACEBOOK&src=sdkpreparse";
+                                        <a target="_blank" href="#"
+                                           class="fb-xfbml-parse-ignore">
+                                            <div class="d-flex mr-3 mb-3 align-items-center bgl-info p-0 p-lg-2 pr-lg-3 rounded">
+                                                <i class="lab la-facebook-f social-icon bg-info mr-0 mr-lg-3 text-white"></i>
+                                                <div class="d-none d-lg-block">
+                                                    <h5 class="text-black fs-18 mb-0">Facebook</h5>
+
                                                 </div>
-                                            </a>
-                                        }
+                                            </div>
+                                        </a>
+                                    }
 
 
+
+                                </div>
+
+                                <a href="#">
+
+                                    <div class="d-flex mb-3 align-items-center bgl-success p-0 p-lg-2 pr-lg-3 rounded">
+                                        <i class="lab la-twitter social-icon bg-success mr-0 mr-lg-3  text-white"></i>
+                                        <div class="d-none d-lg-block">
+                                            <h5 class="text-black fs-18 mb-0">Twitter</h5>
+
+                                        </div>
 
                                     </div>
 
-                                    <a href="#">
-
-                                        <div class="d-flex mb-3 align-items-center bgl-success p-0 p-lg-2 pr-lg-3 rounded">
-                                            <i class="lab la-twitter social-icon bg-success mr-0 mr-lg-3  text-white"></i>
-                                            <div class="d-none d-lg-block">
-                                                <h5 class="text-black fs-18 mb-0">Twitter</h5>
-
-                                            </div>
-
-                                        </div>
-
-                                    </a>
+                                </a>
 
 
 
-                                            }
+                            }
 
 
-                                @*
-            <div>
+                            @*
+        <div>
 
 
-                <a id="share" type="button">
+            <a id="share" type="button">
 
-                    <div class="d-flex mb-3 align-items-center bgl-success p-0 p-lg-2 pr-lg-3 rounded">
+                <div class="d-flex mb-3 align-items-center bgl-success p-0 p-lg-2 pr-lg-3 rounded">
 
-                        <i class="mr-0 mr-lg-3 social-icon bg-success text-white">
-                            <img src="~/Content/images/magic icon.png" class="img-responsive" height="50" width="50" />
-                        </i>
+                    <i class="mr-0 mr-lg-3 social-icon bg-success text-white">
+                        <img src="~/Content/images/magic icon.png" class="img-responsive" height="50" width="50" />
+                    </i>
 
-                        <div class="d-none d-lg-block">
+                    <div class="d-none d-lg-block">
 
-                            <h5 class="text-black fs-18 mb-0"> Share </h5>
-
-
-                        </div>
+                        <h5 class="text-black fs-18 mb-0"> Share </h5>
 
 
                     </div>
 
-                </a>
+
+                </div>
+
+            </a>
 
 
 
-            </div>
+        </div>
 
 
-                                *@
-                            </div>
-                            </div>
-
-
+                            *@
                         </div>
                     </div>
+
+
                 </div>
             </div>
+        </div>
+    </div>
 
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-            <script>
+
+
+    <script>
 
         const input = document.getElementById('files')
 
@@ -366,9 +421,9 @@
                       ];
         const shareData = {
             files: filesArray,
-                        title: 'Reliance Nippon Insurance Campaign',
+                        title: 'IndusInd Nippon Insurance Campaign',
                         text: '@ViewBag.lstAllCampaigns.cm.campaign_master_creative_caption',
-                        url: 'https://salesassistpivc.reliancenipponlife.com/Digimyin2/Marketing/campaignfbshare?PARAMS=Q2FtcGFpZ25NYXN0ZXJJZD0xOCZDUkVBVElWRUlEPTE4JlNBUENPREU9NzAxNzI3MjAmUExBVEVGT1JNPUZBQ0VCT09L&fbclid=IwAR0URPepStVgm_QeBClSPuaAaNdB8DtERdIB2HNZGgkzeAI2cYN9AZdi2SE',
+            url: 'https://dsp.indusindnipponlife.com/Digimyin/Marketing/Landingpage?PARAMS=Q2FtcGFpZ25NYXN0ZXJJZD0xOCZDUkVBVElWRUlEPTE4JlNBUENPREU9NzAxNzI3MjAmUExBVEVGT1JNPUZBQ0VCT09L&fbclid=IwAR0URPepStVgm_QeBClSPuaAaNdB8DtERdIB2HNZGgkzeAI2cYN9AZdi2SE',
                       };
         // feature detecting navigator.canShare() also implies
         // the same for the navigator.share()
@@ -396,15 +451,20 @@
                         output.textContent = `Your system doesn't support sharing these files.`
                       }
         })
-            </script>
+
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text);
+                alert("Link copied! Open Instagram and paste it.");
+            }
+    </script>
 
 
 
 
 
-            @section js{
+    @section js{
 
-                <script>
+        <script>
             function ShareCount(sapcode, plateform, creative_id) {
             //debugger;
             $.ajax({
@@ -421,15 +481,17 @@
 
             })
             }
-                </script>
+        </script>
 
 
-                <script type="text/javascript">
-                    function popupwindowAtCenter(url, title, w, h) {
-                        var left = (screen.width / 2) - (w / 2);
-                        var top = (screen.height / 2) - (h / 2);
-                        return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
-                    }
-                </script>
-
+        <script type="text/javascript">
+            function popupwindowAtCenter(url, title, w, h) {
+                var left = (screen.width / 2) - (w / 2);
+                var top = (screen.height / 2) - (h / 2);
+                return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
             }
+        </script>
+
+    }
+
+

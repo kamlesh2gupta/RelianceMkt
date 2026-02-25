@@ -25,79 +25,79 @@
     }
 </style>
 @*<style>
-    #table2excel {
-        border: none;
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-        #table2excel th {
-            background-color: #f9f9f9;
-            color: #000000b5;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 10px;
-            text-align: left;
+        #table2excel {
             border: none;
+            border-collapse: collapse;
+            width: 100%;
         }
 
-        #table2excel td {
-            border: none;
-            padding: 8px;
-            color: #333;
-        }
-        /* ✅ Remove all table grid lines (no X or Y borders) */
-        #table2excel th, #table2excel td {
+            #table2excel th {
+                background-color: #f9f9f9;
+                color: #000000b5;
+                font-size: 15px;
+                font-weight: 600;
+                padding: 10px;
+                text-align: left;
+                border: none;
+            }
+
+            #table2excel td {
+                border: none;
+                padding: 8px;
+                color: #333;
+            }
+            /* ✅ Remove all table grid lines (no X or Y borders) */
+            #table2excel th, #table2excel td {
+                border: none !important;
+            }
+
+            #table2excel tr {
+                border-bottom: none !important;
+            }
+
+        #table2excel {
+            border-collapse: collapse !important;
             border: none !important;
         }
 
-        #table2excel tr {
-            border-bottom: none !important;
+            /* ✅ Keep header background subtle for readability */
+            #table2excel thead {
+                background-color: #f8f9fa;
+            }
+
+        /* ✅ Move pagination buttons (Previous / Next) to the LEFT side */
+        div.dataTables_wrapper div.dataTables_paginate {
+            text-align: left !important;
+            float: left !important;
         }
 
-    #table2excel {
-        border-collapse: collapse !important;
-        border: none !important;
-    }
-
-        /* ✅ Keep header background subtle for readability */
-        #table2excel thead {
-            background-color: #f8f9fa;
+        /* ✅ Keep “Show entries” dropdown next to pagination */
+        div.dataTables_wrapper div.dataTables_length {
+            float: left !important;
+            margin-left: 20px;
         }
 
-    /* ✅ Move pagination buttons (Previous / Next) to the LEFT side */
-    div.dataTables_wrapper div.dataTables_paginate {
-        text-align: left !important;
-        float: left !important;
-    }
+        /* ✅ Optional spacing for neat look */
+        .dataTables_paginate {
+            margin-top: 10px;
+        }
 
-    /* ✅ Keep “Show entries” dropdown next to pagination */
-    div.dataTables_wrapper div.dataTables_length {
-        float: left !important;
-        margin-left: 20px;
-    }
+        /* ✅ Make both pagination + dropdown appear on same line */
+        div.dataTables_wrapper {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
 
-    /* ✅ Optional spacing for neat look */
-    .dataTables_paginate {
-        margin-top: 10px;
-    }
-
-    /* ✅ Make both pagination + dropdown appear on same line */
-    div.dataTables_wrapper {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        border-radius: 8px !important;
-        border: 1px solid #666666e8 !important;
-        color: #666666e8 !important;
-        background: transparent !important;
-    }
-</style>*@
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 8px !important;
+            border: 1px solid #666666e8 !important;
+            color: #666666e8 !important;
+            background: transparent !important;
+        }
+    </style>*@
 
 <div class="container-fluid">
     <div class="page-titles">
@@ -204,27 +204,66 @@
     <!--<script src="~/Content/js/jquery.table2excel.js"></script>-->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="~/Content/js/jquery.table2excel.js"></script>
+    @*<script>
+            $(document).ready(function () {
+                $('#table2excel').DataTable({
+                    "paging": true,
+                    "pageLength": 10,
+                    "lengthMenu": [10, 25, 50, 100],
+                    "ordering": false,
+                    "searching": false,
+                    "info": true,
+                    autoWidth: true
+                });
+            });
+
+            $("#btnexport").click(function () {
+                $("#table2excel").table2excel({
+                    exclude: ".noExl",
+                    name: "Worksheet Name",
+                    filename: "HotLeads",
+                    fileext: ".xls"
+                });
+
+            });
+        </script>*@
     <script>
         $(document).ready(function () {
-            $('#table2excel').DataTable({
-                "paging": true,
-                "pageLength": 10,
-                "lengthMenu": [10, 25, 50, 100],
-                "ordering": false,
-                "searching": false,
-                "info": true,
+
+            var table = $('#table2excel').DataTable({
+                paging: true,
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                ordering: false,
+                searching: false,
+                info: true,
                 autoWidth: true
             });
-        });
 
-        $("#btnexport").click(function () {
-            $("#table2excel").table2excel({
-                exclude: ".noExl",
-                name: "Worksheet Name",
-                filename: "HotLeads",
-                fileext: ".xls"
+            $("#btnexport").click(function () {
+
+                // Save current page length
+                var oldLength = table.page.len();
+
+                // Show ALL rows temporarily
+                table.page.len(-1).draw();
+
+                setTimeout(function () {
+
+                    $("#table2excel").table2excel({
+                        exclude: ".noExl",
+                        name: "HotLeads",
+                        filename: "HotLeads",
+                        fileext: ".xls"
+                    });
+
+                    // Restore pagination
+                    table.page.len(oldLength).draw();
+
+                }, 500);
             });
 
         });
     </script>
+
 }

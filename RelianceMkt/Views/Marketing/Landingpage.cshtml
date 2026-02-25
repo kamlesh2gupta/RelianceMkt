@@ -1,6 +1,46 @@
 ﻿@model RelianceMkt.Models.Lead
 @{
     Layout = null;
+
+    // DEBUG: Check what values are coming
+    var debugInfo = new
+    {
+        CampaignTitle = ViewBag.CampaignTitle,
+        CampaignDescription = ViewBag.CampaignDescription,
+        CampaignImageUrl = ViewBag.CampaignImageUrl,
+        HasImageUrl = !string.IsNullOrEmpty(ViewBag.CampaignImageUrl as string)
+    };
+
+    // Get campaign data from ViewBag (set in controller)
+    var campaignTitle = ViewBag.CampaignTitle as string;
+    var campaignDescription = ViewBag.CampaignDescription as string;
+    var campaignImageUrl = ViewBag.CampaignImageUrl as string;
+    var campaignTags = ViewBag.CampaignTags as string;
+    var landingPageUrl = ViewBag.LandingPageUrl as string;
+
+    // If no specific campaign data, use defaults
+    if (string.IsNullOrEmpty(campaignTitle))
+    {
+        campaignTitle = "IndusInd - Creative Campaign";
+    }
+    if (string.IsNullOrEmpty(campaignDescription))
+    {
+        campaignDescription = "Safeguard your tomorrow, take a step today. Get the best insurance plans for you and your family.";
+    }
+    if (string.IsNullOrEmpty(campaignImageUrl))
+    {
+        // ✅ FIX: Absolute URL use karein
+        campaignImageUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Url.Content("~/Content/images/Logo16.png");
+    }
+
+    // ✅ IMPORTANT: Ensure image URL is absolute for Facebook
+    if (!string.IsNullOrEmpty(campaignImageUrl) && !campaignImageUrl.StartsWith("http"))
+    {
+        if (campaignImageUrl.StartsWith("~") || campaignImageUrl.StartsWith("/"))
+        {
+            campaignImageUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Url.Content(campaignImageUrl);
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -10,7 +50,36 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Reliance  - Creative Campaign Dashboard</title>
+
+    <!-- Page Title -->
+    <title>@campaignTitle</title>
+
+    <!-- DEBUG: Show OG values -->
+    <!--
+    <meta name="debug-campaign-title" content="@campaignTitle" />
+    <meta name="debug-campaign-image" content="@campaignImageUrl" />
+    <meta name="debug-request-url" content="@Request.Url.AbsoluteUri" />
+    -->
+    <!-- Open Graph Meta Tags for Facebook/WhatsApp/LinkedIn Sharing -->
+    <meta property="og:url" content="@Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@campaignTitle" />
+    <meta property="og:description" content="@campaignDescription" />
+    <meta property="og:image" content="@campaignImageUrl" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="IndusInd Nippon Life Insurance" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@campaignTitle" />
+    <meta name="twitter:description" content="@campaignDescription" />
+    <meta name="twitter:image" content="@campaignImageUrl" />
+
+    <!-- Additional Meta Tags -->
+    <meta name="description" content="@campaignDescription" />
+    <meta name="keywords" content="@campaignTags, insurance, reliance, nippon, life insurance" />
+
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
     <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -18,27 +87,52 @@
     <link href="~/Content/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="~/Content/css/style.css" rel="stylesheet">
     <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
+
+    <!-- Facebook SDK (Optional) -->
+    <meta property="fb:app_id" content="841516383953923" />
+
     <style>
-[data-sidebar-style="mini"] .nav-header .logo-abbr {
-    display: block;
-    max-width: 240px;
-}
+        [data-sidebar-style="mini"] .nav-header .logo-abbr {
+            display: block;
+            max-width: 240px;
+        }
 
+        .nav-header {
+            width: 100% !important;
+        }
 
-.nav-header {
-    width: 100% !important;
-}
-.authincation-content {
+        .authincation-content {
+            border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+        }
 
-    border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
-}
-.note{
-background-color:#fffc;
-font-size:9px;
-color:black;
-}
+        .note {
+            background-color: #fffc;
+            font-size: 9px;
+            color: black;
+        }
+
+        /* Campaign Image Preview Styling */
+        .campaign-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* 🔥 Fix bootstrap-select conflict inside SweetAlert */
+        .swal2-container .bootstrap-select,
+        .swal2-container .swal2-select {
+            display: none !important;
+        }
+            /* For better mobile viewing */
+            @@media (max-width: 768px) {
+                .content-body.landing-page {
+                    margin-right: 1rem !important;
+                }
+            }
     </style>
 </head>
+
 <body>
 
     <!--*******************
@@ -57,51 +151,100 @@ color:black;
     <!--**********************************
         Main wrapper start
     ***********************************-->
-    <div id="main-wrapper" class="right-profile" style="background-image: url(/Content/images/bg.png); height: 100%;  overflow: hidden;}">
+    <div id="main-wrapper" class="right-profile" style="background-image: url(/Content/images/bg.png); height: 100%; overflow: hidden;">
 
         <!--**********************************
             Nav header start
         ***********************************-->
         <div class="nav-header shadow " style="width:100%;background-color:#fff;">
             <a href="#" class="brand-logo">
-                <img class="logo-abbr" src="~/Content/images/logo1.png" alt="" style="max-width:100%">
-
+                <img class="logo-abbr" src="~/Content/images/Logo16.png" alt="" style="max-width:20%">
             </a>
         </div>
 
-        <div class="content-body">
+        <div class="content-body landing-page" style="margin-left: 0rem; margin-right: 44rem">
             <!-- row -->
             <div class="container-fluid">
                 <div class="form-head d-flex mb-0 mb-lg-4 align-items-start">
                     <center>
-                        <h3 class="text-red" style="    font-weight: 700;">Safegaurd your tomorrow,<br> take a step today.				</h3>
-                        <p class="text-black">
-                            Please ll in the following details to help us suggest
-                            a suitable plan for you.
-                        </p>
+                        <!-- Campaign Title -->
+                        @if (!string.IsNullOrEmpty(campaignTitle))
+                        {
+                            <h3 class="text-red" style="font-weight: 700;">@campaignTitle</h3>
+                        }
+                        else
+                        {
+                            <h3 class="text-red" style="font-weight: 700;">Safeguard your tomorrow,<br> take a step today.</h3>
+                        }
+
+                        <!-- Campaign Description -->
+                        @if (!string.IsNullOrEmpty(campaignDescription))
+                        {
+                            <p class="text-black">@campaignDescription</p>
+                        }
+                        else
+                        {
+                            <p class="text-black">
+                                Please fill in the following details to help us suggest
+                                a suitable plan for you.
+                            </p>
+                        }
                     </center>
+
+                    <!-- Campaign Image (if available) -->
+                    @if (!string.IsNullOrEmpty(campaignImageUrl) && !campaignImageUrl.Contains("Logo16.png"))
+                    {
+                        <div class="col-md-12 text-center mb-3">
+                            <img src="@campaignImageUrl" alt="@campaignTitle" class="campaign-preview" style="max-height: 300px; width: auto;">
+                        </div>
+                    }
+
                     <div class="col-md-12 mb-30">
                         <div class="authincation-content">
                             <div class="row no-gutters">
                                 <div class="col-xl-12 ">
-                                    <div class="card-header " style="    display: inherit;	background-color:#185aa7"> <h4 class=" text-white"><center>Tell Us About You</center></h4>  </div>
+                                    <div class="card-header " style="display: inherit; background-color:#185aa7">
+                                        <h4 class="text-white"><center>Tell Us About You</center></h4>
+                                    </div>
                                     <div class="auth-form">
 
                                         @using (Html.BeginForm("Landingpage", "Marketing", FormMethod.Post))
                                         {
+                                            @Html.AntiForgeryToken()
 
+                                            <!-- Hidden Fields for Tracking -->
+                                            <input type="hidden" name="SAPCODE" value="@ViewBag.SAPCODE" />
+                                            <input type="hidden" name="CREATIVEID" value="@ViewBag.CREATIVEID" />
+                                            <input type="hidden" name="PLATEFORM" value="@ViewBag.PLATEFORM" />
+                                            <input type="hidden" name="CampaignId" value="@Request.QueryString["CampaignMasterId"]" />
 
-                                        <div class="form-group">
+                                            <!-- Also store in ViewBag -->
                                             @Html.Hidden("SAPCODE", Request.QueryString["SAPCODE"])
                                             @Html.Hidden("CREATIVEID", Request.QueryString["CREATIVEID"])
                                             @Html.Hidden("PLATEFORM", Request.QueryString["PLATEFORM"])
-                                            <label class="mb-1"><strong>Full Name</strong></label>
-                                            @Html.TextBoxFor(x => x.leads_name, "", new { @class = "form-control", @required = "true" })
-                                            @*<input type="email" class="form-control" name="name">*@
-                                        </div>
+                                            @Html.Hidden("CampaignMasterId", Request.QueryString["CampaignMasterId"])
+
+                                            <div class="form-group">
+                                                <label class="mb-1"><strong>Full Name</strong></label>
+                                                @Html.TextBoxFor(x => x.leads_name, "", new
+                                                {
+                                                    @class = "form-control",
+                                                    @required = "true",
+                                                    @placeholder = "Enter your full name"
+                                                })
+                                            </div>
+
                                             <div class="form-group">
                                                 <label class="mb-1"><strong>Phone Number</strong></label>
-                                                @Html.TextBoxFor(x => x.leads_mobile, "", new { @class = "form-control", @required = "true", @type = "Number" })
+                                                @Html.TextBoxFor(x => x.leads_mobile, "", new
+                                                {
+                                                    @class = "form-control",
+                                                    @required = "true",
+                                                    @type = "tel",
+                                                    @placeholder = "Enter your 10-digit mobile number",
+                                                    @pattern = "[0-9]{10}",
+                                                    @maxlength = "10"
+                                                })
                                             </div>
 
                                             <div class="text-center">
@@ -111,36 +254,35 @@ color:black;
 
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
+
+                    <!-- Company Information -->
                     <div class="col-md-12">
                         <div class="note p-3 mb-10">
                             <div class="row no-gutters text-justify">
                                 <p>Reliance Nippon Life Insurance Company Limited</p>
                                 <p>
-                                    IRDAI Registration No. 121. Registered & Corporate Ofce: Unit Nos. 401B, 402, 403 & 404, 4
-                                    th Floor,
-                                    Inspire-BKC, G Block, BKC Main Road, Bandra Kurla Complex, Bandra East, Mumbai - 400051.
-                                    India. T +91 22 6896 5000. For more information or any grievance, 1. Call us between 9 am to 6
-                                    pm, Monday to Saturday (except public holidays) on our Toll-Free Number - 1800 102 1010 or 2.
-                                    Visit us atwww.reliancenipponlife.com 3. Email us at rnlife.customerservice@relianceada.com
+                                    IRDAI Registration No. 121. CIN: U66010MH2001PLC167089. Registered & Corporate Office: 
+                                    Unit Nos. 401B, 402, 403 & 404, 4th Floor, Inspire-BKC, G Block, BKC Main Road, Bandra Kurla Complex, 
+                                    Bandra East, Mumbai-400051, India. T +91 22 6896 5000. For more information or any grievance,
+                                    1. Call us between 8 am to 8 pm, Monday to Saturday (except public holidays) on our Toll-Free Number - 1800 102 1010 or
+                                    2. Visit us at www.indusindnipponlife.com  3. Email us at customerservice@indusindnipponlife.com .
                                     4. Chat with us on our WhatsApp number (+91) 7208852700.
-                                </p><p>
-                                    Trade logo displayed above belongs to Anil Dhirubhai Ambani Ventures Private Limited & Nippon
-                                    Life Insurance Company and used by Reliance Nippon Life Insurance Company Limited under
-                                    license
+                                </p>
+                                <p>
+                                    The trade logo displayed above belongs to IndusInd International Holdings Limited & Nippon Life Insurance Company and
+                                    is used by IndusInd Nippon Life Insurance Company Limited under license.
                                 </p>
 
-                                <div class=" p-3 mb-10" style="background-color:#185aa7;font-size:7px">
+                                <div class="p-3 mb-10" style="background-color:#185aa7;font-size:7px">
                                     <p class="text-white">
-                                        <b>BEWARE OF SPURIOUS PHONE CALLS AND FICTITIOUS/FRAUDULENT OFFERS:</b> IRDAI
-                                        claries to public that: 1. IRDAI or its ofcials do not involve in activities like sale of
-                                        any kind of insurance or nancial products nor invest premiums. 2. IRDAI does not
-                                        announce any bonus. Public receiving such phone calls are requested to lodge a
-                                        police complaint along with details of phone call, number
-                                    </p>
+                                        <b>
+                                            BEWARE OF SPURIOUS PHONE CALLS AND FICTITIOUS/FRAUDULENT OFFERS: </b>IRDAI or its officials do not involve in activities
+                                            like selling insurance policies, announcing bonus or investment of premiums.
+                                            Public receiving such phone calls are requested to lodge a police complaint.
+</p>
                                 </div>
                                 <div class="col-md-6" style="width:65%;font-size:6px">CIN: U66010MH2001PLC167089</div>
                                 <div class="col-md-6" style="float:right;width:35%;font-size:6px">Mktg/FBM_SalesLeads/V1/Oct22</div>
@@ -164,15 +306,41 @@ color:black;
         <!--**********************************
             Footer end
         ***********************************-->
-        <!--**********************************
-           Support ticket button start
-        ***********************************-->
-        <!--**********************************
-           Support ticket button end
-        ***********************************-->
-
 
     </div>
+
+    <!-- SweetAlert2 MUST be loaded first -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (TempData["SwalMessage"] != null)
+    {
+        var swalType = TempData["SwalType"] as string ?? "info";
+
+        <script>
+        Swal.fire({
+            icon: '@swalType',
+            title: '@(
+                swalType == "success"
+                ? "Success"
+                : swalType == "warning"
+                ? "Attention"
+                : swalType == "error"
+                ? "Error"
+                : "Info"
+            )',
+            text: '@TempData["SwalMessage"]',
+            confirmButtonText: 'OK',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            }
+        });
+        </script>
+    }
+
+
+
+
     <!--**********************************
         Main wrapper end
     ***********************************-->
@@ -198,10 +366,37 @@ color:black;
 
     <!-- Dashboard 1 -->
     <script src="~/Content/js/dashboard/dashboard-1.js"></script>
+
     <!-- Chart Chartist plugin files -->
     <script src="~/Content/vendor/chartist/js/chartist.min.js"></script>
     <script src="~/Content/vendor/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
     <script src="~/Content/js/plugins-init/chartist-init.js"></script>
+
+
+    <!-- Additional Script for Form Validation -->
+    <script>
+        $(document).ready(function() {
+            // Mobile number validation
+            $('#leads_mobile').on('input', function() {
+                var mobile = $(this).val();
+                if (mobile.length > 10) {
+                    $(this).val(mobile.substring(0, 10));
+                }
+            });
+
+            // Form submission tracking
+            $('form').submit(function() {
+                var platform = '@Request.QueryString["PLATEFORM"]';
+                var campaignId = '@Request.QueryString["CampaignMasterId"]';
+                var sapCode = '@Request.QueryString["SAPCODE"]';
+
+                // You can add tracking code here
+                console.log('Form submitted for Campaign: ' + campaignId + ' via ' + platform);
+            });
+        });
+
+       
+    </script>
 
 </body>
 </html>

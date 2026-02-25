@@ -29,18 +29,17 @@
                                         <label class="text-black font-w500 mb-3">Channel :</label>
                                         <span class="text-danger ml-1">*</span>
                                         @Html.DropDownListFor(x => x.subchannel_name,
-                                            ViewBag.NEW_TEMP_HIERARCHY as IEnumerable<SelectListItem> ??
-                                            new List<SelectListItem> {
-                                                new SelectListItem { Value = "", Text = "-- No Categories Available --", Disabled = true }
-                                            },
-                                            "-- Select Channel --",
-                                            new { @class = "form-control", @required = "true" })
+    ViewBag.NEW_TEMP_HIERARCHY as IEnumerable<SelectListItem>,
+    "-- Select Channel --",
+    new { @class = "form-control", @id = "ddlChannel", required = "required" })
+
                                     </div>
                                     <div class="form-group col-xl-3">
                                         <label class="text-black font-w500 mb-3">Channel Name:</label>
                                         <span class="text-danger ml-1">*</span>
                                         @Html.TextBoxFor(x => x.channel_name,
-                                            new { @class = "form-control", @required = "true", @placeholder = "Enter Channel Name" })
+     new { @class = "form-control", @id = "txtChannelDesc", @readonly = "readonly" })
+
                                     </div>
                                     <div class="form-group col-xl-3" style="padding-top:38px;">
                                         <button type="submit" class="btn btn-primary ml-3">SAVE</button>
@@ -115,6 +114,7 @@
 @section js
 {
     <script src="~/Content/vendor/jqueryui/js/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var EditChannel = function (channelid) {
             var url = '@Url.Action("EditChannel", "Marketing")' + '?ChannelId=' + channelid;
@@ -143,5 +143,23 @@
                 });
             }
         }
+
+         $('#ddlChannel').change(function () {
+
+        var channel = $(this).val();
+
+        if (channel !== "") {
+            $.ajax({
+                url: '@Url.Action("GetChannelDesc", "Marketing")',
+                type: 'GET',
+                data: { channel: channel },
+                success: function (data) {
+                    $('#txtChannelDesc').val(data);
+                }
+            });
+        } else {
+            $('#txtChannelDesc').val('');
+        }
+    });
     </script>
 }

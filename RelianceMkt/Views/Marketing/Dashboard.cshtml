@@ -5,16 +5,17 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Reliance - Creative Campaign Dashboard</title>
+    <title>Indusind - Creative Campaign Dashboard</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
     <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/Content/vendor/chartist/css/chartist.min.css">
     <link href="~/Content/css/style.css" rel="stylesheet">
-    <link href="~/Content/css/header.css" rel="stylesheet">
+    @*<link href="~/Content/css/header.css" rel="stylesheet">*@
     <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="~/Content/css/header.css" rel="stylesheet" />
 
     <style>
 [data-sidebar-style="mini"] .nav-header .logo-abbr {
@@ -267,7 +268,35 @@
             border-radius: 2px;
         }
 
-</style>
+
+
+
+       /* //================text color-profile side bar===============*/
+        /* Sidebar menu text default white */
+        .deznav .metismenu > li > a,
+        .deznav .metismenu li a span,
+        .deznav .metismenu li a i {
+            color: #ffffff !important;
+        }
+
+            /* Hover par text black */
+            .deznav .metismenu > li > a:hover,
+            .deznav .metismenu li a:hover span,
+            .deznav .metismenu li a:hover i {
+                color: #000000 !important;
+            }
+
+        /* Sub-menu items */
+        .deznav .metismenu ul li a {
+            color: #ffffff !important;
+        }
+
+            .deznav .metismenu ul li a:hover {
+                color: #000000 !important;
+            }
+
+
+    </style>
 
 
 
@@ -500,7 +529,7 @@
         <!--**********************************
             Nav header start
         ***********************************-->
-        <div class="nav-header" style="background: #ff8f16; height: 95px;">
+        <div class="nav-header" style="background: #fff; height: 95px;">
             <a href="~/Marketing/Dashboard">
                 <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; max-width: 250px;">
             </a>
@@ -516,8 +545,8 @@
         <!--**********************************
             Header start
         ***********************************-->
-        <div class="header" style="height: 95px; background: #5856CE;">
-            <div class="header-content">
+        <div class="header" style="height: 95px; background: #832625;">
+            <div class="header-content"  style="background: #832625;">
                 <nav class="navbar navbar-expand">
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
@@ -543,9 +572,9 @@
         <!--**********************************
             Sidebar start
         ***********************************-->
-        <div class="deznav"style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh;">
+        <div class="deznav" style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh;  background: #832625;">
 
-            <div class="deznav-scroll">
+            <div class="deznav-scroll" style="background: #832625;">
                 @{
                     var userRole = Session["role"] as string;
                     var subAdminType = Session["subadmin_type"] as string;
@@ -564,7 +593,7 @@
                         <li>
                             <a href="~/Marketing/Dashboard" aria-expanded="false">
                                 <i class="flaticon-381-networking"></i> <span>Dashboard </span>
-</a>
+                            </a>
                         </li>
                     }
                     @if (isAdmin)
@@ -572,12 +601,12 @@
                         <li>
                             <a href="~/Marketing/AddSubAdmin" aria-expanded="false">
                                 <i class="fas fa-user-cog"></i>  <span>Add SubAdmin </span>
-</a>
+                            </a>
                         </li>
                         <li>
                             <a class="has-arrow ai-icon" href="#" aria-expanded="false">
                                 <i class="flaticon-381-settings"></i> <span> Master </span>
-</a>
+                            </a>
                             <ul aria-expanded="false">
                                 <li><a href="~/Marketing/ChannelList">Channels</a></li>
                                 <li><a href="~/Marketing/CampaignCategoryList">Categories</a></li>
@@ -592,12 +621,12 @@
                         <li>
                             <a href="~/Marketing/campaignMult" aria-expanded="false">
                                 <i class="flaticon-381-notepad"></i>  <span>Campaign </span>
-</a>
+                            </a>
                         </li>
                         <li>
                             <a href="~/Marketing/newcampaign" aria-expanded="false">
                                 <i class="flaticon-381-plus"></i> <span> New Campaign </span>
-</a>
+                            </a>
                         </li>
                     }
                     @if (isAdmin || isCampaignCreator || isSubAdmin || isReadOnlySubAdmin)
@@ -605,7 +634,7 @@
                         <li>
                             <a class="has-arrow ai-icon" href="#" aria-expanded="false">
                                 <i class="bi bi-file-earmark-text"></i>  <span>Report </span>
-</a>
+                            </a>
                             <ul aria-expanded="false">
                                 <li><a href="~/Marketing/LeadCampaign">Lead Campaign</a></li>
                                 <li><a href="~/Marketing/CreativeWise">Creative Wise</a></li>
@@ -620,7 +649,7 @@
                         <li>
                             <a href="~/Marketing/CentralBlast" aria-expanded="false">
                                 <i class="flaticon-381-share text-bg-dark me-2"></i>  <span>Central Blast </span>
-</a>
+                            </a>
                         </li>
                     }
                     @if (isAdmin || isSubAdmin || isCampaignCreator || isReadOnlySubAdmin)
@@ -628,17 +657,17 @@
                         <li>
                             <a href="~/Marketing/ResetPassword" aria-expanded="false">
                                 <i class="fa fa-refresh"></i>  <span>Reset Password </span>
-</a>
+                            </a>
                         </li>
                     }
                     <li>
                         <a href="~/Marketing/Logout" aria-expanded="false">
                             <i class="flaticon-381-exit"></i> <span> Logout </span>
-</a>
+                        </a>
                     </li>
                 </ul>
                 <div class="copyright">
-                    <br />© All Rights Reserved By Reliance
+                    <br />© All Rights Reserved By IndusInd Nippon Life Insurance Company Limited
 
                 </div>
             </div>
@@ -887,7 +916,7 @@
         ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by Reliance 2020</p>
+                <p>Copyright © Designed &amp; Developed by IndusInd Nippon Life Insurance Company Limited</p>
             </div>
         </div>
         <!--**********************************

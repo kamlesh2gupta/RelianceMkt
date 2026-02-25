@@ -48,17 +48,17 @@ public partial class rglinixm_relEntities : DbContext
 
     public DbSet<CENTRAL_BLAST> CENTRAL_BLAST { get; set; }
 
-    public DbSet<Lead> Leads { get; set; }
-
     public DbSet<campaign_master> campaign_master { get; set; }
 
     public DbSet<channel> channels { get; set; }
 
-    public DbSet<NEW_TEMP_HIERARCHY> NEW_TEMP_HIERARCHY { get; set; }
-
     public DbSet<UserNotification> UserNotifications { get; set; }
 
     public DbSet<CampaignRespons> CampaignResponses { get; set; }
+
+    public DbSet<NEW_TEMP_HIERARCHY> NEW_TEMP_HIERARCHY { get; set; }
+
+    public DbSet<Lead> Leads { get; set; }
 
 }
 

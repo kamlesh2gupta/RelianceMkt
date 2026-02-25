@@ -1,0 +1,630 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="rglinixm_relModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="authentication">
+          <Key>
+            <PropertyRef Name="au_id" />
+          </Key>
+          <Property Name="au_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="au_username" Type="varchar" MaxLength="50" />
+          <Property Name="au_password" Type="varchar" MaxLength="50" />
+          <Property Name="au_delflag" Type="varchar" MaxLength="50" />
+          <Property Name="Role" Type="varchar" MaxLength="50" />
+          <Property Name="Subchannel" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="campaign">
+          <Key>
+            <PropertyRef Name="campaign_id" />
+          </Key>
+          <Property Name="campaign_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="campaign_name" Type="varchar" MaxLength="250" />
+          <Property Name="campaign_delflag" Type="varchar" MaxLength="50" />
+          <Property Name="campaign_category_id" Type="numeric" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="campaign_category">
+          <Key>
+            <PropertyRef Name="campaign_category_id" />
+          </Key>
+          <Property Name="campaign_category_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="campaign_category_name" Type="varchar" MaxLength="50" />
+          <Property Name="campaign_category_delflag" Type="varchar" MaxLength="50" />
+          <Property Name="Campaign_Category_Status" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="campaign_master">
+          <Key>
+            <PropertyRef Name="campaign_master_id" />
+          </Key>
+          <Property Name="campaign_master_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="campaign_master_code" Type="nvarchar" MaxLength="50" />
+          <Property Name="channel_id" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="campaign_category_id" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="subcampaign_id" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="campaign_id" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="campaign_master_type" Type="varchar" MaxLength="50" />
+          <Property Name="campaign_master_lang" Type="varchar" MaxLength="50" />
+          <Property Name="campaign_master_description" Type="nvarchar(max)" />
+          <Property Name="campaign_master_creative_caption" Type="nvarchar(max)" />
+          <Property Name="campaign_master_landing_page" Type="nvarchar(max)" />
+          <Property Name="campaign_master_start_date" Type="date" />
+          <Property Name="campaign_master_end_date" Type="date" />
+          <Property Name="campaign_master_instagram" Type="bit" />
+          <Property Name="campaign_master_facebook" Type="bit" />
+          <Property Name="campaign_master_twitter" Type="bit" />
+          <Property Name="campaign_master_whatsapp" Type="bit" />
+          <Property Name="user_id" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="campaign_master_tags" Type="nvarchar(max)" />
+          <Property Name="campaign_master_images" Type="nvarchar(max)" />
+          <Property Name="campaign_master_date" Type="date" />
+          <Property Name="campaign_master_linkedin" Type="bit" />
+          <Property Name="camapaign_master_status" Type="varchar" MaxLength="50" />
+          <Property Name="input_email" Type="bit" />
+          <Property Name="input_mobile" Type="bit" />
+          <Property Name="input_name" Type="bit" />
+          <Property Name="ChannelName" Type="varchar" MaxLength="300" />
+          <Property Name="CampaignName" Type="varchar" MaxLength="300" />
+          <Property Name="CentralBlast" Type="varchar" MaxLength="200" />
+          <Property Name="channel_code" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <EntityType Name="CampaignResponses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="CampaignName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Response" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CENTRAL_BLAST">
+          <Key>
+            <PropertyRef Name="Sr_Id" />
+          </Key>
+          <Property Name="Sr_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="Contact_Number" Type="varchar" MaxLength="15" />
+          <Property Name="Type_Of_Data" Type="varchar" MaxLength="50" />
+          <Property Name="L1_Code" Type="int" />
+          <Property Name="L1_Name" Type="varchar" MaxLength="100" />
+          <Property Name="Channel" Type="varchar" MaxLength="100" />
+          <Property Name="CampaignName" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="channel">
+          <Key>
+            <PropertyRef Name="channel_id" />
+          </Key>
+          <Property Name="channel_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="channel_name" Type="nvarchar" MaxLength="250" />
+          <Property Name="channel_delflag" Type="varchar" MaxLength="50" />
+          <Property Name="subchannel_name" Type="varchar" MaxLength="2" />
+        </EntityType>
+        <EntityType Name="Digimyin_Send_Campaign">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Campaign_Master_Id" Type="int" />
+          <Property Name="Name" Type="varchar(max)" />
+          <Property Name="Contact_Number" Type="bigint" />
+          <Property Name="Type_Of_Data" Type="varchar(max)" />
+          <Property Name="L1_Code" Type="varchar" MaxLength="50" />
+          <Property Name="L1_Name" Type="varchar" MaxLength="50" />
+          <Property Name="Channel" Type="varchar" MaxLength="50" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Updated" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ENGAGE_SHARECOUNT">
+          <Key>
+            <PropertyRef Name="SHC_ID" />
+          </Key>
+          <Property Name="SHC_ID" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SHC_SAPCODE" Type="varchar" MaxLength="50" />
+          <Property Name="SHC_PLATEFORM" Type="varchar" MaxLength="50" />
+          <Property Name="SHC_SHARECOUNT" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="SHC_DATE" Type="date" />
+          <Property Name="CREATIVE_ID" Type="numeric" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="landingpage">
+          <Key>
+            <PropertyRef Name="landingpage_id" />
+          </Key>
+          <Property Name="landingpage_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="landingpage_url" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="landingpage_delflag" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Leads">
+          <Key>
+            <PropertyRef Name="leads_id" />
+          </Key>
+          <Property Name="leads_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="leads_name" Type="nvarchar" MaxLength="250" />
+          <Property Name="leads_mobile" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="leads_sapcode" Type="varchar" MaxLength="50" />
+          <Property Name="leads_creativeid" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="leads_date" Type="date" />
+          <Property Name="leads_plateform" Type="varchar" MaxLength="50" />
+          <Property Name="leads_email" Type="nvarchar(max)" />
+          <Property Name="api_leads_id" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="NEW_TEMP_HIERARCHY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="X_CHANNEL" Type="varchar" MaxLength="2" />
+          <Property Name="X_BM_EMP_CD" Type="varchar" MaxLength="10" />
+          <Property Name="X_BM_NM" Type="varchar" MaxLength="255" />
+          <Property Name="X_BRANCH" Type="varchar" MaxLength="255" />
+          <Property Name="X_REGION" Type="varchar" MaxLength="255" />
+          <Property Name="X_SALES_UNIT_CD" Type="varchar" MaxLength="10" />
+          <Property Name="X_SALES_UNIT_NM" Type="varchar" MaxLength="255" />
+          <Property Name="X_ZM_EMP_CD" Type="varchar" MaxLength="50" />
+          <Property Name="X_ZM_NM" Type="varchar" MaxLength="255" />
+          <Property Name="X_ZONE" Type="varchar" MaxLength="255" />
+          <Property Name="X_RM_EMP_EMP_CD" Type="varchar" MaxLength="10" />
+          <Property Name="X_RM_NM" Type="varchar" MaxLength="255" />
+          <Property Name="X_SM_EMP_CD" Type="varchar" MaxLength="10" />
+          <Property Name="X_SM_NM" Type="varchar" MaxLength="255" />
+          <Property Name="X_SM_STATUS" Type="varchar" MaxLength="5" />
+          <Property Name="SUBCHANNEL" Type="varchar" MaxLength="20" />
+          <Property Name="AGENT_CODE" Type="varchar" MaxLength="32" />
+          <Property Name="AGENT_NAME" Type="varchar" MaxLength="125" />
+          <Property Name="BM_NAME" Type="varchar" MaxLength="50" />
+          <Property Name="ZM_NAME" Type="varchar" MaxLength="125" />
+        </EntityType>
+        <EntityType Name="subcampaign">
+          <Key>
+            <PropertyRef Name="subcampaign_id" />
+          </Key>
+          <Property Name="subcampaign_id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="subcampaign_name" Type="varchar" MaxLength="150" />
+          <Property Name="campaign_id" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="subcampaign_delflag" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="UserNotification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SAPCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Channel_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Message" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityContainer Name="rglinixm_relModelStoreContainer">
+          <EntitySet Name="authentication" EntityType="Self.authentication" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="campaign" EntityType="Self.campaign" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="campaign_category" EntityType="Self.campaign_category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="campaign_master" EntityType="Self.campaign_master" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CampaignResponses" EntityType="Self.CampaignResponses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CENTRAL_BLAST" EntityType="Self.CENTRAL_BLAST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="channel" EntityType="Self.channel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Digimyin_Send_Campaign" EntityType="Self.Digimyin_Send_Campaign" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ENGAGE_SHARECOUNT" EntityType="Self.ENGAGE_SHARECOUNT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="landingpage" EntityType="Self.landingpage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Leads" EntityType="Self.Leads" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="Self.NEW_TEMP_HIERARCHY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="subcampaign" EntityType="Self.subcampaign" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserNotification" EntityType="Self.UserNotification" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="rglinixm_relModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="campaign">
+          <Key>
+            <PropertyRef Name="campaign_id" />
+          </Key>
+          <Property Name="campaign_id" Type="Decimal" Precision="18" Scale="0" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="campaign_name" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="campaign_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="campaign_category_id" Type="Decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="campaign_category">
+          <Key>
+            <PropertyRef Name="campaign_category_id" />
+          </Key>
+          <Property Name="campaign_category_id" Type="Decimal" Precision="18" Scale="0" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="campaign_category_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="campaign_category_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Campaign_Category_Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="rglinixm_relEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="campaigns" EntityType="Self.campaign" />
+          <EntitySet Name="campaign_category" EntityType="Self.campaign_category" />
+          <EntitySet Name="subcampaigns" EntityType="rglinixm_relModel.subcampaign" />
+          <EntitySet Name="authentications" EntityType="rglinixm_relModel.authentication" />
+          <EntitySet Name="landingpages" EntityType="rglinixm_relModel.landingpage" />
+          <EntitySet Name="Digimyin_Send_Campaign" EntityType="rglinixm_relModel.Digimyin_Send_Campaign" />
+          <EntitySet Name="ENGAGE_SHARECOUNT" EntityType="rglinixm_relModel.ENGAGE_SHARECOUNT" />
+          <EntitySet Name="CENTRAL_BLAST" EntityType="rglinixm_relModel.CENTRAL_BLAST" />
+          <EntitySet Name="campaign_master" EntityType="rglinixm_relModel.campaign_master" />
+          <EntitySet Name="channels" EntityType="rglinixm_relModel.channel" />
+          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
+          <EntitySet Name="UserNotifications" EntityType="rglinixm_relModel.UserNotification" />
+          <EntitySet Name="CampaignResponses" EntityType="rglinixm_relModel.CampaignRespons" />
+        </EntityContainer>
+        <EntityType Name="subcampaign">
+          <Key>
+            <PropertyRef Name="subcampaign_id" />
+          </Key>
+          <Property Name="subcampaign_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="subcampaign_name" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="campaign_id" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="subcampaign_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="authentication">
+          <Key>
+            <PropertyRef Name="au_id" />
+          </Key>
+          <Property Name="au_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="au_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="au_password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="au_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Subchannel" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="landingpage">
+          <Key>
+            <PropertyRef Name="landingpage_id" />
+          </Key>
+          <Property Name="landingpage_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="landingpage_url" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="landingpage_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Digimyin_Send_Campaign">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Campaign_Master_Id" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Contact_Number" Type="Int64" />
+          <Property Name="Type_Of_Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="L1_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="L1_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Channel" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Created" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Updated" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ENGAGE_SHARECOUNT">
+          <Key>
+            <PropertyRef Name="SHC_ID" />
+          </Key>
+          <Property Name="SHC_ID" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SHC_SAPCODE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SHC_PLATEFORM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SHC_SHARECOUNT" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="SHC_DATE" Type="DateTime" Precision="0" />
+          <Property Name="CREATIVE_ID" Type="Decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="CENTRAL_BLAST">
+          <Key>
+            <PropertyRef Name="Sr_Id" />
+          </Key>
+          <Property Name="Sr_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Contact_Number" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Type_Of_Data" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="L1_Code" Type="Int32" />
+          <Property Name="L1_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Channel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CampaignName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="campaign_master">
+          <Key>
+            <PropertyRef Name="campaign_master_id" />
+          </Key>
+          <Property Name="campaign_master_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="campaign_master_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="channel_id" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="campaign_category_id" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="subcampaign_id" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="campaign_id" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="campaign_master_type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="campaign_master_lang" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="campaign_master_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="campaign_master_creative_caption" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="campaign_master_landing_page" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="campaign_master_start_date" Type="DateTime" Precision="0" />
+          <Property Name="campaign_master_end_date" Type="DateTime" Precision="0" />
+          <Property Name="campaign_master_instagram" Type="Boolean" />
+          <Property Name="campaign_master_facebook" Type="Boolean" />
+          <Property Name="campaign_master_twitter" Type="Boolean" />
+          <Property Name="campaign_master_whatsapp" Type="Boolean" />
+          <Property Name="user_id" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="campaign_master_tags" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="campaign_master_images" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="campaign_master_date" Type="DateTime" Precision="0" />
+          <Property Name="campaign_master_linkedin" Type="Boolean" />
+          <Property Name="camapaign_master_status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="input_email" Type="Boolean" />
+          <Property Name="input_mobile" Type="Boolean" />
+          <Property Name="input_name" Type="Boolean" />
+          <Property Name="ChannelName" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="CampaignName" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="CentralBlast" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="channel_code" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="channel">
+          <Key>
+            <PropertyRef Name="channel_id" />
+          </Key>
+          <Property Name="channel_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="channel_name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="channel_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="subchannel_name" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="NEW_TEMP_HIERARCHY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="X_CHANNEL" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="X_BM_EMP_CD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="X_BM_NM" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_BRANCH" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_REGION" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_SALES_UNIT_CD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="X_SALES_UNIT_NM" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_ZM_EMP_CD" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="X_ZM_NM" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_ZONE" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_RM_EMP_EMP_CD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="X_RM_NM" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_SM_EMP_CD" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="X_SM_NM" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X_SM_STATUS" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="SUBCHANNEL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AGENT_CODE" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="AGENT_NAME" Type="String" MaxLength="125" FixedLength="false" Unicode="false" />
+          <Property Name="BM_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ZM_NAME" Type="String" MaxLength="125" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="UserNotification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SAPCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CampaignRespons">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CampaignName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Response" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="rglinixm_relModelStoreContainer" CdmEntityContainer="rglinixm_relEntities">
+          <EntitySetMapping Name="campaigns">
+            <EntityTypeMapping TypeName="rglinixm_relModel.campaign">
+              <MappingFragment StoreEntitySet="campaign">
+                <ScalarProperty Name="campaign_id" ColumnName="campaign_id" />
+                <ScalarProperty Name="campaign_name" ColumnName="campaign_name" />
+                <ScalarProperty Name="campaign_delflag" ColumnName="campaign_delflag" />
+                <ScalarProperty Name="campaign_category_id" ColumnName="campaign_category_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="campaign_category">
+            <EntityTypeMapping TypeName="rglinixm_relModel.campaign_category">
+              <MappingFragment StoreEntitySet="campaign_category">
+                <ScalarProperty Name="Campaign_Category_Status" ColumnName="Campaign_Category_Status" />
+                <ScalarProperty Name="campaign_category_id" ColumnName="campaign_category_id" />
+                <ScalarProperty Name="campaign_category_name" ColumnName="campaign_category_name" />
+                <ScalarProperty Name="campaign_category_delflag" ColumnName="campaign_category_delflag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="subcampaigns">
+            <EntityTypeMapping TypeName="rglinixm_relModel.subcampaign">
+              <MappingFragment StoreEntitySet="subcampaign">
+                <ScalarProperty Name="subcampaign_delflag" ColumnName="subcampaign_delflag" />
+                <ScalarProperty Name="campaign_id" ColumnName="campaign_id" />
+                <ScalarProperty Name="subcampaign_name" ColumnName="subcampaign_name" />
+                <ScalarProperty Name="subcampaign_id" ColumnName="subcampaign_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="authentications">
+            <EntityTypeMapping TypeName="rglinixm_relModel.authentication">
+              <MappingFragment StoreEntitySet="authentication">
+                <ScalarProperty Name="Subchannel" ColumnName="Subchannel" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="au_delflag" ColumnName="au_delflag" />
+                <ScalarProperty Name="au_password" ColumnName="au_password" />
+                <ScalarProperty Name="au_username" ColumnName="au_username" />
+                <ScalarProperty Name="au_id" ColumnName="au_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="landingpages">
+            <EntityTypeMapping TypeName="rglinixm_relModel.landingpage">
+              <MappingFragment StoreEntitySet="landingpage">
+                <ScalarProperty Name="landingpage_delflag" ColumnName="landingpage_delflag" />
+                <ScalarProperty Name="landingpage_url" ColumnName="landingpage_url" />
+                <ScalarProperty Name="landingpage_id" ColumnName="landingpage_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Digimyin_Send_Campaign">
+            <EntityTypeMapping TypeName="rglinixm_relModel.Digimyin_Send_Campaign">
+              <MappingFragment StoreEntitySet="Digimyin_Send_Campaign">
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Channel" ColumnName="Channel" />
+                <ScalarProperty Name="L1_Name" ColumnName="L1_Name" />
+                <ScalarProperty Name="L1_Code" ColumnName="L1_Code" />
+                <ScalarProperty Name="Type_Of_Data" ColumnName="Type_Of_Data" />
+                <ScalarProperty Name="Contact_Number" ColumnName="Contact_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Campaign_Master_Id" ColumnName="Campaign_Master_Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ENGAGE_SHARECOUNT">
+            <EntityTypeMapping TypeName="rglinixm_relModel.ENGAGE_SHARECOUNT">
+              <MappingFragment StoreEntitySet="ENGAGE_SHARECOUNT">
+                <ScalarProperty Name="CREATIVE_ID" ColumnName="CREATIVE_ID" />
+                <ScalarProperty Name="SHC_DATE" ColumnName="SHC_DATE" />
+                <ScalarProperty Name="SHC_SHARECOUNT" ColumnName="SHC_SHARECOUNT" />
+                <ScalarProperty Name="SHC_PLATEFORM" ColumnName="SHC_PLATEFORM" />
+                <ScalarProperty Name="SHC_SAPCODE" ColumnName="SHC_SAPCODE" />
+                <ScalarProperty Name="SHC_ID" ColumnName="SHC_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CENTRAL_BLAST">
+            <EntityTypeMapping TypeName="rglinixm_relModel.CENTRAL_BLAST">
+              <MappingFragment StoreEntitySet="CENTRAL_BLAST">
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="Channel" ColumnName="Channel" />
+                <ScalarProperty Name="L1_Name" ColumnName="L1_Name" />
+                <ScalarProperty Name="L1_Code" ColumnName="L1_Code" />
+                <ScalarProperty Name="Type_Of_Data" ColumnName="Type_Of_Data" />
+                <ScalarProperty Name="Contact_Number" ColumnName="Contact_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sr_Id" ColumnName="Sr_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="campaign_master">
+            <EntityTypeMapping TypeName="rglinixm_relModel.campaign_master">
+              <MappingFragment StoreEntitySet="campaign_master">
+                <ScalarProperty Name="channel_code" ColumnName="channel_code" />
+                <ScalarProperty Name="CentralBlast" ColumnName="CentralBlast" />
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="ChannelName" ColumnName="ChannelName" />
+                <ScalarProperty Name="input_name" ColumnName="input_name" />
+                <ScalarProperty Name="input_mobile" ColumnName="input_mobile" />
+                <ScalarProperty Name="input_email" ColumnName="input_email" />
+                <ScalarProperty Name="camapaign_master_status" ColumnName="camapaign_master_status" />
+                <ScalarProperty Name="campaign_master_linkedin" ColumnName="campaign_master_linkedin" />
+                <ScalarProperty Name="campaign_master_date" ColumnName="campaign_master_date" />
+                <ScalarProperty Name="campaign_master_images" ColumnName="campaign_master_images" />
+                <ScalarProperty Name="campaign_master_tags" ColumnName="campaign_master_tags" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="campaign_master_whatsapp" ColumnName="campaign_master_whatsapp" />
+                <ScalarProperty Name="campaign_master_twitter" ColumnName="campaign_master_twitter" />
+                <ScalarProperty Name="campaign_master_facebook" ColumnName="campaign_master_facebook" />
+                <ScalarProperty Name="campaign_master_instagram" ColumnName="campaign_master_instagram" />
+                <ScalarProperty Name="campaign_master_end_date" ColumnName="campaign_master_end_date" />
+                <ScalarProperty Name="campaign_master_start_date" ColumnName="campaign_master_start_date" />
+                <ScalarProperty Name="campaign_master_landing_page" ColumnName="campaign_master_landing_page" />
+                <ScalarProperty Name="campaign_master_creative_caption" ColumnName="campaign_master_creative_caption" />
+                <ScalarProperty Name="campaign_master_description" ColumnName="campaign_master_description" />
+                <ScalarProperty Name="campaign_master_lang" ColumnName="campaign_master_lang" />
+                <ScalarProperty Name="campaign_master_type" ColumnName="campaign_master_type" />
+                <ScalarProperty Name="campaign_id" ColumnName="campaign_id" />
+                <ScalarProperty Name="subcampaign_id" ColumnName="subcampaign_id" />
+                <ScalarProperty Name="campaign_category_id" ColumnName="campaign_category_id" />
+                <ScalarProperty Name="channel_id" ColumnName="channel_id" />
+                <ScalarProperty Name="campaign_master_code" ColumnName="campaign_master_code" />
+                <ScalarProperty Name="campaign_master_id" ColumnName="campaign_master_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="channels">
+            <EntityTypeMapping TypeName="rglinixm_relModel.channel">
+              <MappingFragment StoreEntitySet="channel">
+                <ScalarProperty Name="subchannel_name" ColumnName="subchannel_name" />
+                <ScalarProperty Name="channel_delflag" ColumnName="channel_delflag" />
+                <ScalarProperty Name="channel_name" ColumnName="channel_name" />
+                <ScalarProperty Name="channel_id" ColumnName="channel_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NEW_TEMP_HIERARCHY">
+            <EntityTypeMapping TypeName="rglinixm_relModel.NEW_TEMP_HIERARCHY">
+              <MappingFragment StoreEntitySet="NEW_TEMP_HIERARCHY">
+                <ScalarProperty Name="ZM_NAME" ColumnName="ZM_NAME" />
+                <ScalarProperty Name="BM_NAME" ColumnName="BM_NAME" />
+                <ScalarProperty Name="AGENT_NAME" ColumnName="AGENT_NAME" />
+                <ScalarProperty Name="AGENT_CODE" ColumnName="AGENT_CODE" />
+                <ScalarProperty Name="SUBCHANNEL" ColumnName="SUBCHANNEL" />
+                <ScalarProperty Name="X_SM_STATUS" ColumnName="X_SM_STATUS" />
+                <ScalarProperty Name="X_SM_NM" ColumnName="X_SM_NM" />
+                <ScalarProperty Name="X_SM_EMP_CD" ColumnName="X_SM_EMP_CD" />
+                <ScalarProperty Name="X_RM_NM" ColumnName="X_RM_NM" />
+                <ScalarProperty Name="X_RM_EMP_EMP_CD" ColumnName="X_RM_EMP_EMP_CD" />
+                <ScalarProperty Name="X_ZONE" ColumnName="X_ZONE" />
+                <ScalarProperty Name="X_ZM_NM" ColumnName="X_ZM_NM" />
+                <ScalarProperty Name="X_ZM_EMP_CD" ColumnName="X_ZM_EMP_CD" />
+                <ScalarProperty Name="X_SALES_UNIT_NM" ColumnName="X_SALES_UNIT_NM" />
+                <ScalarProperty Name="X_SALES_UNIT_CD" ColumnName="X_SALES_UNIT_CD" />
+                <ScalarProperty Name="X_REGION" ColumnName="X_REGION" />
+                <ScalarProperty Name="X_BRANCH" ColumnName="X_BRANCH" />
+                <ScalarProperty Name="X_BM_NM" ColumnName="X_BM_NM" />
+                <ScalarProperty Name="X_BM_EMP_CD" ColumnName="X_BM_EMP_CD" />
+                <ScalarProperty Name="X_CHANNEL" ColumnName="X_CHANNEL" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserNotifications">
+            <EntityTypeMapping TypeName="rglinixm_relModel.UserNotification">
+              <MappingFragment StoreEntitySet="UserNotification">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Channel_code" ColumnName="Channel_code" />
+                <ScalarProperty Name="SAPCode" ColumnName="SAPCode" />
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CampaignResponses">
+            <EntityTypeMapping TypeName="rglinixm_relModel.CampaignRespons">
+              <MappingFragment StoreEntitySet="CampaignResponses">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Response" ColumnName="Response" />
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -13,12 +13,12 @@
         <EntityTypeShape EntityType="rglinixm_relModel.Digimyin_Send_Campaign" Width="1.5" PointX="0.75" PointY="9.75" />
         <EntityTypeShape EntityType="rglinixm_relModel.ENGAGE_SHARECOUNT" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="rglinixm_relModel.CENTRAL_BLAST" Width="1.5" PointX="7.375" PointY="11.75" />
-        <EntityTypeShape EntityType="rglinixm_relModel.Lead" Width="1.5" PointX="7.375" PointY="7.75" />
         <EntityTypeShape EntityType="rglinixm_relModel.campaign_master" Width="1.5" PointX="3.75" PointY="3.75" />
         <EntityTypeShape EntityType="rglinixm_relModel.channel" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" Width="1.5" PointX="9.375" PointY="0.75" />
         <EntityTypeShape EntityType="rglinixm_relModel.UserNotification" Width="1.5" PointX="9.375" PointY="9.75" />
         <EntityTypeShape EntityType="rglinixm_relModel.CampaignRespons" Width="1.5" PointX="9.375" PointY="6.75" />
+        <EntityTypeShape EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" Width="1.5" PointX="9.375" PointY="0.75" />
+        <EntityTypeShape EntityType="rglinixm_relModel.Lead" Width="1.5" PointX="6.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

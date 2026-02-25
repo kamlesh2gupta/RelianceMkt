@@ -14,7 +14,7 @@ namespace RelianceMkt.Controllers.Api
 
         // URL: /api/CampaignResponseApi/SaveResponse
         [HttpPost]
-        [Route("api/CampaignResponseApi/SaveResponse")]
+        [Route("api/CampaignResponseApi/SaveResponse")] 
         public HttpResponseMessage SaveResponse(CampaignResponseModel model)
         {
             try

@@ -269,7 +269,9 @@
 
         var ShowCampaign = function (CampaignMasterId) {
             //debugger;
-            var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+            /* var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;*/
+            var url = Url.Action("campaignDetails","Marketing",new { CampaignMasterId = CampaignMasterId });
+
 
             $("#myModalBodyDiv1").load(url, function () {
                 $("#campaign-modal").modal("show");

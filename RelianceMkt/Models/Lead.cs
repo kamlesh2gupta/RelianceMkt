@@ -36,6 +36,19 @@ public partial class Lead
 
     public string api_leads_id { get; set; }
 
+    public string api_response_json { get; set; }
+
+    public string LeadType { get; set; }
+
 }
+
+    public class LeadSquaredResponse
+    {
+        public int Status { get; set; }
+        public string RequestId { get; set; }
+        public string ExceptionMessage { get; set; }
+        public string ExceptionType { get; set; }
+        public object AdditionalDetails { get; set; }
+    }
 
 }

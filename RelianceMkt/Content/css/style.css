@@ -1774,6 +1774,11 @@ pre {
         margin-left: 0 !important;
     }*/
 
+    .right-profile .landing-page{
+        margin-left: -17rem !important;
+        margin-right: 0rem !important;
+    }
+
     .mb-1 {
         margin-left: 0rem !important;
     }

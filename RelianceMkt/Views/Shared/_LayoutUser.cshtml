@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     @RenderSection("meta", false)
-    <title>Reliance  - Creative Campaign Dashboard</title>
+    <title>IndusInd  - Creative Campaign Dashboard</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
     <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -119,6 +119,7 @@
 
         /* Sidebar */
         .deznav {
+
             width: 250px;
             transition: all 0.3s ease;
         }
@@ -187,7 +188,7 @@
         .nav-header.hide {
             margin-left: 0 !important; /* ✅ comment out old margin-left rule */
             width: 70px !important; /* same as collapsed sidebar */
-            background: #ff8f16 !important; /* keep background color */
+            background: white !important; /* keep background color */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -205,6 +206,29 @@
                 right: auto;
                 margin: 0 auto;
                 top: 20px;
+            }
+        /* //================text color-profile side bar===============*/
+        /* Sidebar menu text default white */
+        .deznav .metismenu > li > a,
+        .deznav .metismenu li a span,
+        .deznav .metismenu li a i {
+            color: #ffffff !important;
+        }
+
+            /* Hover par text black */
+            .deznav .metismenu > li > a:hover,
+            .deznav .metismenu li a:hover span,
+            .deznav .metismenu li a:hover i {
+                color: #000000 !important;
+            }
+
+        /* Sub-menu items */
+        .deznav .metismenu ul li a {
+            color: #ffffff !important;
+        }
+
+            .deznav .metismenu ul li a:hover {
+                color: #000000 !important;
             }
 
     </style>
@@ -237,7 +261,7 @@
         <!--**********************************
         Nav header start
     ***********************************-->
-        <div class="nav-header" style="height: 95px;background: #ff8f16; width: 239px; position: fixed; top: 0; left: 0;">
+        <div class="nav-header" style="height: 95px; background: #fff; width: 239px; position: fixed; top: 0; left: 0;">
             @*//==end here====//*@
             <a href="~/Marketing/UserDashboard?REF_KEY=@Session["REF_KEY"]">
                 <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style=" max-width: 238px; height: 100%;">
@@ -256,9 +280,9 @@
         <!--**********************************
         Header 
     ***********************************-->
-        <div class="header"; style="padding-left:0rem;height: 2.5rem; position:fixed; top:0; left:0; width:100%; height:95px; background:#ff8f16; display:flex; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <div class="header"; style="padding-left: 0rem; height: 2.5rem; position: fixed; top: 0; left: 0; width: 100%; height: 95px; background: #832625; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); ">
             @*//====edit by kamlesh======*@
-            <div class="header-content" style="height: 95px;width: 100%; left: 0rem; position: absolute;">
+            <div class="header-content" style="height: 95px; width: 100%; left: 0rem; position: absolute; background: #832625; ">
 
                 @*<div class="header-content" style="height: 95px";>*@
                 @*//===end here===*@
@@ -278,39 +302,40 @@
                         </div>
 
                         <ul class="navbar-nav header-right">
-                            @if (Session["TYPE"].ToString() != "ARDM")
+                            @*@if (Session["TYPE"].ToString() != "ARDM")*@
+                            @if (Session["TYPE"] != null && Session["TYPE"].ToString() != "ARDM")
                             {
                                 @*<li class="nav-item ">
-                                    <div class="btn-group mb-1">
-                                        <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                            @ViewBag.zone
-                                        </button>
+                <div class="btn-group mb-1">
+                    <button class="btn bg-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                        @ViewBag.zone
+                    </button>
 
-                                        <div class="dropdown-menu">
-                                            @foreach (var item in ViewBag.lstDownline)
-                                                {
-                                                    string toencode = "SAPCODE=" + item.Value;
-                                                    byte[] encData_byte = new byte[toencode.Length];
-                                                    encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
-                                                    string encodedData = Convert.ToBase64String(encData_byte);
-                                            <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
-                                                }
-                                        </div>
+                    <div class="dropdown-menu">
+                        @foreach (var item in ViewBag.lstDownline)
+                            {
+                                string toencode = "SAPCODE=" + item.Value;
+                                byte[] encData_byte = new byte[toencode.Length];
+                                encData_byte = System.Text.Encoding.UTF8.GetBytes(toencode);
+                                string encodedData = Convert.ToBase64String(encData_byte);
+                        <a class="dropdown-item" href="~/Marketing/UserDashboard?REF_KEY=@encodedData">@item.Text</a>
+                            }
+                    </div>
 
-                                    </div>
-                                </li>*@
+                </div>
+            </li>*@
                             }
 
 
 
-                            <li class="nav-item dropdown header-profile side">
-                                <a class="nav-link" href="#"> 
+                            @*<li class="nav-item dropdown header-profile side">
+                                <a class="nav-link" href="#">
                                     <div class="header-info">
                                         <span>Hello, <strong>Samuel</strong></span>
                                     </div>
                                     <img src="~/Content/images/profile/pic1.jpg" width="20" alt="" />
                                 </a>
-                            </li>
+                            </li>*@
                         </ul>
                     </div>
                 </nav>
@@ -321,7 +346,7 @@
         <!--**********************************
         Sidebar start
     ***********************************-->
-        <div class="deznav"  style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; width:15rem;">
+        <div class="deznav"  style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; width: 15rem; background: #832625;">
             <div class="deznav-scroll">
                 <ul class="metismenu" id="menu">
 
@@ -388,13 +413,13 @@
                         </a>
                     </li>*@
 
-                    <div class="copyright">
-                        <br />© All Rights Reserved By Reliance
+                <div class="copyright">
+                    <br />© All Rights Reserved By IndusInd Nippon Life Insurance Company Limited
 
-                        <img class="img-thumbnail" src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="">
+                    <img class="img-thumbnail" src="~/Content/images/Logo16.png" alt="">
 
 
-                    </div>
+                </div>
 
                 </ul>
 
@@ -417,7 +442,8 @@
                 <ul class="navbar-nav header-right">
                     @if (@ViewContext.RouteData.Values["action"].ToString().ToLower() == "hotleadsuser")
                     {
-                        if (Session["TYPE"].ToString() != "ARDM")
+                        //if (Session["TYPE"].ToString() != "ARDM")
+                        if (Session["TYPE"] != null && Session["TYPE"].ToString() != "ARDM")
                         {
                             <li class="nav-item ">
                                 <div class="btn-group mb-1">
@@ -455,7 +481,7 @@
     ***********************************-->
         <div class="footer">
             <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by Reliance 2020</p>
+                <p>Copyright © Designed &amp; Developed by IndusInd Nippon Life Insurance Company Limited</p>
             </div>
         </div>
         <!--**********************************

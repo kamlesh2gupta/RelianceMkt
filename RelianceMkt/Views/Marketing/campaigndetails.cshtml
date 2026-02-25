@@ -105,13 +105,13 @@
                 }
                 @if (@ViewBag.lstAllCampaigns.cm.campaign_master_twitter)
                 {
-                    <a href="https://twitter.com/intent/tweet?text=@item.cm.campaign_master_creative_caption%0Ahttp://engage.date24.in/Marketing/campaignfbshare?CampaignMasterId=1" target="_blank"><i class="lab la-twitter gs-icon bgl-secondary text-secondary mr-3"></i></a>
+                    <a href="https://twitter.com/intent/tweet?text=item.cm.campaign_master_creative_caption%0Ahttp://engage.date24.in/Marketing/campaignfbshare?CampaignMasterId=1" target="_blank"><i class="lab la-twitter gs-icon bgl-secondary text-secondary mr-3"></i></a>
 
                 }
                 @if (@ViewBag.lstAllCampaigns.cm.campaign_master_whatsapp)
                 {
                     <!--<i class="lab la-whatsapp social-icon bg-danger text-white"></i>-->
-                    <a href="whatsapp://send?text=@item.cm.campaign_master_creative_caption
+                    <a href="whatsapp://send?text=item.cm.campaign_master_creative_caption
                                    Click here to view more http://engage.date24.in/Marketing/campaignfbshare?CampaignMasterId=1 :" target="_blank"><i class="lab la-whatsapp gs-icon bgl-secondary text-secondary mr-3"></i></a>
                 }
 

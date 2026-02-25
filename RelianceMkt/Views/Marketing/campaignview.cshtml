@@ -112,12 +112,6 @@
 
                                }
 
-
-
-
-
-
-
                             </div>
                         <div class="row">
                             <div class="col-xl-6 col-xxl-6 col-sm-6">
@@ -182,7 +176,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModalLong">
+    @*<div class="modal fade" id="exampleModalLong">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -191,13 +185,13 @@
                         <span>&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="card-body">
+                <div class="modal-body">*@
+                    @*<div class="card-body">
                         @using (Html.BeginForm("campaignview", "Marketing", FormMethod.Post, new {@SAPCODE=Session["SAPCODE"], @TYPE=Session["TYPE"],@LOGIN=Session["LOGIN"] }))
                         {
 
 
-                        <div class="form-row">
+                        <div class="form-row">*@
                             @*<div class="form-group col-xl-3">
             <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span>
             @Html.DropDownList("channel", new SelectList(ViewBag.lstchannels, "channel_id", "channel_name", ViewBag.channel),
@@ -224,43 +218,38 @@
                                                      , new { @class = "form-control" })
 
         </div>*@
-                            <div class="form-group col-xl-3">
+                            <!--<div class="form-group col-xl-3">
                                 <label class="text-black font-w500 mb-3">Language</label><span class="text-danger ml-1">*</span>
-                                @Html.DropDownList("language", new SelectList(ViewBag.lstlanguage, "Value", "Text", ViewBag.language)
-                                                                               ,
-                                                                               "Select Language", new { @class = "form-control" })
+                                @Html.DropDownList("language", new SelectList(ViewBag.lstlanguage, "Value", "Text", ViewBag.language), "Select Language", new { @class = "form-control" })
                             </div>
 
                             <div class="form-group col-xl-3">
                                 <label class="text-black font-w500 mb-3">Type</label><span class="text-danger ml-1">*</span>
-                                @Html.DropDownList("campaigntype", new SelectList(ViewBag.lsttype, "Value", "Text", ViewBag.type)
-                                                                                ,
-                                                                                "Select Campaign Type", new { @class = "form-control" })
+                                @Html.DropDownList("campaigntype", new SelectList(ViewBag.lsttype, "Value", "Text", ViewBag.type), "Select Campaign Type", new { @class = "form-control" })
                             </div>
                             <div class="form-group col-xl-3">
-                                <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>
+                                <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>-->
                                 @*@Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.type)
         ,
                                         "Select Campaign Type", new { @class = "form-control" })*@
-                           @Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.status),
-                                "Select Status",new { @class = "form-control" })
+                           <!--@Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.status), "Select Status",new { @class = "form-control" })
                             </div>
 
                             <div class="form-group col-xl-3" style="padding-top:39px;">
                                 <button type="submit" class="btn btn-warning">Apply Filter</button>
                             </div>
 
-                        </div>}
-                    </div>
+                        </div>}-->
+                    <!--</div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>-->
                     @*<button type="button" class="btn btn-primary">Submit</button>*@
-                </div>
+                <!--</div>
             </div>
         </div>
-    </div>
-    <div class="open-filter">   <button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-filter fa-lg"></i></button></div>
+    </div>-->
+    @*<div class="open-filter">   <button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-filter fa-lg"></i></button></div>*@
 </div>
 <br/>
 <br />
@@ -283,7 +272,8 @@
 
         var ShowCampaign = function (CampaignMasterId) {
             //debugger;
-            var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+            /* var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;*/
+           var url = '@Url.Action("campaignDetails", "Marketing")' + '?CampaignMasterId=' + CampaignMasterId;
 
             $("#myModalBodyDiv1").load(url, function () {
                 $("#campaign-modal").modal("show");

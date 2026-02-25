@@ -104,6 +104,9 @@
                                         @foreach (var item in ViewBag.lstAllCampaigns)
                                         {
                                             <tr data-id="@item.campaign_master_id">
+                                          
+
+
                                                 <td><input type="checkbox" class="select-campaign" value="@item.campaign_master_id" /></td>
                                                 <td class="row-index"><strong></strong></td>
                                                 <td>@item.ChannelName</td>
@@ -187,7 +190,9 @@
 
     <script>
         var ShowCampaign = function (CampaignMasterId) {
-            var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+              var url = "/Marketing/campaignDetails?CampaignMasterId=" + CampaignMasterId;
+            /*var url = Url.Action("campaignDetails","Marketing",new { CampaignMasterId = CampaignMasterId } );*/
+
             $("#myModalBodyDiv1").load(url, function () {
                 $("#campaign-modal").modal("show");
             });

@@ -60,6 +60,8 @@ public partial class NEW_TEMP_HIERARCHY
 
     public string ZM_NAME { get; set; }
 
+    public string X_CHANNEL_DESC { get; set; }
+
 }
 
 }

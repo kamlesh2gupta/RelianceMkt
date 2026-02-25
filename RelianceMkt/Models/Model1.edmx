@@ -148,7 +148,9 @@
           <Property Name="leads_date" Type="date" />
           <Property Name="leads_plateform" Type="varchar" MaxLength="50" />
           <Property Name="leads_email" Type="nvarchar(max)" />
-          <Property Name="api_leads_id" Type="varchar" MaxLength="50" />
+          <Property Name="api_leads_id" Type="varchar" MaxLength="500" />
+          <Property Name="api_response_json" Type="nvarchar(max)" />
+          <Property Name="LeadType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
@@ -175,6 +177,7 @@
           <Property Name="AGENT_NAME" Type="varchar" MaxLength="125" />
           <Property Name="BM_NAME" Type="varchar" MaxLength="50" />
           <Property Name="ZM_NAME" Type="varchar" MaxLength="125" />
+          <Property Name="X_CHANNEL_DESC" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="subcampaign">
           <Key>
@@ -243,12 +246,12 @@
           <EntitySet Name="Digimyin_Send_Campaign" EntityType="rglinixm_relModel.Digimyin_Send_Campaign" />
           <EntitySet Name="ENGAGE_SHARECOUNT" EntityType="rglinixm_relModel.ENGAGE_SHARECOUNT" />
           <EntitySet Name="CENTRAL_BLAST" EntityType="rglinixm_relModel.CENTRAL_BLAST" />
-          <EntitySet Name="Leads" EntityType="rglinixm_relModel.Lead" />
           <EntitySet Name="campaign_master" EntityType="rglinixm_relModel.campaign_master" />
           <EntitySet Name="channels" EntityType="rglinixm_relModel.channel" />
-          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
           <EntitySet Name="UserNotifications" EntityType="rglinixm_relModel.UserNotification" />
           <EntitySet Name="CampaignResponses" EntityType="rglinixm_relModel.CampaignRespons" />
+          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
+          <EntitySet Name="Leads" EntityType="rglinixm_relModel.Lead" />
         </EntityContainer>
         <EntityType Name="subcampaign">
           <Key>
@@ -318,20 +321,6 @@
           <Property Name="Channel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="CampaignName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Lead">
-          <Key>
-            <PropertyRef Name="leads_id" />
-          </Key>
-          <Property Name="leads_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="leads_name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="leads_mobile" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="leads_sapcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="leads_creativeid" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="leads_date" Type="DateTime" Precision="0" />
-          <Property Name="leads_plateform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="leads_email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="api_leads_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="campaign_master">
           <Key>
             <PropertyRef Name="campaign_master_id" />
@@ -376,6 +365,27 @@
           <Property Name="channel_delflag" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="subchannel_name" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="UserNotification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SAPCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Channel_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="CampaignRespons">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CampaignName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Response" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
             <PropertyRef Name="ID" />
@@ -401,27 +411,23 @@
           <Property Name="AGENT_NAME" Type="String" MaxLength="125" FixedLength="false" Unicode="false" />
           <Property Name="BM_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ZM_NAME" Type="String" MaxLength="125" FixedLength="false" Unicode="false" />
+          <Property Name="X_CHANNEL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="UserNotification">
+        <EntityType Name="Lead">
           <Key>
-            <PropertyRef Name="NotificationId" />
+            <PropertyRef Name="leads_id" />
           </Key>
-          <Property Name="NotificationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SAPCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Channel_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="IsRead" Type="Boolean" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="CampaignRespons">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CampaignName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Response" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="leads_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="leads_name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="leads_mobile" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="leads_sapcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="leads_creativeid" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="leads_date" Type="DateTime" Precision="0" />
+          <Property Name="leads_plateform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="leads_email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="api_leads_id" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="api_response_json" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LeadType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -523,21 +529,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Leads">
-            <EntityTypeMapping TypeName="rglinixm_relModel.Lead">
-              <MappingFragment StoreEntitySet="Leads">
-                <ScalarProperty Name="api_leads_id" ColumnName="api_leads_id" />
-                <ScalarProperty Name="leads_email" ColumnName="leads_email" />
-                <ScalarProperty Name="leads_plateform" ColumnName="leads_plateform" />
-                <ScalarProperty Name="leads_date" ColumnName="leads_date" />
-                <ScalarProperty Name="leads_creativeid" ColumnName="leads_creativeid" />
-                <ScalarProperty Name="leads_sapcode" ColumnName="leads_sapcode" />
-                <ScalarProperty Name="leads_mobile" ColumnName="leads_mobile" />
-                <ScalarProperty Name="leads_name" ColumnName="leads_name" />
-                <ScalarProperty Name="leads_id" ColumnName="leads_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="campaign_master">
             <EntityTypeMapping TypeName="rglinixm_relModel.campaign_master">
               <MappingFragment StoreEntitySet="campaign_master">
@@ -584,9 +575,33 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="UserNotifications">
+            <EntityTypeMapping TypeName="rglinixm_relModel.UserNotification">
+              <MappingFragment StoreEntitySet="UserNotification">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Channel_code" ColumnName="Channel_code" />
+                <ScalarProperty Name="SAPCode" ColumnName="SAPCode" />
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CampaignResponses">
+            <EntityTypeMapping TypeName="rglinixm_relModel.CampaignRespons">
+              <MappingFragment StoreEntitySet="CampaignResponses">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Response" ColumnName="Response" />
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NEW_TEMP_HIERARCHY">
             <EntityTypeMapping TypeName="rglinixm_relModel.NEW_TEMP_HIERARCHY">
               <MappingFragment StoreEntitySet="NEW_TEMP_HIERARCHY">
+                <ScalarProperty Name="X_CHANNEL_DESC" ColumnName="X_CHANNEL_DESC" />
                 <ScalarProperty Name="ZM_NAME" ColumnName="ZM_NAME" />
                 <ScalarProperty Name="BM_NAME" ColumnName="BM_NAME" />
                 <ScalarProperty Name="AGENT_NAME" ColumnName="AGENT_NAME" />
@@ -611,26 +626,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserNotifications">
-            <EntityTypeMapping TypeName="rglinixm_relModel.UserNotification">
-              <MappingFragment StoreEntitySet="UserNotification">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Channel_code" ColumnName="Channel_code" />
-                <ScalarProperty Name="SAPCode" ColumnName="SAPCode" />
-                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CampaignResponses">
-            <EntityTypeMapping TypeName="rglinixm_relModel.CampaignRespons">
-              <MappingFragment StoreEntitySet="CampaignResponses">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Response" ColumnName="Response" />
-                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
-                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <EntitySetMapping Name="Leads">
+            <EntityTypeMapping TypeName="rglinixm_relModel.Lead">
+              <MappingFragment StoreEntitySet="Leads">
+                <ScalarProperty Name="LeadType" ColumnName="LeadType" />
+                <ScalarProperty Name="api_response_json" ColumnName="api_response_json" />
+                <ScalarProperty Name="api_leads_id" ColumnName="api_leads_id" />
+                <ScalarProperty Name="leads_email" ColumnName="leads_email" />
+                <ScalarProperty Name="leads_plateform" ColumnName="leads_plateform" />
+                <ScalarProperty Name="leads_date" ColumnName="leads_date" />
+                <ScalarProperty Name="leads_creativeid" ColumnName="leads_creativeid" />
+                <ScalarProperty Name="leads_sapcode" ColumnName="leads_sapcode" />
+                <ScalarProperty Name="leads_mobile" ColumnName="leads_mobile" />
+                <ScalarProperty Name="leads_name" ColumnName="leads_name" />
+                <ScalarProperty Name="leads_id" ColumnName="leads_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

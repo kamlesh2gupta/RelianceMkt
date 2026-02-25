@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Reliance  - Creative Campaign Dashboard</title>
+    <title>Indusind - Creative Campaign Dashboard</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/Content/images/favicon.png">
     <link href="~/Content/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -32,8 +32,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     @*//end*@
     <style>
-
-
         [data-sidebar-style="mini"] .nav-header .logo-abbr {
             display: block;
             max-width: 240px;
@@ -49,7 +47,7 @@
 
         .nav-header {
             width: 17rem;
-            background: #ff8f16;
+            background: white;
         }
 
             .nav-header .logo-abbr {
@@ -122,7 +120,7 @@
             position: absolute;
             top: 40px;
             right: 0;
-            width: 300px;
+            width: 292px;
             max-height: 400px;
             overflow-y: auto;
             background: white;
@@ -131,6 +129,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 10px;
             z-index: 1000;
+            margin-right: -40px;
         }
 
             #notificationBox ul {
@@ -229,7 +228,7 @@
         .nav-header.hide {
             margin-left: 0 !important; /* ✅ comment out old margin-left rule */
             width: 70px !important; /* same as collapsed sidebar */
-            background: #ff8f16 !important; /* keep background color */
+            background: #fff !important; /* keep background color */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -248,13 +247,39 @@
                 margin: 0 auto;
                 top: 20px;
             }
-    </style>
+ 
+
+</style>
 
     <style>
         #user-activity .card-body canvas {
-            width: 100% !important; /* graph हमेशा div की width ले */
-            height: 250px !important; /* height fix */
+            width: 100% !important; 
+            height: 250px !important; 
         }
+
+        /* //================text color-profile side bar===============*/
+        /* Sidebar menu text default white */
+        .deznav .metismenu > li > a,
+        .deznav .metismenu li a span,
+        .deznav .metismenu li a i {
+            color: #ffffff !important;
+        }
+
+            /* Hover par text black */
+            .deznav .metismenu > li > a:hover,
+            .deznav .metismenu li a:hover span,
+            .deznav .metismenu li a:hover i {
+                color: #000000 !important;
+            }
+
+        /* Sub-menu items */
+        .deznav .metismenu ul li a {
+            color: #ffffff !important;
+        }
+
+            .deznav .metismenu ul li a:hover {
+                color: #000000 !important;
+            }
     </style>
 
 
@@ -275,15 +300,15 @@
         Preloader end
     ********************-->
     <!--**********************************
-        Main wrapper start
+        Main wrapper start 
     ***********************************-->
     <div id="main-wrapper" class="right-profile">
 
         <!--**********************************
             Nav header start
         ************************kamlesh gupta***********-->
-        <div class="nav-header" style="height: 95px; width: 239px; position: fixed; top: 0; left: 0;">         
-            <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; background: #ff8f16; max-width: 238px;">
+        <div class="nav-header" style="height: 95px; width: 239px; position: fixed; top: 0; left: 0;">
+            <img class="logo-abbr" src="~/Content/images/digimyinlogo_png.png" alt="" style="height: 100%; background: #fff; max-width: 238px;">
             @*==========end here=========*@
             <div class="nav-control" style="background:#fff">
                 <div class="hamburger">
@@ -293,22 +318,22 @@
         </div>
         <!--**********************************
             Nav header end
-      
-       
+
+
 
             Header start
         ***********************************-->
-        <div class="header" style="padding-left:0rem; position:fixed; top:0; left:0; width:100%; height:95px; background:#ff8f16; display:flex; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-            <div class="header-content" style="height: 95px;width: 100%;left: 0rem;position: absolute;">
+        <div class="header" style="padding-left: 0rem; position: fixed; top: 0; left: 0; width: 100%; height: 95px; background: #832625;; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); ">
+            <div class="header-content" style="height: 95px; width: 100%; left: 0rem; position: absolute; background: #832625; ">
                 <nav class="navbar navbar-expand" style="width:100%;">
                     <div class="collapse navbar-collapse justify-content-between">
-                        <div class="header-left">                           
+                        <div class="header-left">
                         </div>
                         @*//Edit here kamlesh*@
                         <div id="notificationContainer" style="position: relative; margin-right: 119px;">
                             <i id="notificationBell" class="bi bi-bell-fill" style="font-size: 24px; color: orange; cursor: pointer;"></i>
                             <span id="notificationBadge" style="display:none; position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px;"></span>
-                            
+
                             <div id="notificationBox">
                                 <ul id="notificationList"></ul>
                             </div>
@@ -317,9 +342,9 @@
                 </nav>
             </div>
         </div>
-        
-        <!--**********************************Sidebar start***********************************-->        
-        <div class="deznav" style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; width:15rem">
+
+        <!--**********************************Sidebar start***********************************-->
+        <div class="deznav" style="position: fixed; top: 0; left: 0; width: 250px; height: 100vh; width: 15rem; background: #832625;">
             <div class="deznav-scroll">
                 <ul class="metismenu" id="menu">
 
@@ -328,13 +353,13 @@
                             <i class="flaticon-381-networking"></i> <span> Dashboard</span>
                         </a>
 
-                    </li>               
+                    </li>
                     <li>
                         <a class="ai-icon" href="~/Marketing/campaignview" aria-expanded="false">
                             <i class="flaticon-381-notepad"></i> <span>  Campaign</span>
                         </a>
                     </li>
-                   
+
                     <li>
                         <a class="ai-icon" href="~/Marketing/hotleadsuser" aria-expanded="false">
                             <i class="flaticon-381-settings-2"></i> <span>Hot Leads</span>
@@ -350,90 +375,27 @@
                             <i class="flaticon-381-television"></i><span> Leader Board</span>
                         </a>
                     </li>
-                    @*<li>
-                            <a class="has-arrow ai-icon" href="~/Marketing/UserTimeLine" aria-expanded="false">
-                                <i class="flaticon-381-television"></i> Timeline
-                            </a>
-                        </li>*@
-
-                    @*<li>
-                            <a class="ai-icon" href="~/Marketing/upcomingcampaignsuser" aria-expanded="false">
-                                <i class="flaticon-381-internet"></i>  Upcoming Campaigns
-                            </a>
-                        </li>*@
-                    @*<li>
-                            <a class="ai-icon" href="~/Marketing/LogoutUser" aria-expanded="false">
-                                <i class="flaticon-381-exit"></i>
-                                Logout
-                            </a>
-                        </li>*@
-
                     <div class="copyright">
-                        <br />© All Rights Reserved By Reliance
+                        <br />© All Rights Reserved By IndusInd Nippon Life Insurance Company Limited
 
-                        <img class="img-thumbnail" src="~/Content/images/RNLIC LOGO_WBG.jpg" alt="">
+                        <img class="img-thumbnail" src="~/Content/images/Logo16.png" alt="">
 
 
                     </div>
-
                 </ul>
 
             </div>
 
         </div>
-
-
-        <!--**********************************
-            Sidebar end
-        ***********************************-->
-        <!--**********************************
-            Content body start
-
-        ***********************************-->
-        <!--<div class="profile-sidebar dz-scroll" style="width: 17rem;" id="DZ_W_Sidebar">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <h5 class="text-black"></h5>
-                <a href="#" class="text-red text-info edit-profile-link">
-
-                </a>
-                <a href="javascript:;" class="text-red d-none close-side">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                </a>
-            </div>
-            <div class="profile-img mb-4">-->
-        @*<img src="~/Content/images/profile/profile.png" width="140" height="140" alt="" />*@
-        <!--<img src="~/Content/images/profile/DigimyinAdmin.jfif" width="140" height="140" alt="" />-->
-        @*<a href="~/Content/images/profile/DigimyinAdmin.jfif">~/Content/images/profile/DigimyinAdmin.jfif</a>*@
-        <!--</div>
-        <div class="profile-info-bx mb-4">
-            <h4 class="mb-1 fs-22">@ViewBag.username</h4>
-            <span>@Session["TYPE"]</span>
-        </div>-->
-        @*<div class="text-center mb-5">
-                <a href="javascript:;" class="btn text-left light btn-dark d-block mb-3 "><i class="fa fa-instagram scale5 mr-3"></i>/samuelanderson.404</a>
-                <a href="javascript:;" class="btn text-left light btn-dark d-block mb-3 "><i class="fa fa-twitter scale5 mr-3"></i>/samuel.404nderson</a>
-                <a href="javascript:;" class="btn text-left light btn-dark d-block mb-4 "><i class="fa fa-facebook scale5 mr-3"></i>/talksamuel.404</a>
-                <a href="#" class="btn btn-outline-dark d-block btn-lg">Edit Profile</a>
-            </div>*@
-        <!--<hr />-->
-        <!--<div class="card-campaign mt-5">
-            <h5>Creative Campaign Tutorials Video</h5>
-            <a href="javascript:;" class="fa fa-play"></a>
-        </div>-->
-        <!--</div>-->
-        <!--**********************************
-            Content body start
-        ***********************************-->
-        <div class="content-body" style=" margin-right: 7rem; margin-top: 99px;">
+       
+        <div class="content-body" style=" margin-right: 7rem; margin-top: 120px;">
             <!-- row -->
             <div class="container-fluid" style="padding-right: 0px; padding-left: 110px; padding-top: 3px; ">
                 <div class="row">
                     <div class="col-lg-12">
 
-
-
-
                         @if (Session["TYPE"] != null && Session["TYPE"].ToString() != "AGENT")
+
                         {
                             <div class="new-btn">
                                 <div class="btn-group btn-primary btn-block mb-1 btn-rounded" style="color: #fff !important;">
@@ -458,9 +420,6 @@
 
                     </div>
                 </div>
-
-
-
 
                 @if (Session["LOGIN"] != null && Session["LOGIN"].ToString() == "AGENT")
                 {
@@ -632,9 +591,7 @@
                         <div class="text-right">
                             @Html.Partial("_PartialDateTime")
                         </div>
-                        @*<a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
-                                <i class="las la-cog scale5"></i>
-                            </a>*@
+
                     </div>
                 </div>
                 <div class="row">
@@ -704,7 +661,7 @@
                     </div>
 
 
-                  
+
                     @*=============graph====================*@
                     <div class="col-xl-12 col-xxl-12 col-lg-12 col-sm-12">
                         <div id="user-activity" class="card" style="background-color:#cccccc10; width:100%;">
@@ -857,15 +814,6 @@
                         </div>
                     </div>
 
-
-
-
-
-                    <!--</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
                 </div>
             </div>
 
@@ -882,7 +830,7 @@
     <div class="footer">
         <div class="copyright">
             <p>
-                Copyright © Designed &amp; Developed by Reliance 2020
+                Copyright © Designed &amp; Developed by IndusInd Nippon Life Insurance Company Limited
 
             </p>
 
@@ -893,7 +841,6 @@
     <!--**********************************
         Footer end
     ***********************************-->
-    
     <!--**********************************
         Scripts
     ***********************************-->
@@ -1318,7 +1265,9 @@
 
         var formData = $(this).serialize();
 
-        $.post('/Marketing/AddCampaign', formData, function (res) {
+        /*     $.post('/Marketing/AddCampaign', formData, function (res) {*/
+               $.post('@Url.Action("AddCampaign","Marketing")', formData, function (res) {
+
             if (res.success) {
                 let badge = $('#notificationBadge');
                 let current = parseInt(badge.text() || "0");
@@ -1331,7 +1280,7 @@
             }
         });
     });
-       
+
     $('#notificationBell').click(function () {
         $('#notificationBox').toggle(); // Show/hide box
     });
@@ -1486,7 +1435,9 @@
 
             // 🔹 Fetch data and render chart
             function loadChart(period) {
-                fetch(`/Marketing/GetLeadsCounts?period=${period}`)
+                /*  fetch(`/Marketing/GetLeadsCounts?period=${period}`)*/
+                    fetch('@Url.Action("GetLeadsCounts","Marketing")?period=' + period)
+
                     .then(res => res.json())
                     .then(data => {
                         const ctx = document.getElementById(chartIds[period]).getContext("2d");
@@ -1522,7 +1473,7 @@
         });
     </script>
 
-   
+
 
 
     @*================graph===================*@
@@ -1589,7 +1540,9 @@
 
             // ✅ Load data & render chart
             function loadChart(period, year = null, month = null, quarter = null) {
-                let url = `/Marketing/GetPlatformLeads?period=${period}`;
+                /*   let url = `/Marketing/GetPlatformLeads?period=${period}`;*/
+             let url = '@Url.Action("GetPlatformLeads","Marketing")?period=' + period;
+
                 if (year) url += `&year=${year}`;
                 if (month) url += `&month=${month}`;
                 if (quarter) url += `&quarter=${quarter}`;
@@ -1678,6 +1631,9 @@
         });
     </script>
 
-   
+
 </body>
 </html>
+
+
+
