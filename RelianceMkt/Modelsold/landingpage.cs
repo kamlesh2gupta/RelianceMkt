@@ -15,20 +15,14 @@ namespace RelianceMkt.Models
 using System;
     using System.Collections.Generic;
     
-public partial class CampaignRespons
+public partial class landingpage
 {
 
-    public int Id { get; set; }
+    public decimal landingpage_id { get; set; }
 
-    public string Mobile { get; set; }
+    public string landingpage_url { get; set; }
 
-    public string CampaignName { get; set; }
-
-    public string Response { get; set; }
-
-    public System.DateTime CreatedDate { get; set; }
-
-    public string ResponseCampaignName { get; set; }
+    public string landingpage_delflag { get; set; }
 
 }
 

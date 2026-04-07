@@ -162,3 +162,918 @@
 2026-02-13 12:04:56 :: File Name: CentralBlast_Template (14).xlsx
 2026-02-13 12:04:56 :: Campaign: Marketing
 2026-02-13 12:04:56 :: Total rows found (including header): 3
+2026-03-10 12:53:49 :: ===== UploadExcel START =====
+2026-03-10 12:53:49 :: File Name: CentralBlast_Template (15).xlsx
+2026-03-10 12:53:49 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-10 12:53:50 :: Total rows found (including header): 3
+2026-03-10 12:57:49 :: ===== UploadExcel START =====
+2026-03-10 12:57:49 :: File Name: CentralBlast_Template (15).xlsx
+2026-03-10 12:57:49 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-10 12:57:49 :: Total rows found (including header): 3
+2026-03-10 13:00:50 :: ===== UploadExcel START =====
+2026-03-10 13:00:50 :: File Name: CentralBlast_Template (15).xlsx
+2026-03-10 13:00:50 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-10 13:00:50 :: Total rows found (including header): 3
+2026-03-10 13:04:35 :: ===== UploadExcel START =====
+2026-03-10 13:04:35 :: File Name: CentralBlast_Template (15).xlsx
+2026-03-10 13:04:35 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-10 13:04:35 :: Total rows found (including header): 3
+2026-03-10 13:04:35 :: DB Connected
+2026-03-10 13:04:35 :: Row 2 Raw Mobile: [9027586766]
+2026-03-10 13:04:35 :: Row 2 inserted | Mobile: +919027586766
+2026-03-10 13:04:36 :: Row 3 Raw Mobile: [9838587777]
+2026-03-10 13:04:36 :: Row 3 inserted | Mobile: +919838587777
+2026-03-10 13:04:37 :: Total rows inserted: 2
+2026-03-10 13:04:37 :: ===== UploadExcel SUCCESS =====
+2026-03-10 13:39:49 :: ===== UploadExcel START =====
+2026-03-10 13:39:49 :: Session expired
+2026-03-10 13:40:15 :: ===== UploadExcel START =====
+2026-03-10 13:40:15 :: File Name: CentralBlast_Template (15).xlsx
+2026-03-10 13:40:15 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-10 13:40:15 :: Total rows found (including header): 3
+2026-03-10 13:40:15 :: DB Connected
+2026-03-10 13:40:15 :: Row 2 Raw Mobile: [9027586766]
+2026-03-10 13:40:15 :: Row 2 inserted | Mobile: +919027586766
+2026-03-10 13:40:15 :: Row 3 Raw Mobile: [9027586766]
+2026-03-10 13:40:15 :: Row 3 inserted | Mobile: +919027586766
+2026-03-10 13:40:16 :: Total rows inserted: 2
+2026-03-10 13:40:16 :: ===== UploadExcel SUCCESS =====
+2026-03-10 15:40:34 :: FATAL ERROR: System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - The wait operation timed out.) ---> System.ComponentModel.Win32Exception (0x80004005): The wait operation timed out
+   at System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   at System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:258,State:0,Class:20
+2026-03-10 15:44:32 :: FATAL ERROR: System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - The wait operation timed out.) ---> System.ComponentModel.Win32Exception (0x80004005): The wait operation timed out
+   at System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   at System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:258,State:0,Class:20
+2026-03-10 15:47:34 :: FATAL ERROR: System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - The wait operation timed out.) ---> System.ComponentModel.Win32Exception (0x80004005): The wait operation timed out
+   at System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   at System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:258,State:0,Class:20
+2026-03-13 12:40:17 :: ===== UploadExcel START =====
+2026-03-13 12:40:17 :: File Name: CentralBlast_Template (14).xlsx
+2026-03-13 12:40:17 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 12:40:18 :: Total rows found (including header): 3
+2026-03-13 12:40:18 :: DB Connected
+2026-03-13 12:40:18 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 12:40:19 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 12:40:19 :: Row 3 Raw Mobile: [15]
+2026-03-13 12:40:19 :: Row 3 inserted | Mobile: +9115
+2026-03-13 12:40:19 :: Total rows inserted: 2
+2026-03-13 12:40:20 :: ===== UploadExcel SUCCESS =====
+2026-03-13 12:41:28 :: ===== UploadExcel START =====
+2026-03-13 12:41:28 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 12:41:28 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 12:41:28 :: Total rows found (including header): 3
+2026-03-13 12:41:28 :: DB Connected
+2026-03-13 12:41:29 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 12:41:29 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 12:41:29 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 12:41:29 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 12:41:29 :: Total rows inserted: 2
+2026-03-13 12:41:29 :: ===== UploadExcel SUCCESS =====
+2026-03-13 12:52:30 :: ===== UploadExcel START =====
+2026-03-13 12:52:30 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 12:52:30 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 12:52:30 :: Total rows found (including header): 3
+2026-03-13 12:52:30 :: DB Connected
+2026-03-13 12:52:30 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 12:52:30 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 12:52:30 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 12:52:30 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 12:52:30 :: Total rows inserted: 2
+2026-03-13 12:52:30 :: ===== UploadExcel SUCCESS =====
+2026-03-13 12:57:43 :: ===== UploadExcel START =====
+2026-03-13 12:57:43 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 12:57:43 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 12:57:43 :: Total rows found (including header): 3
+2026-03-13 12:57:43 :: DB Connected
+2026-03-13 12:57:43 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 12:57:43 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 12:57:43 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 12:57:43 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 12:57:43 :: Total rows inserted: 2
+2026-03-13 12:57:43 :: ===== UploadExcel SUCCESS =====
+2026-03-13 12:59:02 :: ===== UploadExcel START =====
+2026-03-13 12:59:02 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 12:59:02 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 12:59:02 :: Total rows found (including header): 3
+2026-03-13 12:59:02 :: DB Connected
+2026-03-13 12:59:02 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 12:59:02 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 12:59:02 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 12:59:02 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 12:59:02 :: Total rows inserted: 2
+2026-03-13 12:59:02 :: ===== UploadExcel SUCCESS =====
+2026-03-13 13:02:10 :: ===== UploadExcel START =====
+2026-03-13 13:02:10 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 13:02:10 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 13:02:10 :: Total rows found (including header): 3
+2026-03-13 13:02:10 :: DB Connected
+2026-03-13 13:02:10 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 13:02:10 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 13:05:21 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 13:05:21 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 13:05:21 :: Total rows inserted: 2
+2026-03-13 13:05:21 :: ===== UploadExcel SUCCESS =====
+2026-03-13 13:07:44 :: ===== UploadExcel START =====
+2026-03-13 13:07:44 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 13:07:44 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 13:07:44 :: Total rows found (including header): 3
+2026-03-13 13:07:44 :: DB Connected
+2026-03-13 13:07:44 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 13:07:44 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 13:08:25 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 13:08:25 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 13:08:31 :: Total rows inserted: 2
+2026-03-13 13:08:31 :: ===== UploadExcel SUCCESS =====
+2026-03-13 13:09:31 :: ===== UploadExcel START =====
+2026-03-13 13:09:31 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 13:09:31 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 13:09:31 :: Total rows found (including header): 3
+2026-03-13 13:09:31 :: DB Connected
+2026-03-13 13:09:31 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 13:09:31 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 13:09:42 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 13:09:42 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 13:09:43 :: Total rows inserted: 2
+2026-03-13 13:09:43 :: ===== UploadExcel SUCCESS =====
+2026-03-13 13:20:31 :: ===== UploadExcel START =====
+2026-03-13 13:20:31 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 13:20:31 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 13:20:31 :: Total rows found (including header): 3
+2026-03-13 13:20:31 :: DB Connected
+2026-03-13 13:20:31 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 13:20:31 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 13:20:45 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 13:20:54 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 13:21:00 :: Total rows inserted: 2
+2026-03-13 13:21:01 :: ===== UploadExcel SUCCESS =====
+2026-03-13 13:36:16 :: ===== UploadExcel START =====
+2026-03-13 13:36:16 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 13:36:16 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 13:36:17 :: Total rows found (including header): 3
+2026-03-13 13:36:17 :: DB Connected
+2026-03-13 13:36:17 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 13:36:17 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 13:36:32 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 13:36:34 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 13:36:38 :: Total rows inserted: 2
+2026-03-13 13:36:38 :: ===== UploadExcel SUCCESS =====
+2026-03-13 13:39:34 :: ===== UploadExcel START =====
+2026-03-13 13:39:34 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 13:39:34 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 13:39:34 :: Total rows found (including header): 3
+2026-03-13 13:39:34 :: DB Connected
+2026-03-13 13:39:34 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 13:39:34 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 13:40:03 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 13:40:03 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 13:40:04 :: Total rows inserted: 2
+2026-03-13 13:40:04 :: ===== UploadExcel SUCCESS =====
+2026-03-13 14:26:42 :: ===== UploadExcel START =====
+2026-03-13 14:26:42 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 14:26:42 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 14:26:43 :: Total rows found (including header): 3
+2026-03-13 14:26:43 :: DB Connected
+2026-03-13 14:26:43 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 14:26:43 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 14:26:45 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 14:26:45 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 14:26:48 :: Total rows inserted: 2
+2026-03-13 14:26:48 :: ===== UploadExcel SUCCESS =====
+2026-03-13 14:28:48 :: ===== UploadExcel START =====
+2026-03-13 14:28:48 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-13 14:28:48 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-13 14:28:48 :: Total rows found (including header): 3
+2026-03-13 14:28:48 :: DB Connected
+2026-03-13 14:28:48 :: Row 2 Raw Mobile: [9027586766]
+2026-03-13 14:28:48 :: Row 2 inserted | Mobile: +919027586766
+2026-03-13 14:28:51 :: Row 3 Raw Mobile: [9027586766]
+2026-03-13 14:28:51 :: Row 3 inserted | Mobile: +919027586766
+2026-03-13 14:29:40 :: Total rows inserted: 2
+2026-03-13 14:29:40 :: ===== UploadExcel SUCCESS =====
+2026-03-18 14:54:16 :: ===== UploadExcel START =====
+2026-03-18 14:54:16 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-18 14:54:16 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-18 14:54:16 :: Total rows found (including header): 3
+2026-03-18 14:56:27 :: ===== UploadExcel START =====
+2026-03-18 14:56:27 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-18 14:56:27 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-18 14:56:27 :: Total rows found (including header): 3
+2026-03-18 14:56:27 :: DB Connected
+2026-03-18 14:56:27 :: Row 2 Raw Mobile: [9027586766]
+2026-03-18 14:56:27 :: Row 2 inserted | Mobile: +919027586766
+2026-03-18 14:56:28 :: Row 3 Raw Mobile: [9027586766]
+2026-03-18 14:56:28 :: Row 3 inserted | Mobile: +919027586766
+2026-03-18 14:56:28 :: Total rows inserted: 2
+2026-03-18 14:56:28 :: ===== UploadExcel SUCCESS =====
+2026-03-18 14:59:14 :: ===== UploadExcel START =====
+2026-03-18 14:59:14 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-18 14:59:14 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-18 14:59:14 :: Total rows found (including header): 3
+2026-03-18 14:59:14 :: DB Connected
+2026-03-18 14:59:14 :: Row 2 Raw Mobile: [9027586766]
+2026-03-18 14:59:15 :: Row 2 inserted | Mobile: +919027586766
+2026-03-18 14:59:46 :: Row 3 Raw Mobile: [9027586766]
+2026-03-18 14:59:55 :: Row 3 inserted | Mobile: +919027586766
+2026-03-18 15:00:00 :: Total rows inserted: 2
+2026-03-18 15:00:01 :: ===== UploadExcel SUCCESS =====
+2026-03-18 15:03:13 :: ===== UploadExcel START =====
+2026-03-18 15:03:17 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-18 15:03:18 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-18 15:03:24 :: Total rows found (including header): 3
+2026-03-18 15:03:27 :: DB Connected
+2026-03-18 15:03:33 :: Row 2 Raw Mobile: [9027586766]
+2026-03-19 12:30:42 :: ===== UploadExcel START =====
+2026-03-19 12:30:44 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-19 12:30:44 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-19 12:30:47 :: Total rows found (including header): 3
+2026-03-19 12:30:48 :: DB Connected
+2026-03-19 12:30:50 :: Row 2 Raw Mobile: [9027586766]
+2026-03-19 12:30:56 :: Row 2 inserted | Mobile: +919027586766
+2026-03-19 12:31:41 :: Row 3 Raw Mobile: [9027586766]
+2026-03-19 12:31:41 :: Row 3 inserted | Mobile: +919027586766
+2026-03-19 12:31:44 :: Total rows inserted: 2
+2026-03-19 12:31:44 :: ===== UploadExcel SUCCESS =====
+2026-03-23 12:25:36 :: ===== UploadExcel START =====
+2026-03-23 12:25:36 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 12:25:36 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 12:25:37 :: Total rows found (including header): 3
+2026-03-23 12:28:34 :: ===== UploadExcel START =====
+2026-03-23 12:28:34 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 12:28:34 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 12:28:34 :: Total rows found (including header): 3
+2026-03-23 12:28:34 :: DB Connected
+2026-03-23 12:28:34 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 12:28:34 :: Row 2 inserted | Mobile: +919027586766
+2026-03-23 12:28:35 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 12:28:35 :: Row 3 inserted | Mobile: +919027586766
+2026-03-23 12:28:36 :: Total rows inserted: 2
+2026-03-23 12:28:36 :: ===== UploadExcel SUCCESS =====
+2026-03-23 12:55:00 :: ===== UploadExcel START =====
+2026-03-23 12:55:00 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 12:55:00 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 12:55:01 :: Total rows found (including header): 3
+2026-03-23 12:57:12 :: ===== UploadExcel START =====
+2026-03-23 12:57:12 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 12:57:12 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 12:57:12 :: Total rows found (including header): 3
+2026-03-23 12:57:12 :: DB Connected
+2026-03-23 12:57:13 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 12:57:13 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-23 12:57:20 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 12:57:20 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-23 12:57:21 :: Total rows inserted: 2
+2026-03-23 12:57:21 :: ===== UploadExcel SUCCESS =====
+2026-03-23 13:18:37 :: ===== UploadExcel START =====
+2026-03-23 13:18:37 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 13:18:37 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 13:18:38 :: Total rows found (including header): 3
+2026-03-23 13:18:38 :: DB Connected
+2026-03-23 13:18:38 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 13:18:38 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-23 13:18:39 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 13:18:39 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-23 13:18:39 :: Total rows inserted: 2
+2026-03-23 13:18:39 :: ===== UploadExcel SUCCESS =====
+2026-03-23 15:08:42 :: ===== UploadExcel START =====
+2026-03-23 15:08:42 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 15:08:42 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 15:08:42 :: Total rows found (including header): 3
+2026-03-23 15:08:42 :: DB Connected
+2026-03-23 15:08:42 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 15:08:42 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-23 15:09:30 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 15:09:40 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-23 15:09:44 :: Total rows inserted: 2
+2026-03-23 15:09:44 :: ===== UploadExcel SUCCESS =====
+2026-03-23 15:34:53 :: ===== UploadExcel START =====
+2026-03-23 15:34:53 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 15:34:53 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 15:34:54 :: Total rows found (including header): 3
+2026-03-23 15:34:54 :: DB Connected
+2026-03-23 15:34:54 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 15:34:54 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-23 15:35:30 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 15:35:30 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-23 15:35:35 :: Total rows inserted: 2
+2026-03-23 15:35:35 :: ===== UploadExcel SUCCESS =====
+2026-03-23 15:40:47 :: ===== UploadExcel START =====
+2026-03-23 15:40:47 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 15:40:47 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 15:40:47 :: Total rows found (including header): 3
+2026-03-23 15:40:47 :: DB Connected
+2026-03-23 15:40:47 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 15:40:47 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-23 15:46:55 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 15:46:56 :: Row 3 ERROR: System.Data.SqlClient.SqlException (0x80131904): The parameterized query '(@Name nvarchar(5),@Contact_Number nvarchar(13),@Type_Of_Data nv' expects the parameter '@imageLink', which was not supplied.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:9a67fbda-31d3-4f8c-9b17-39f7a4baf623
+Error Number:8178,State:1,Class:16
+2026-03-23 15:46:56 :: Total rows inserted: 1
+2026-03-23 15:46:56 :: ===== UploadExcel SUCCESS =====
+2026-03-23 15:48:00 :: ===== UploadExcel START =====
+2026-03-23 15:48:01 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 15:48:01 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 15:48:04 :: Total rows found (including header): 3
+2026-03-23 15:48:05 :: DB Connected
+2026-03-23 15:48:10 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 15:51:07 :: Row 2 ERROR: System.Data.SqlClient.SqlException (0x80131904): The parameterized query '(@Name nvarchar(7),@Contact_Number nvarchar(13),@Type_Of_Data nv' expects the parameter '@imageLink', which was not supplied.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:9a67fbda-31d3-4f8c-9b17-39f7a4baf623
+Error Number:8178,State:1,Class:16
+2026-03-23 15:51:08 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 15:51:08 :: Row 3 ERROR: System.Data.SqlClient.SqlException (0x80131904): The parameterized query '(@Name nvarchar(5),@Contact_Number nvarchar(13),@Type_Of_Data nv' expects the parameter '@imageLink', which was not supplied.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:9a67fbda-31d3-4f8c-9b17-39f7a4baf623
+Error Number:8178,State:1,Class:16
+2026-03-23 15:51:08 :: Total rows inserted: 0
+2026-03-23 15:51:08 :: ===== UploadExcel SUCCESS =====
+2026-03-23 15:51:47 :: ===== UploadExcel START =====
+2026-03-23 15:51:50 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 15:51:51 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 15:51:53 :: Total rows found (including header): 3
+2026-03-23 15:51:56 :: DB Connected
+2026-03-23 15:52:00 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 15:53:54 :: Row 2 ERROR: System.Data.SqlClient.SqlException (0x80131904): The parameterized query '(@Name nvarchar(7),@Contact_Number nvarchar(13),@Type_Of_Data nv' expects the parameter '@imageLink', which was not supplied.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:9a67fbda-31d3-4f8c-9b17-39f7a4baf623
+Error Number:8178,State:1,Class:16
+2026-03-23 15:53:54 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 15:53:54 :: Row 3 ERROR: System.Data.SqlClient.SqlException (0x80131904): Invalid column name 'imageLink'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:9a67fbda-31d3-4f8c-9b17-39f7a4baf623
+Error Number:207,State:1,Class:16
+2026-03-23 15:53:54 :: Total rows inserted: 0
+2026-03-23 15:53:54 :: ===== UploadExcel SUCCESS =====
+2026-03-23 15:54:14 :: ===== UploadExcel START =====
+2026-03-23 15:54:15 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 15:54:15 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 15:54:18 :: Total rows found (including header): 3
+2026-03-23 15:54:22 :: DB Connected
+2026-03-23 15:54:26 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 15:58:50 :: Row 2 ERROR: System.Data.SqlClient.SqlException (0x80131904): Invalid column name 'imageLink'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:9a67fbda-31d3-4f8c-9b17-39f7a4baf623
+Error Number:207,State:1,Class:16
+2026-03-23 15:58:51 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 15:58:51 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-23 15:58:53 :: Total rows inserted: 1
+2026-03-23 15:58:53 :: ===== UploadExcel SUCCESS =====
+2026-03-23 16:09:49 :: ===== UploadExcel START =====
+2026-03-23 16:09:50 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-23 16:09:51 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-23 16:09:51 :: Campaign Image: 
+2026-03-23 16:09:54 :: Total rows found (including header): 3
+2026-03-23 16:09:56 :: DB Connected
+2026-03-23 16:09:59 :: Row 2 Raw Mobile: [9027586766]
+2026-03-23 16:10:24 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-23 16:10:46 :: Row 3 Raw Mobile: [9027586766]
+2026-03-23 16:10:51 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-23 16:11:01 :: Total rows inserted: 2
+2026-03-23 16:11:05 :: ===== UploadExcel SUCCESS =====
+2026-03-24 11:12:40 :: ===== UploadExcel START =====
+2026-03-24 11:12:47 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 11:12:47 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 11:12:56 :: Total rows found (including header): 3
+2026-03-24 11:13:02 :: DB Connected
+2026-03-24 11:13:23 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 11:13:37 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 11:13:53 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 11:14:13 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 11:14:15 :: Total rows inserted: 2
+2026-03-24 11:14:15 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:04:20 :: ===== UploadExcel START =====
+2026-03-24 13:04:21 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:04:21 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:04:27 :: Total rows found (including header): 3
+2026-03-24 13:04:27 :: DB Connected
+2026-03-24 13:04:30 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:04:34 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:04:43 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:04:48 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:05:09 :: Total rows inserted: 2
+2026-03-24 13:05:09 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:19:25 :: ===== UploadExcel START =====
+2026-03-24 13:19:28 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:19:28 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:19:29 :: Image URL: 
+2026-03-24 13:19:41 :: Total rows found (including header): 3
+2026-03-24 13:19:42 :: DB Connected
+2026-03-24 13:19:46 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:19:54 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:20:02 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:20:11 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:20:28 :: Total rows inserted: 2
+2026-03-24 13:20:31 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:30:50 :: ===== UploadExcel START =====
+2026-03-24 13:30:51 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:30:52 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:34:39 :: FATAL ERROR: System.Data.SqlClient.SqlException (0x80131904): Invalid column name 'campaign_name'.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   at RelianceMkt.Controllers.MarketingController.GetCampaignImageUrl(String campaignName)
+   at RelianceMkt.Controllers.MarketingController.<UploadExcel>d__80.MoveNext()
+ClientConnectionId:de03ac14-b24f-41af-bf69-58ad2b88b5fa
+Error Number:207,State:1,Class:16
+2026-03-24 13:35:01 :: ===== UploadExcel START =====
+2026-03-24 13:35:02 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:35:04 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:35:07 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:35:15 :: Total rows found (including header): 3
+2026-03-24 13:35:16 :: DB Connected
+2026-03-24 13:35:19 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:35:25 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:35:32 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:35:32 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:35:33 :: Total rows inserted: 2
+2026-03-24 13:35:33 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:36:19 :: ===== UploadExcel START =====
+2026-03-24 13:36:21 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:36:21 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:36:21 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:36:34 :: Total rows found (including header): 3
+2026-03-24 13:36:40 :: DB Connected
+2026-03-24 13:36:51 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:37:03 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:37:17 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:37:17 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:37:37 :: Total rows inserted: 2
+2026-03-24 13:37:39 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:38:22 :: ===== UploadExcel START =====
+2026-03-24 13:38:22 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:38:22 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:38:22 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:38:22 :: Total rows found (including header): 3
+2026-03-24 13:38:22 :: DB Connected
+2026-03-24 13:38:22 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:38:22 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:38:23 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:38:23 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:38:29 :: Total rows inserted: 2
+2026-03-24 13:38:29 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:40:52 :: ===== UploadExcel START =====
+2026-03-24 13:40:53 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:40:53 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:40:54 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:41:00 :: Total rows found (including header): 3
+2026-03-24 13:41:01 :: DB Connected
+2026-03-24 13:41:04 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:41:13 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:44:45 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:44:45 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:44:48 :: Total rows inserted: 2
+2026-03-24 13:44:48 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:45:22 :: ===== UploadExcel START =====
+2026-03-24 13:45:26 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:45:27 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:45:43 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:45:54 :: Total rows found (including header): 3
+2026-03-24 13:45:54 :: DB Connected
+2026-03-24 13:45:54 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:45:54 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:45:55 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:45:55 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:45:56 :: Total rows inserted: 2
+2026-03-24 13:45:56 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:46:41 :: ===== UploadExcel START =====
+2026-03-24 13:46:44 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:46:44 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:46:47 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:46:47 :: Total rows found (including header): 3
+2026-03-24 13:46:47 :: DB Connected
+2026-03-24 13:46:47 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:46:47 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 13:49:41 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 13:49:41 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 13:49:43 :: Total rows inserted: 2
+2026-03-24 13:49:43 :: ===== UploadExcel SUCCESS =====
+2026-03-24 13:52:36 :: ===== UploadExcel START =====
+2026-03-24 13:52:42 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 13:52:43 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 13:52:50 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 13:52:52 :: Total rows found (including header): 3
+2026-03-24 13:52:52 :: DB Connected
+2026-03-24 13:52:52 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 13:52:52 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 14:01:42 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 14:01:42 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 14:01:43 :: Total rows inserted: 2
+2026-03-24 14:01:43 :: ===== UploadExcel SUCCESS =====
+2026-03-24 14:02:26 :: ===== UploadExcel START =====
+2026-03-24 14:02:26 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 14:02:26 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 14:02:26 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 14:02:27 :: Total rows found (including header): 3
+2026-03-24 14:02:27 :: DB Connected
+2026-03-24 14:02:27 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 14:02:27 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 14:02:54 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 14:02:54 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 14:02:58 :: Total rows inserted: 2
+2026-03-24 14:02:58 :: ===== UploadExcel SUCCESS =====
+2026-03-24 14:06:02 :: ===== UploadExcel START =====
+2026-03-24 14:06:04 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 14:06:05 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 14:06:06 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 14:06:07 :: Total rows found (including header): 3
+2026-03-24 14:06:07 :: DB Connected
+2026-03-24 14:06:07 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 14:06:07 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 14:06:11 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 14:06:11 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 14:06:12 :: Total rows inserted: 2
+2026-03-24 14:06:12 :: ===== UploadExcel SUCCESS =====
+2026-03-24 14:07:28 :: ===== UploadExcel START =====
+2026-03-24 14:07:29 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 14:07:30 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 14:07:42 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 14:07:51 :: Total rows found (including header): 3
+2026-03-24 14:07:53 :: DB Connected
+2026-03-24 14:07:57 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 14:08:04 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 14:09:42 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 14:09:55 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 14:10:21 :: Total rows inserted: 2
+2026-03-24 14:10:31 :: ===== UploadExcel SUCCESS =====
+2026-03-24 14:11:23 :: ===== UploadExcel START =====
+2026-03-24 14:11:27 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 14:11:28 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 14:11:56 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 14:12:00 :: Total rows found (including header): 3
+2026-03-24 14:12:01 :: DB Connected
+2026-03-24 14:13:57 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 14:13:57 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 14:17:17 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 14:17:17 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 14:17:27 :: Total rows inserted: 2
+2026-03-24 14:17:27 :: ===== UploadExcel SUCCESS =====
+2026-03-24 14:26:54 :: ===== UploadExcel START =====
+2026-03-24 14:26:54 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 14:26:54 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 14:26:58 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 14:26:58 :: Total rows found (including header): 3
+2026-03-24 14:26:58 :: DB Connected
+2026-03-24 14:26:58 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 14:26:58 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 14:28:33 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 14:28:33 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 14:28:36 :: Total rows inserted: 2
+2026-03-24 14:28:36 :: ===== UploadExcel SUCCESS =====
+2026-03-24 15:04:51 :: ===== UploadExcel START =====
+2026-03-24 15:04:55 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 15:04:56 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 15:05:16 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 15:08:33 :: Total rows found (including header): 3
+2026-03-24 15:08:35 :: DB Connected
+2026-03-24 15:08:45 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 15:08:58 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 15:09:18 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 15:09:26 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 15:09:43 :: Total rows inserted: 2
+2026-03-24 15:09:43 :: ===== UploadExcel SUCCESS =====
+2026-03-24 15:10:18 :: ===== UploadExcel START =====
+2026-03-24 15:10:18 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 15:10:18 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 15:10:19 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 15:10:19 :: Total rows found (including header): 3
+2026-03-24 15:10:19 :: DB Connected
+2026-03-24 15:10:19 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 15:10:19 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 15:10:21 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 15:10:21 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 15:10:22 :: Total rows inserted: 2
+2026-03-24 15:10:22 :: ===== UploadExcel SUCCESS =====
+2026-03-24 17:32:09 :: ===== UploadExcel START =====
+2026-03-24 17:32:12 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 17:32:12 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 17:32:35 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 18:08:10 :: Total rows found (including header): 3
+2026-03-24 18:08:10 :: DB Connected
+2026-03-24 18:08:10 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 18:08:10 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 18:08:16 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 18:08:16 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 18:08:19 :: Total rows inserted: 2
+2026-03-24 18:08:19 :: ===== UploadExcel SUCCESS =====
+2026-03-24 18:23:44 :: ===== UploadExcel START =====
+2026-03-24 18:23:44 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 18:23:44 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 18:23:46 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 18:23:46 :: Total rows found (including header): 3
+2026-03-24 18:23:46 :: DB Connected
+2026-03-24 18:23:46 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 18:23:46 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 18:23:49 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 18:23:49 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 18:23:50 :: Total rows inserted: 2
+2026-03-24 18:23:50 :: ===== UploadExcel SUCCESS =====
+2026-03-24 18:24:52 :: ===== UploadExcel START =====
+2026-03-24 18:24:52 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 18:24:52 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 18:24:52 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 18:24:52 :: Total rows found (including header): 3
+2026-03-24 18:24:52 :: DB Connected
+2026-03-24 18:24:52 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 18:24:52 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 18:24:54 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 18:24:54 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 18:24:55 :: Total rows inserted: 2
+2026-03-24 18:24:55 :: ===== UploadExcel SUCCESS =====
+2026-03-24 18:28:21 :: ===== UploadExcel START =====
+2026-03-24 18:28:22 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 18:28:23 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 18:28:38 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-24 18:33:47 :: ===== UploadExcel START =====
+2026-03-24 18:33:47 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-24 18:33:47 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-24 18:33:48 :: Total rows found (including header): 3
+2026-03-24 18:33:48 :: DB Connected
+2026-03-24 18:33:48 :: Row 2 Raw Mobile: [9027586766]
+2026-03-24 18:33:48 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-24 18:33:53 :: Row 3 Raw Mobile: [9027586766]
+2026-03-24 18:33:53 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-24 18:33:55 :: Total rows inserted: 2
+2026-03-24 18:33:55 :: ===== UploadExcel SUCCESS =====
+2026-03-25 10:49:39 :: ===== UploadExcel START =====
+2026-03-25 10:49:44 :: File Name: CentralBlast_Template (16).xlsx
+2026-03-25 10:49:45 :: Campaign: Returns Ka Aakhri Mauka
+2026-03-25 10:52:10 :: Image URL: Content/images/campaign/255705362a8b5a7c128be55a7b4699fe83f9fb3cd.png
+2026-03-25 10:55:02 :: Total rows found (including header): 3
+2026-03-25 10:55:02 :: DB Connected
+2026-03-25 10:55:02 :: Row 2 Raw Mobile: [9027586766]
+2026-03-25 10:55:02 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-03-25 10:55:06 :: Row 3 Raw Mobile: [9027586766]
+2026-03-25 10:55:06 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-03-25 10:55:07 :: Total rows inserted: 2
+2026-03-25 10:55:07 :: ===== UploadExcel SUCCESS =====
+2026-03-31 11:51:31 :: ===== UploadExcel START =====
+2026-03-31 11:51:31 :: File Name: CentralBlast_Template (14).xlsx
+2026-03-31 11:51:31 :: Campaign: oooooooooo
+2026-03-31 11:53:41 :: ===== UploadExcel START =====
+2026-03-31 11:53:42 :: File Name: CentralBlast_Template.xlsx
+2026-03-31 11:53:42 :: Campaign: oooooooooo
+2026-03-31 11:56:48 :: ===== UploadExcel START =====
+2026-03-31 11:56:50 :: File Name: CentralBlast_Template.xlsx
+2026-03-31 11:56:50 :: Campaign: oooooooooo
+2026-03-31 11:56:50 :: Image URL: Content/images/campaign/263006025Logo16.png
+2026-03-31 11:56:53 :: Total rows found (including header): 3
+2026-03-31 11:56:54 :: DB Connected
+2026-03-31 11:57:02 :: Row  Raw Mobile: []
+2026-03-31 11:57:03 :: Row  skipped (mobile empty)
+2026-03-31 11:57:05 :: Row  Raw Mobile: []
+2026-03-31 11:57:06 :: Row  skipped (mobile empty)
+2026-03-31 11:57:06 :: Total rows inserted: 0
+2026-03-31 11:57:07 :: ===== UploadExcel SUCCESS =====
+2026-03-31 11:58:34 :: ===== UploadExcel START =====
+2026-03-31 11:58:34 :: File Name: CentralBlast_Template.xlsx
+2026-03-31 11:58:34 :: Campaign: oooooooooo
+2026-03-31 11:58:34 :: Image URL: Content/images/campaign/263006025Logo16.png
+2026-03-31 11:58:34 :: Total rows found (including header): 3
+2026-03-31 11:58:34 :: DB Connected
+2026-03-31 11:58:34 :: Row  Raw Mobile: []
+2026-03-31 11:58:34 :: Row  skipped (mobile empty)
+2026-03-31 11:58:34 :: Row  Raw Mobile: []
+2026-03-31 11:58:34 :: Row  skipped (mobile empty)
+2026-03-31 11:58:34 :: Total rows inserted: 0
+2026-03-31 11:58:34 :: ===== UploadExcel SUCCESS =====
+2026-03-31 11:59:47 :: ===== UploadExcel START =====
+2026-03-31 11:59:47 :: File Name: CentralBlast_Template.xlsx
+2026-03-31 11:59:47 :: Campaign: oooooooooo
+2026-03-31 11:59:47 :: Image URL: Content/images/campaign/263006025Logo16.png
+2026-03-31 11:59:47 :: Total rows found (including header): 3
+2026-03-31 11:59:47 :: DB Connected
+2026-03-31 11:59:47 :: Row  Raw Mobile: []
+2026-03-31 11:59:47 :: Row  skipped (mobile empty)
+2026-03-31 11:59:47 :: Row  Raw Mobile: []
+2026-03-31 11:59:47 :: Row  skipped (mobile empty)
+2026-03-31 11:59:47 :: Total rows inserted: 0
+2026-03-31 11:59:47 :: ===== UploadExcel SUCCESS =====
+2026-04-01 11:27:01 :: ===== UploadExcel START =====
+2026-04-01 11:27:01 :: File Name: CentralBlast_Template (1).xlsx
+2026-04-01 11:27:01 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-01 11:27:01 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-01 11:27:02 :: Total rows found (including header): 3
+2026-04-01 11:27:02 :: DB Connected
+2026-04-01 11:27:02 :: Row 2 Raw Mobile: [9027586766]
+2026-04-01 11:27:02 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-01 11:27:08 :: Row 3 Raw Mobile: [9818889998]
+2026-04-01 11:27:08 :: Row 3 inserted successfully | Mobile: +919818889998
+2026-04-01 11:27:10 :: Total rows inserted: 2
+2026-04-01 11:27:11 :: ===== UploadExcel SUCCESS =====
+2026-04-01 11:27:53 :: ===== UploadExcel START =====
+2026-04-01 11:27:53 :: File Name: CentralBlast_Template (1).xlsx
+2026-04-01 11:27:53 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-01 11:27:53 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-01 11:27:53 :: Total rows found (including header): 3
+2026-04-01 11:27:53 :: DB Connected
+2026-04-01 11:27:53 :: Row 2 Raw Mobile: [9027586766]
+2026-04-01 11:27:53 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-01 11:28:06 :: Row 3 Raw Mobile: [9818889998]
+2026-04-01 11:28:06 :: Row 3 inserted successfully | Mobile: +919818889998
+2026-04-01 11:28:10 :: Total rows inserted: 2
+2026-04-01 11:28:10 :: ===== UploadExcel SUCCESS =====
+2026-04-03 14:07:38 :: ===== UploadExcel START =====
+2026-04-03 14:07:38 :: File Name: CentralBlast_Template (1).xlsx
+2026-04-03 14:07:38 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-03 14:07:38 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-03 14:07:39 :: Total rows found (including header): 3
+2026-04-03 14:07:39 :: DB Connected
+2026-04-03 14:07:39 :: Row 2 Raw Mobile: [9027586766]
+2026-04-03 14:07:39 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-03 14:07:49 :: Row 3 Raw Mobile: [9818889998]
+2026-04-03 14:07:49 :: Row 3 inserted successfully | Mobile: +919818889998
+2026-04-03 14:07:52 :: Total rows inserted: 2
+2026-04-03 14:07:52 :: ===== UploadExcel SUCCESS =====
+2026-04-03 14:08:53 :: ===== UploadExcel START =====
+2026-04-03 14:08:53 :: File Name: CentralBlast_Template (1).xlsx
+2026-04-03 14:08:53 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-03 14:08:53 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-03 14:08:53 :: Total rows found (including header): 3
+2026-04-03 14:08:53 :: DB Connected
+2026-04-03 14:08:53 :: Row 2 Raw Mobile: [9027586766]
+2026-04-03 14:08:53 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-03 14:08:55 :: Row 3 Raw Mobile: [9818889998]
+2026-04-03 14:08:55 :: Row 3 inserted successfully | Mobile: +919818889998
+2026-04-03 14:08:59 :: Total rows inserted: 2
+2026-04-03 14:08:59 :: ===== UploadExcel SUCCESS =====
+2026-04-06 11:03:53 :: ===== UploadExcel START =====
+2026-04-06 11:03:54 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 11:03:55 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 11:06:52 :: ===== UploadExcel START =====
+2026-04-06 11:06:56 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 11:06:57 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 11:06:58 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 11:07:18 :: Total rows found (including header): 3
+2026-04-06 11:07:24 :: DB Connected
+2026-04-06 11:07:33 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 11:07:57 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 11:08:45 :: Row 3 Raw Mobile: [9818889998]
+2026-04-06 11:08:49 :: Row 3 inserted successfully | Mobile: +919818889998
+2026-04-06 11:08:55 :: Total rows inserted: 2
+2026-04-06 11:08:55 :: ===== UploadExcel SUCCESS =====
+2026-04-06 11:15:41 :: ===== UploadExcel START =====
+2026-04-06 11:15:44 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 11:15:45 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 11:15:50 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 11:16:30 :: Total rows found (including header): 3
+2026-04-06 11:16:36 :: DB Connected
+2026-04-06 11:17:00 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 11:17:26 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 11:19:38 :: Row 3 Raw Mobile: [9027586766]
+2026-04-06 11:19:49 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-06 11:20:39 :: Total rows inserted: 2
+2026-04-06 11:20:46 :: ===== UploadExcel SUCCESS =====
+2026-04-06 11:23:23 :: ===== UploadExcel START =====
+2026-04-06 11:23:24 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 11:23:24 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 11:23:25 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 11:23:26 :: Total rows found (including header): 3
+2026-04-06 11:23:27 :: DB Connected
+2026-04-06 11:23:31 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 11:23:39 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 11:25:39 :: Row 3 Raw Mobile: [9027586766]
+2026-04-06 11:25:39 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-06 11:25:43 :: Total rows inserted: 2
+2026-04-06 11:25:43 :: ===== UploadExcel SUCCESS =====
+2026-04-06 11:27:23 :: ===== UploadExcel START =====
+2026-04-06 11:27:23 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 11:27:23 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 11:27:23 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 11:27:23 :: Total rows found (including header): 3
+2026-04-06 11:27:23 :: DB Connected
+2026-04-06 11:27:23 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 11:27:23 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 11:27:27 :: Row 3 Raw Mobile: [9027586766]
+2026-04-06 11:27:27 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-06 11:27:46 :: Total rows inserted: 2
+2026-04-06 11:27:46 :: ===== UploadExcel SUCCESS =====
+2026-04-06 13:35:41 :: ===== UploadExcel START =====
+2026-04-06 13:35:41 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 13:35:41 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 13:35:41 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 13:35:42 :: Total rows found (including header): 3
+2026-04-06 13:35:42 :: DB Connected
+2026-04-06 13:35:42 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 13:35:42 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 13:35:44 :: Row 3 Raw Mobile: [9027586766]
+2026-04-06 13:35:44 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-06 13:35:45 :: Total rows inserted: 2
+2026-04-06 13:35:45 :: ===== UploadExcel SUCCESS =====
+2026-04-06 14:28:09 :: ===== UploadExcel START =====
+2026-04-06 14:28:09 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 14:28:09 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 14:28:09 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 14:28:09 :: Total rows found (including header): 3
+2026-04-06 14:28:09 :: DB Connected
+2026-04-06 14:28:09 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 14:28:09 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 14:28:12 :: Row 3 Raw Mobile: [9027586766]
+2026-04-06 14:28:12 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-06 14:28:19 :: Total rows inserted: 2
+2026-04-06 14:28:19 :: ===== UploadExcel SUCCESS =====
+2026-04-06 14:29:42 :: ===== UploadExcel START =====
+2026-04-06 14:29:42 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-06 14:29:42 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-06 14:29:42 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-06 14:29:42 :: Total rows found (including header): 3
+2026-04-06 14:29:42 :: DB Connected
+2026-04-06 14:29:42 :: Row 2 Raw Mobile: [9027586766]
+2026-04-06 14:29:42 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-06 14:29:45 :: Row 3 Raw Mobile: [9027586766]
+2026-04-06 14:29:45 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-06 14:29:47 :: Total rows inserted: 2
+2026-04-06 14:29:47 :: ===== UploadExcel SUCCESS =====

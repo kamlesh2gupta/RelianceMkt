@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using log4net;
@@ -44,6 +45,7 @@ namespace RelianceMkt.Controllers
 
 
         private static readonly ILog logger = LogManager.GetLogger(typeof(MarketingController));
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MarketingController));
 
         //public async Task<ActionResult> Index()
         public ActionResult Index()
@@ -734,10 +736,9 @@ namespace RelianceMkt.Controllers
         public void SetData()
         {
 
-            //string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+           string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
 
-            //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
-            string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+           //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             SqlConnection con = new SqlConnection(Constr);
             string SAPCODE = Session["SAPCODE"]?.ToString();
@@ -2784,111 +2785,201 @@ namespace RelianceMkt.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult HotLeads(string fromdate, string todate, string plateform)
         {
-
             DateTime dt1 = Convert.ToDateTime(fromdate);
             DateTime dt2 = Convert.ToDateTime(todate);
 
             ViewBag.plateform = plateform ?? string.Empty;
-
             ViewBag.dt1 = dt1;
             ViewBag.dt2 = dt2;
+
             List<SelectListItem> lstplateform = new List<SelectListItem>()
-                {
-                    new SelectListItem{Text="Facebook", Value="Facebook"},
-                    new SelectListItem{Text="Whatsapp", Value="Whatsapp"},
-                    new SelectListItem{Text="Instagram", Value="Instagram"},
-                    new SelectListItem{Text="Twitter", Value="Twitter"},
-                    new SelectListItem{Text="Linkedin", Value="Linkedin"}
-                };
+    {
+        new SelectListItem{Text="Facebook", Value="Facebook"},
+        new SelectListItem{Text="Whatsapp", Value="Whatsapp"},
+        new SelectListItem{Text="Instagram", Value="Instagram"},
+        new SelectListItem{Text="Twitter", Value="Twitter"},
+        new SelectListItem{Text="Linkedin", Value="Linkedin"}
+    };
 
             ViewBag.lstPlateform = lstplateform;
 
-
-            if (plateform.Trim().Length > 0)
-            {
-                ViewBag.lstLeads = (from a in db.Leads
-                                    where a.leads_date >= dt1 && a.leads_date <= dt2
-                                    && a.leads_plateform == plateform
-                                    join b in db.campaign_master on a.leads_creativeid equals b.campaign_master_id
-                                    join c in (from temp in db.NEW_TEMP_HIERARCHY
-                                               where temp.X_BM_EMP_CD != null
-                                               select new { SHC_SAPCODE = temp.X_BM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_BM_NM, ROLE = "BM" })
+            // 🔥 Hierarchy UNION (same as SQL)
+            var hierarchy =
+                (from temp in db.NEW_TEMP_HIERARCHY
+                 where temp.X_BM_EMP_CD != null
+                 select new
+                 {
+                     SHC_SAPCODE = temp.X_BM_EMP_CD,
+                     temp.X_CHANNEL,
+                     temp.X_ZONE,
+                     temp.X_REGION,
+                     temp.X_SALES_UNIT_NM,
+                     temp.X_SALES_UNIT_CD,
+                     SAP_NAME = temp.X_BM_NM
+                 })
                 .Union
                 (from temp in db.NEW_TEMP_HIERARCHY
                  where temp.X_SM_EMP_CD != null
-                 select new { SHC_SAPCODE = temp.X_SM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_SM_NM, ROLE = "SM" })
-
-                //Added by vikas 
+                 select new
+                 {
+                     SHC_SAPCODE = temp.X_SM_EMP_CD,
+                     temp.X_CHANNEL,
+                     temp.X_ZONE,
+                     temp.X_REGION,
+                     temp.X_SALES_UNIT_NM,
+                     temp.X_SALES_UNIT_CD,
+                     SAP_NAME = temp.X_SM_NM
+                 })
                 .Union
                 (from temp in db.NEW_TEMP_HIERARCHY
                  where temp.AGENT_CODE != null
-                 select new { SHC_SAPCODE = temp.AGENT_CODE, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.AGENT_NAME, ROLE = "AGENT" })
+                 select new
+                 {
+                     SHC_SAPCODE = temp.AGENT_CODE,
+                     temp.X_CHANNEL,
+                     temp.X_ZONE,
+                     temp.X_REGION,
+                     temp.X_SALES_UNIT_NM,
+                     temp.X_SALES_UNIT_CD,
+                     SAP_NAME = temp.AGENT_NAME
+                 });
 
-                                    //Code end here
-                                    on a.leads_sapcode equals c.SHC_SAPCODE
-                                    select new CustomModel.ViewModelLeads
-                                    {
-                                        cm = b,
-                                        l = a,
-                                        X_CHANNEL = c.X_CHANNEL,
-                                        X_ZONE = c.X_ZONE,
-                                        X_REGION = c.X_REGION,
-                                        X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
-                                        X_SALES_UNIT_CD = c.X_SALES_UNIT_CD,
-                                        SAP_NAME = c.SAP_NAME
-                                        ///Role = c.ROLE
-                                    }).OrderByDescending(xx => xx.l.leads_date).ToList();
-                //   .Distinct().ToList();
+            // 🔥 Main Query (SQL logic same)
+            var query = from l in db.Leads
+                        join cm in db.campaign_master
+                            on l.leads_creativeid equals cm.campaign_master_id
+                        join c in hierarchy
+                            on l.leads_sapcode equals c.SHC_SAPCODE
+                        where l.leads_date >= dt1
+                              && l.leads_date <= dt2
+                              && (string.IsNullOrEmpty(plateform) || l.leads_plateform == plateform)
+                        orderby l.leads_date descending
+                        select new CustomModel.ViewModelLeads
+                        {
+                            l = l,
+                            cm = cm,
+                            X_CHANNEL = c.X_CHANNEL,
+                            X_ZONE = c.X_ZONE,
+                            X_REGION = c.X_REGION,
+                            X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
+                            X_SALES_UNIT_CD = c.X_SALES_UNIT_CD,
+                            SAP_NAME = c.SAP_NAME
+                        };
 
-
-
-            }
-            else
-            {
-                ViewBag.lstLeads = (from a in db.Leads
-                                    where a.leads_date >= dt1 && a.leads_date <= dt2
-                                    join b in db.campaign_master on a.leads_creativeid equals b.campaign_master_id
-                                    join c in (from temp in db.NEW_TEMP_HIERARCHY
-                                               where temp.X_BM_EMP_CD != null
-                                               select new { SHC_SAPCODE = temp.X_BM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_BM_NM, ROLE = "BM" })
-                                              .Union
-                                              (from temp in db.NEW_TEMP_HIERARCHY
-                                               where temp.X_SM_EMP_CD != null
-                                               select new { SHC_SAPCODE = temp.X_SM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_SM_NM, ROLE = "SM" })
-                                             //Added by vikas 
-                                             .Union
-                                              (from temp in db.NEW_TEMP_HIERARCHY
-                                               where temp.AGENT_CODE != null
-                                               select new { SHC_SAPCODE = temp.AGENT_CODE, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.AGENT_NAME, ROLE = "AGENT" })
-
-                                    //Code end here
-                                    on a.leads_sapcode equals c.SHC_SAPCODE
-                                    select new CustomModel.ViewModelLeads
-                                    {
-                                        cm = b,
-                                        l = a,
-                                        X_CHANNEL = c.X_CHANNEL,
-                                        X_ZONE = c.X_ZONE,
-                                        X_REGION = c.X_REGION,
-                                        X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
-                                        X_SALES_UNIT_CD = c.X_SALES_UNIT_CD,
-                                        SAP_NAME = c.SAP_NAME
-                                        ///Role = c.ROLE
-                                    }).OrderByDescending(xx => xx.l.leads_date).ToList();
-                //.Distinct().ToList();
-
-
-            }
-
-
-
+            ViewBag.lstLeads = query.ToList();
 
             return View();
         }
+        //[HttpPost]
+        //public ActionResult HotLeads(string fromdate, string todate, string plateform)
+        //{
+
+        //    DateTime dt1 = Convert.ToDateTime(fromdate);
+        //    DateTime dt2 = Convert.ToDateTime(todate);
+
+        //    ViewBag.plateform = plateform ?? string.Empty;
+
+        //    ViewBag.dt1 = dt1;
+        //    ViewBag.dt2 = dt2;
+        //    List<SelectListItem> lstplateform = new List<SelectListItem>()
+        //        {
+        //            new SelectListItem{Text="Facebook", Value="Facebook"},
+        //            new SelectListItem{Text="Whatsapp", Value="Whatsapp"},
+        //            new SelectListItem{Text="Instagram", Value="Instagram"},
+        //            new SelectListItem{Text="Twitter", Value="Twitter"},
+        //            new SelectListItem{Text="Linkedin", Value="Linkedin"}
+        //        };
+
+        //    ViewBag.lstPlateform = lstplateform;
+
+
+        //    if (plateform.Trim().Length > 0)
+        //    {
+        //        ViewBag.lstLeads = (from a in db.Leads
+        //                            where a.leads_date >= dt1 && a.leads_date <= dt2
+        //                            && a.leads_plateform == plateform
+        //                            join b in db.campaign_master on a.leads_creativeid equals b.campaign_master_id
+        //                            join c in (from temp in db.NEW_TEMP_HIERARCHY
+        //                                       where temp.X_BM_EMP_CD != null
+        //                                       select new { SHC_SAPCODE = temp.X_BM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_BM_NM, ROLE = "BM" })
+        //        .Union
+        //        (from temp in db.NEW_TEMP_HIERARCHY
+        //         where temp.X_SM_EMP_CD != null
+        //         select new { SHC_SAPCODE = temp.X_SM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_SM_NM, ROLE = "SM" })
+
+        //        //Added by vikas 
+        //        .Union
+        //        (from temp in db.NEW_TEMP_HIERARCHY
+        //         where temp.AGENT_CODE != null
+        //         select new { SHC_SAPCODE = temp.AGENT_CODE, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.AGENT_NAME, ROLE = "AGENT" })
+
+        //                            //Code end here
+        //                            on a.leads_sapcode equals c.SHC_SAPCODE
+        //                            select new CustomModel.ViewModelLeads
+        //                            {
+        //                                cm = b,
+        //                                l = a,
+        //                                X_CHANNEL = c.X_CHANNEL,
+        //                                X_ZONE = c.X_ZONE,
+        //                                X_REGION = c.X_REGION,
+        //                                X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
+        //                                X_SALES_UNIT_CD = c.X_SALES_UNIT_CD,
+        //                                SAP_NAME = c.SAP_NAME
+        //                                ///Role = c.ROLE
+        //                            }).OrderByDescending(xx => xx.l.leads_date).ToList();
+        //        //   .Distinct().ToList();
+
+
+
+        //    }
+        //    else
+        //    {
+        //        ViewBag.lstLeads = (from a in db.Leads
+        //                            where a.leads_date >= dt1 && a.leads_date <= dt2
+        //                            join b in db.campaign_master on a.leads_creativeid equals b.campaign_master_id
+        //                            join c in (from temp in db.NEW_TEMP_HIERARCHY
+        //                                       where temp.X_BM_EMP_CD != null
+        //                                       select new { SHC_SAPCODE = temp.X_BM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_BM_NM, ROLE = "BM" })
+        //                                      .Union
+        //                                      (from temp in db.NEW_TEMP_HIERARCHY
+        //                                       where temp.X_SM_EMP_CD != null
+        //                                       select new { SHC_SAPCODE = temp.X_SM_EMP_CD, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_SM_NM, ROLE = "SM" })
+        //                                     //Added by vikas 
+        //                                     .Union
+        //                                      (from temp in db.NEW_TEMP_HIERARCHY
+        //                                       where temp.AGENT_CODE != null
+        //                                       select new { SHC_SAPCODE = temp.AGENT_CODE, temp.X_CHANNEL, temp.X_ZONE, temp.X_REGION, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.AGENT_NAME, ROLE = "AGENT" })
+
+        //                            //Code end here
+        //                            on a.leads_sapcode equals c.SHC_SAPCODE
+        //                            select new CustomModel.ViewModelLeads
+        //                            {
+        //                                cm = b,
+        //                                l = a,
+        //                                X_CHANNEL = c.X_CHANNEL,
+        //                                X_ZONE = c.X_ZONE,
+        //                                X_REGION = c.X_REGION,
+        //                                X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
+        //                                X_SALES_UNIT_CD = c.X_SALES_UNIT_CD,
+        //                                SAP_NAME = c.SAP_NAME
+        //                                ///Role = c.ROLE
+        //                            }).OrderByDescending(xx => xx.l.leads_date).ToList();
+        //        //.Distinct().ToList();
+
+
+        //    }
+
+
+
+
+        //    return View();
+        //}
+
+
+
 
         public ActionResult HotLeadsUser()
         {
@@ -4397,35 +4488,172 @@ namespace RelianceMkt.Controllers
             return Regex.Replace(name, @"[^a-zA-Z\s]", "").Trim();
         }
 
+        //=============================SE==============
 
-        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI_SE(
-            string name,
-            string mobile,
-            string sapcode,
-            string SapName,string categoryName)
+        //public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI_SE(
+        //  string name,
+        //  string mobile,
+        //  string sapcode,
+        //  string SapName, string categoryName)
+        //{
+        //    var url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
+
+        //    // 🔥 Clean Data (API strict validation karta hai)
+        //    string cleanedName = Regex.Replace(name ?? "", @"[^a-zA-Z\s]", "").Trim();
+        //    string cleanMobile = Regex.Replace(mobile ?? "", @"\D", "");
+
+        //    var jsonBody = $@"
+        //        {{
+        //            ""userId"": ""{sapcode}"",
+        //            ""phoneNo"": ""{mobile}"",
+        //            ""name"": ""{name}"",    
+        //            ""apiSource"": ""digimyin"",
+        //            ""loginType"": ""Individual"",
+        //            ""leadType"": ""{categoryName}""
+        //        }}";
+
+        //    var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+        //    // 🔥 Required Headers
+        //    request.Headers.Add("x-client-id", "22a0b4e5-940f-40a4-984d-6af1ac8e8c9e");
+        //    //request.Headers.TryAddWithoutValidation("x-token", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJJZCI6IjExMTExMSIsImRldmljZUlkIjoiNDkyNTBkMDUzM2JjZTkxMSJ9LCJpYXQiOjE3MjA0NjEyMzUsImV4cCI6MTcyMDQ5MDAzNX0.gdImEjRsw-XR-BaYckwiE1zRjhuhLB1RmnDPnRJMyFIbDENP-udS56M27N5GpaRSP9ffpFH_fKEtUEFawEvE3ckvGth5fKEXZW0eIcbMLGfKPJ4DS3U_zoeqXG_4bvaGjaUCFCvZxS2rf5P5e_Yg3_OJzuhq4IvuruUEfHLwnAJYP-s0qi0RmPGyUH1C0rGcjlCW8dP6V0_DyHDYeivuA6-vkjJGaYPvP2kbM3zQP9vxDg9hfayv5y7Cp5oFUbrvylCD6k9rTClMlPpyUn2MLFfvVSHxKgFVCvI844RLAaUG78hFI4Sf-gJVUiCiO3T4JHjNqBExFqZI4zNdF1uMmw");   // 👈 Add this
+        //    request.Headers.Add("origin", "https://karma.indusindnipponlife.com");
+
+        //    request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        //    var response = await _client.SendAsync(request);
+        //    var responseJson = await response.Content.ReadAsStringAsync();
+
+        //    LeadSquaredResponse apiResponse = new LeadSquaredResponse();
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        try
+        //        {
+        //            dynamic obj = JsonConvert.DeserializeObject(responseJson);
+
+        //            apiResponse.Status = 1;
+        //            apiResponse.RequestId = obj?.id ?? obj?.leadId ?? Guid.NewGuid().ToString();
+        //        }
+        //        catch
+        //        {
+        //            apiResponse.Status = 1;
+        //            apiResponse.RequestId = Guid.NewGuid().ToString();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        apiResponse.Status = 0;
+        //        apiResponse.RequestId = null;
+        //        apiResponse.ExceptionMessage = responseJson;
+        //    }
+
+        //    return (apiResponse, responseJson);
+        //}
+        //===========================================================
+        //public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI_SE(
+        //    string name,
+        //    string mobile,
+        //    string sapcode,
+        //    string SapName, string categoryName)
+        //{
+        //    //var url = "https://sa3dev.reliancenipponlife.com/v1.0/nlms/push-leads";
+
+        //    var url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
+
+
+
+
+
+        //    // 🔥 Clean Data (API strict validation karta hai)
+        //    string cleanedName = Regex.Replace(name ?? "", @"[^a-zA-Z\s]", "").Trim();
+        //    string cleanMobile = Regex.Replace(mobile ?? "", @"\D", "");
+
+        //    var jsonBody = $@"
+        //        {{
+        //            ""userId"": ""9050022"",
+        //            ""name"": ""Sunil Sarsande"",
+        //            ""phoneNo"": ""9890455817"",
+        //            ""apiSource"": ""digimyin"",
+        //            ""loginType"": ""Individual"",
+        //            ""leadType"": ""{categoryName}""
+        //        }}";
+
+        //    var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+        //    // 🔥 Required Headers
+        //    request.Headers.Add("x-client-id", "22a0b4e5-940f-40a4-984d-6af1ac8e8c9e");
+        //    request.Headers.TryAddWithoutValidation("x-token", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJJZCI6IjExMTExMSIsImRldmljZUlkIjoiNDkyNTBkMDUzM2JjZTkxMSJ9LCJpYXQiOjE3MjA0NjEyMzUsImV4cCI6MTcyMDQ5MDAzNX0.gdImEjRsw-XR-BaYckwiE1zRjhuhLB1RmnDPnRJMyFIbDENP-udS56M27N5GpaRSP9ffpFH_fKEtUEFawEvE3ckvGth5fKEXZW0eIcbMLGfKPJ4DS3U_zoeqXG_4bvaGjaUCFCvZxS2rf5P5e_Yg3_OJzuhq4IvuruUEfHLwnAJYP-s0qi0RmPGyUH1C0rGcjlCW8dP6V0_DyHDYeivuA6-vkjJGaYPvP2kbM3zQP9vxDg9hfayv5y7Cp5oFUbrvylCD6k9rTClMlPpyUn2MLFfvVSHxKgFVCvI844RLAaUG78hFI4Sf-gJVUiCiO3T4JHjNqBExFqZI4zNdF1uMmw");   // 👈 Add this
+        //    request.Headers.Add("origin", "https://karma.indusindnipponlife.com");
+
+        //    request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+        //    var response = await _client.SendAsync(request);
+        //    var responseJson = await response.Content.ReadAsStringAsync();
+
+        //    LeadSquaredResponse apiResponse = new LeadSquaredResponse();
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        try
+        //        {
+        //            dynamic obj = JsonConvert.DeserializeObject(responseJson);
+
+        //            apiResponse.Status = 1;
+        //            apiResponse.RequestId = obj?.id ?? obj?.leadId ?? Guid.NewGuid().ToString();
+        //        }
+        //        catch
+        //        {
+        //            apiResponse.Status = 1;
+        //            apiResponse.RequestId = Guid.NewGuid().ToString();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        apiResponse.Status = 0;
+        //        apiResponse.RequestId = null;
+        //        apiResponse.ExceptionMessage = responseJson;
+        //    }
+
+        //    return (apiResponse, responseJson);
+        //}
+
+        //=====================20-3-2026=============
+
+
+        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI_SE(string name, string mobile, string sapcode, string SapName, string categoryName)
         {
-            var url = "https://sa3dev.reliancenipponlife.com/v1.0/nlms/push-leads";
+            // var url = "https://karma.indusindnipponlife.com/v1.0/nlms/leads";
+            var url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
 
-            // 🔥 Clean Data (API strict validation karta hai)
+            //var url = "https://sa3dev.indusindnipponlife.com/v1.0/nlms/push-leads";
+
             string cleanedName = Regex.Replace(name ?? "", @"[^a-zA-Z\s]", "").Trim();
             string cleanMobile = Regex.Replace(mobile ?? "", @"\D", "");
 
+
                             var jsonBody = $@"
                 {{
-                    ""userId"": ""9050022"",
-                    ""name"": ""Sunil Sarsande"",
-                    ""phoneNo"": ""9890455817"",
-                    ""apiSource"": ""digimyin"",
+                    ""userId"": ""{sapcode}"",
+                    ""name"": ""{name}"",
+                    ""phoneNo"": ""{mobile}"",
                     ""loginType"": ""Individual"",
-                    ""leadType"": ""{categoryName}""
+                    ""leadType"": ""New Business"",
+                    ""apiSource"": ""API"",
+                    ""campaign"": ""Digimyin""
                 }}";
+
+     
 
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-            // 🔥 Required Headers
+
+            request.Headers.Add("x-api-key", "RNLIC10203040");
             request.Headers.Add("x-client-id", "22a0b4e5-940f-40a4-984d-6af1ac8e8c9e");
-            request.Headers.TryAddWithoutValidation("x-token", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJJZCI6IjExMTExMSIsImRldmljZUlkIjoiNDkyNTBkMDUzM2JjZTkxMSJ9LCJpYXQiOjE3MjA0NjEyMzUsImV4cCI6MTcyMDQ5MDAzNX0.gdImEjRsw-XR-BaYckwiE1zRjhuhLB1RmnDPnRJMyFIbDENP-udS56M27N5GpaRSP9ffpFH_fKEtUEFawEvE3ckvGth5fKEXZW0eIcbMLGfKPJ4DS3U_zoeqXG_4bvaGjaUCFCvZxS2rf5P5e_Yg3_OJzuhq4IvuruUEfHLwnAJYP-s0qi0RmPGyUH1C0rGcjlCW8dP6V0_DyHDYeivuA6-vkjJGaYPvP2kbM3zQP9vxDg9hfayv5y7Cp5oFUbrvylCD6k9rTClMlPpyUn2MLFfvVSHxKgFVCvI844RLAaUG78hFI4Sf-gJVUiCiO3T4JHjNqBExFqZI4zNdF1uMmw");   // 👈 Add this
-            request.Headers.Add("origin", "https://sa3dev.reliancenipponlife.com");
+
+            //  request.Headers.TryAddWithoutValidation("x-token","eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJJZCI6IjcwMjc5MjM3IiwiZGV2aWNlSWQiOiIxMjM0NTY3ODk4NyJ9LCJpYXQiOjE3NzM4MTIwNzMsImV4cCI6MTc3Mzg0MDg3M30.qzSDs9Aul9AsazgaXWmybOTtlOtz5bCNEtajy8s43pnr4G72paPw-SqmDqpSxWnNZbRHNWOxzcDca_eJrJSl7mS7E424rK-ZXOtB1351e8kBmS3ivF6zLuWRVMnw9krAuwhbHPIcjYBYi4iIw5ooeYYHOjZ7jD-Aefja_UOpQ_KMknYDsuOPAZBwNRNZ_I0Ni-cXTCvzesz4VS4JZ0WzexBlLLOt47z2Gb8aTohrRApBniWUMF60WhCJk__HVTSD8PPw9l9bdgQHB4FmVWLLOkLMTvXIr442a_6qW--wHXwHgzZ0fhYEibkel3jaNg9-6rtI_j8WLhTwO1cJn9273w");
+
+            request.Headers.Add("origin", "https://karma.indusindnipponlife.com");
 
             request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
@@ -4458,11 +4686,6 @@ namespace RelianceMkt.Controllers
 
             return (apiResponse, responseJson);
         }
-
-
-
-
-
 
 
         //==============================================================================
@@ -4816,8 +5039,8 @@ namespace RelianceMkt.Controllers
             // string url = "https://saservices.reliancenipponlife.com/eopsservices/wsLeadActivityPlanning.svc/SaveLeadInformation";
             //string requestBody = "{\"ASM_FLS_Code\":\"\",\"Aadhaar\":\"\",\"AddedByBM_YN\":\"\",\"Added_By\":\"258743\",\"Address\":\"\",\"Address_1\":\"\",\"Address_2\":\"\",\"Address_3\":\"\",\"Advisor_Code\":\"\",\"AgeGroup\":\"\",\"Alternate_Number\":\"\",\"AnnualIncome\":\"\",\"AppointmentDate\":\"\",\"AppointmentTime\":\"\",\"BankName\":\"\",\"BranchCode\":\"\",\"BranchName\":\"\",\"CCECode\":\"\",\"CRMLeadType\":\"\",\"CallType\":\"\",\"Campaign\":\"TEST 19 JAN\",\"City\":\"\",\"Commute_Time\":\"\",\"CustomerBaseBBC\":\"\",\"DOB\":\"\",\"DOB_Changed\":\"\",\"Dependents\":\"\",\"Device_Id\":\"\",\"Educational_Background\":\"\",\"Email_ID\":\"\",\"FLS_Sapcode\":\"\",\"From_Address\":\"\",\"From_Latitude\":\"\",\"From_Longitude\":\"\",\"Gender\":\"\",\"Income\":\"\",\"InsLoginType\":\"\",\"Is_Updated\":\"\",\"Landline\":\"\",\"Latitude\":\"\",\"LeadInfo_Remarks\":\"\",\"Lead_From_Contact_List\":\"\",\"Lead_Source\":\"\",\"Lead_Status\":\"\",\"Lead_Sub_Source\":\"\",\"Lead_Sub_Type\":\"\",\"Lead_Type\":\"Recruitment\",\"LifeStage\":\"\",\"Longitude\":\"\",\"Marital_Status\":\"\",\"Mobile\":\"8080905083\",\"Name\":\"ASHUTOSH\",\"OTP\":\"\",\"OTPSentYN\":\"\",\"Occupation\":\"\",\"Occupation_Remarks\":\"\",\"Pin_Code\":\"\",\"Policy_Number\":\"\",\"RNLICCustomer_YN\":\"\",\"Reference_LeadID\":\"\",\"Reference_YN\":\"\",\"Referred_By\":\"\",\"SP_Code\":\"\",\"Source_From\":\"SMC Invest/SMC Sales\",\"State\":\"\",\"Sub_Activity_Options\":\"\",\"Sync_Txn_Id\":\"\",\"Sync_by\":\"123456\",\"User_Role\":\"\",\"Variance_Lat_Long\":\"\",\"Verification_Type\":\"\",\"Verticals_SPR\":\"\",\"WithoutWelcomeCodeYN\":\"\"}";
 
-            string url = "https://karma.reliancenipponlife.com/v1.0/nlms/push-leads";
-            //string url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
+            //string url = "https://karma.reliancenipponlife.com/v1.0/nlms/push-leads";
+            string url = "https://karma.indusindnipponlife.com/v1.0/nlms/push-leads";
             string requestBody = "{\"userId\":\"\",\"sl\":{\"loginType\":\"\",\"leadFrom\":\"\",\"leadType\":\"\",\"leadSubType\":\"\",\"advisorId\":\"\",\"gender\":\"\",\"maritialStatus\":\"\",\"name\":\"\",\"dateOfBrith\":\"\",\"occupation\":\"\",\"incomeBand\":\"\",\"educationalGroup\":\"\",\"phoneNo\":\"\",\"alternatePhoneNo\":\"\",\"landline\":\"\",\"address\":\" \",\"state\":\"\",\"city\":\"\",\"postalcode\":\"\",\"emailId\":\"\",\"campaign\":\"\",\"deviceId\":\"\",\"leadSource\":\"\",\"leadSubSource\":\"\",\"longitute\":\"\",\"latitude\":\"\",\"ageBand\":\"\",\"pan\":\"\",\"verticals\":\"\",\"prospectType\":\"\",\"lifeStage\":\"\",\"source\":\"\",\"whatsappNo\":\"\",\"isExistingCustomer\":\"\",\"channel\":\"\",\"isWithWelcomeCode\",\"spId\":\"\",\"asmId\":\"\",\"spName\":\"\",\"asmName\":\"\",\"branchCode\":\"\",\"branchName\":\"\",\"callType\":\"\",\"vertical\":\"ISG\"}}";
 
             // string requestBody = "{\"userId\":\"70000099\",\"loginType\":\"Individual\",\"leadType\":\"New Business\",\"leadProfileType\":\"\",\"leadSubType\":\"New Prospect\",\"leadSource\":\"Customer Portal\",\"leadSubSource\":\"\",\"gender\":\"Male\",\"maritialStatus\":\"Married\",\"name\":\"Ravish Pandey\",\"isExistingCustomer\":\"Y\",\"policyNo\":\"\",\"dateOfBrith\":\"28-AUG-1969\",\"occupation\":\"\",\"incomeBand\":\"_3_lacs_to_6_lacs\",\"lifeStage\":\"Married\",\"educationalGroup\":\"\",\"phoneNo\":\"9503740233\",\"landline\":\"\",\"alternatePhoneNo\":\"\",\"whatsappNo\":\"\",\"address\":\"203-204/2A, Brindaban II,\",\"state\":\"\",\"city\":\"\",\"postalcode\":\"400093\",\"emailId\":\"\",\"campaign\":\"Customer Portal\",\"ageBand\":\"\",\"vertical\":\"\",\"callType\":\"\",\"spId\":\"\",\"spName\":\"\",\"teleCallerName\":\"\",\"teleCallerId\":\"\",\"asmId\":\"\",\"asmName\":\"\",\"advisorName\":\"Ashu Gupta test\",\"advisorId\":\"70000099\",\"pan\":\"AUEPS2835F\",\"linkedLead\":[]}";
@@ -7240,116 +7463,25 @@ string input_name, string input_mobile, string input_email)
 
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName)
-        //{
-        //    if (Session["userid"] == null)
-        //        return RedirectToAction("Index");
-
-        //    if (excelFile == null || excelFile.ContentLength <= 0)
-        //    {
-        //        TempData["ErrorMessage"] = "Please upload a valid Excel file.";
-        //        return RedirectToAction("CentralBlast");
-        //    }
-
-        //    try
-        //    {
-        //        using (var stream = excelFile.InputStream)
-        //        using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
-        //        {
-        //            WorkbookPart workbookPart = document.WorkbookPart;
-        //            Sheet sheet = workbookPart.Workbook.Sheets.GetFirstChild<Sheet>();
-        //            WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-        //            SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
-
-        //            foreach (Row row in sheetData.Elements<Row>().Skip(1))   // Skip header
-        //            {
-        //                string name = GetCellValue(document, row, "B");
-        //                string mobile = GetCellValue(document, row, "C");
-
-        //                // --- Normalize mobile ---
-        //                mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
-
-        //                if (mobile.Length == 10)
-        //                    mobile = "+91" + mobile;
-        //                else if (mobile.StartsWith("91"))
-        //                    mobile = "+" + mobile;
-        //                else if (!mobile.StartsWith("+"))
-        //                    mobile = "+91" + mobile;
-
-        //                // Skip invalid number
-        //                if (mobile.Length < 10)
-        //                    continue;
-
-        //                // SEND WHATSAPP
-        //                await SendWhatsAppMessageAsync(mobile, "Campaign", name);
-
-        //                System.Diagnostics.Debug.WriteLine("SENT TO: " + mobile);
-        //            }
-        //        }
-
-        //        TempData["SuccessMessage"] = "WhatsApp sent to ALL Excel numbers!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["ErrorMessage"] = ex.Message;
-        //    }
-
-        //    return RedirectToAction("CentralBlast");
-        //}
-
-        //private string GetCellValue(SpreadsheetDocument doc, Row row, string columnName)
-        //{
-        //    Cell cell = row.Elements<Cell>()
-        //                   .FirstOrDefault(c =>
-        //                       c.CellReference != null &&
-        //                       c.CellReference.Value.StartsWith(columnName));
-
-        //    if (cell == null)
-        //        return string.Empty;
-
-        //    // Shared string
-        //    if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
-        //    {
-        //        return doc.WorkbookPart.SharedStringTablePart.SharedStringTable
-        //                 .ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText;
-        //    }
-
-        //    // Inline string
-        //    if (cell.DataType != null && cell.DataType.Value == CellValues.InlineString)
-        //    {
-        //        return cell.InnerText;
-        //    }
-
-        //    // Numbers / General
-        //    return cell.InnerText ?? string.Empty;
-        //}
-
-
-
-        //====================================
-
+       
         [HttpPost]
         public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName, string status)
         {
             ServerLog("===== UploadExcel START =====");
 
-            // 🔒 Session check
             if (Session["userid"] == null)
             {
                 ServerLog("Session expired");
                 return RedirectToAction("Index");
             }
 
-            // ✅ Campaign check
-            if (string.IsNullOrWhiteSpace(CampaignName))
+            if (string.IsNullOrEmpty(CampaignName))
             {
                 ServerLog("CampaignName empty");
                 TempData["ErrorMessage"] = "Please select a Campaign before uploading.";
                 return RedirectToAction("CentralBlast");
             }
 
-            // 📂 File check
             if (excelFile == null || excelFile.ContentLength <= 0)
             {
                 ServerLog("Excel file missing");
@@ -7362,34 +7494,30 @@ string input_name, string input_mobile, string input_email)
                 ServerLog("File Name: " + excelFile.FileName);
                 ServerLog("Campaign: " + CampaignName);
 
-                using (var document = SpreadsheetDocument.Open(excelFile.InputStream, false))
+                string imageLink = GetCampaignImageUrl(CampaignName);
+
+                ServerLog("Image URL: " + imageLink);
+
+                using (var stream = excelFile.InputStream)
+                using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
                 {
                     WorkbookPart workbookPart = document.WorkbookPart;
                     Sheet sheet = workbookPart.Workbook.Sheets.Elements<Sheet>().FirstOrDefault();
 
                     if (sheet == null)
+                    {
+                        ServerLog("Sheet NOT FOUND");
                         throw new Exception("No sheet found in Excel");
+                    }
 
-                    WorksheetPart worksheetPart =
-                        (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-
-                    SheetData sheetData =
-                        worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
+                    WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+                    SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
                     int totalRows = sheetData.Elements<Row>().Count();
                     ServerLog("Total rows found (including header): " + totalRows);
-                    //string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                    // string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
-                    string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
-
-                    //string conStr =
-                    //    "Data Source=10.126.143.86,1981;" +
-                    //    "Initial Catalog=Webinar;" +
-                    //    "User ID=reliance_user;" +
-                    //    "Password=pass@123;" +
-                    //    "MultipleActiveResultSets=True;" +
-                    //    "Connection Timeout=10000;";
+                   string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                   //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
                     using (SqlConnection con = new SqlConnection(conStr))
                     {
@@ -7398,30 +7526,25 @@ string input_name, string input_mobile, string input_email)
 
                         int insertCount = 0;
 
-                        // 🔁 Skip header row
-                        foreach (Row row in sheetData.Elements<Row>().Skip(1))
+                        foreach (Row row in sheetData.Elements<Row>().Skip(1)) // skip header
                         {
                             try
                             {
-                                // 📌 Column Index (0-based)
-                                // A=0 B=1 C=2 D=3 E=4 F=5 G=6
-                                string name = GetCellValueSafe(row, 1); // B
-                                string mobile = GetCellValueSafe(row, 2); // C
-                                string typeOfData = GetCellValueSafe(row, 3); // D
-                                string l1CodeText = GetCellValueSafe(row, 4); // E
-                                string l1Name = GetCellValueSafe(row, 5); // F
-                                string channel = GetCellValueSafe(row, 6); // G
+                                string name = GetCellValue(document, row, "B");
+                                string mobile = GetCellValue(document, row, "C");
+                                string typeOfData = GetCellValue(document, row, "D");
+                                string l1CodeText = GetCellValue(document, row, "E");
+                                string l1Name = GetCellValue(document, row, "F");
+                                string channel = GetCellValue(document, row, "G");
 
                                 ServerLog($"Row {row.RowIndex} Raw Mobile: [{mobile}]");
 
-                                // ❌ Skip empty mobile
                                 if (string.IsNullOrWhiteSpace(mobile))
                                 {
                                     ServerLog($"Row {row.RowIndex} skipped (mobile empty)");
                                     continue;
                                 }
 
-                                // 📞 Normalize mobile
                                 mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
 
                                 if (mobile.Length == 10)
@@ -7434,41 +7557,43 @@ string input_name, string input_mobile, string input_email)
                                 int l1Code = 0;
                                 int.TryParse(l1CodeText, out l1Code);
 
-                                // 🧾 INSERT CENTRAL_BLAST
                                 using (SqlCommand cmd = new SqlCommand(@"
                             INSERT INTO CENTRAL_BLAST
                             (Name, Contact_Number, Type_Of_Data, L1_Code, L1_Name, Channel, CampaignName)
                             VALUES
-                            (@Name, @Contact, @Type, @L1Code, @L1Name, @Channel, @Campaign)", con))
+                            (@Name, @Contact_Number, @Type_Of_Data, @L1_Code, @L1_Name, @Channel, @CampaignName)", con))
                                 {
                                     cmd.Parameters.AddWithValue("@Name", name ?? "");
-                                    cmd.Parameters.AddWithValue("@Contact", mobile);
-                                    cmd.Parameters.AddWithValue("@Type", typeOfData ?? "");
-                                    cmd.Parameters.AddWithValue("@L1Code", l1Code);
-                                    cmd.Parameters.AddWithValue("@L1Name", l1Name ?? "");
+                                    cmd.Parameters.AddWithValue("@Contact_Number", mobile);
+                                    cmd.Parameters.AddWithValue("@Type_Of_Data", typeOfData ?? "");
+                                    cmd.Parameters.AddWithValue("@L1_Code", l1Code);
+                                    cmd.Parameters.AddWithValue("@L1_Name", l1Name ?? "");
                                     cmd.Parameters.AddWithValue("@Channel", channel ?? "");
-                                    cmd.Parameters.AddWithValue("@Campaign", CampaignName);
+                                    cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
+                                   
 
                                     cmd.ExecuteNonQuery();
                                 }
 
-                                // 🧾 INSERT CampaignResponses
                                 using (SqlCommand cmd = new SqlCommand(@"
                             INSERT INTO CampaignResponses
                             (Mobile, CampaignName, Response, CreatedDate)
                             VALUES
-                            (@Mobile, @Campaign, 'Pending', GETDATE())", con))
+                            (@Mobile, @CampaignName, 'Pending', GETDATE())", con))
                                 {
                                     cmd.Parameters.AddWithValue("@Mobile", mobile);
-                                    cmd.Parameters.AddWithValue("@Campaign", CampaignName);
+                                    cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
                                     cmd.ExecuteNonQuery();
                                 }
 
                                 insertCount++;
-                                ServerLog($"Row {row.RowIndex} inserted | Mobile: {mobile}");
+                                ServerLog($"Row {row.RowIndex} inserted successfully | Mobile: {mobile}");
 
-                                // 📲 WhatsApp
-                                await SendWhatsAppMessageAsync(mobile, CampaignName);
+                                //await SendWhatsAppMessageAsync(mobile, CampaignName);
+                                //await SendWhatsAppMessageAsync(mobile, name, CampaignName, imageLink);
+                                //string imageLinkFromDb = GetCampaignImage(CampaignName);
+
+                                await SendWhatsAppMessageAsync(mobile, name, CampaignName, imageLink);
                             }
                             catch (Exception rowEx)
                             {
@@ -7477,11 +7602,11 @@ string input_name, string input_mobile, string input_email)
                         }
 
                         ServerLog("Total rows inserted: " + insertCount);
+                        con.Close();
                     }
                 }
 
-                TempData["SuccessMessage"] =
-                    "Data saved & WhatsApp messages sent successfully!";
+                TempData["SuccessMessage"] = "Data saved & WhatsApp messages sent to ALL contacts!";
                 ServerLog("===== UploadExcel SUCCESS =====");
             }
             catch (Exception ex)
@@ -7506,393 +7631,148 @@ string input_name, string input_mobile, string input_email)
             catch { }
         }
 
-        //===========================================
-        private string GetCellValueSafe(Row row, int columnIndex)
+
+      
+        private string GetCellValue(SpreadsheetDocument document, Row row, string columnName)
         {
-            if (row == null)
-                return "";
+            if (row == null) return "";
 
-            // OpenXML rows are sparse → convert to list
-            var cells = row.Elements<Cell>().ToList();
+            string cellRef = columnName + row.RowIndex;
 
-            if (cells.Count <= columnIndex)
-                return "";
+            Cell cell = row.Elements<Cell>()
+                           .FirstOrDefault(c => c.CellReference != null &&
+                                                c.CellReference.Value == cellRef);
 
-            Cell cell = cells[columnIndex];
             if (cell == null)
                 return "";
 
-            // Numeric / normal value
-            if (cell.CellValue != null)
-                return cell.CellValue.InnerText.Trim();
+            // If the cell has a value
+            string value = cell.CellValue?.InnerText;
+            if (value == null)
+                return "";
 
-            // Inline string support
-            if (cell.DataType != null &&
-                cell.DataType.Value == CellValues.InlineString)
+            // Shared string
+            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
             {
-                return cell.InnerText?.Trim() ?? "";
+                return document.WorkbookPart.SharedStringTablePart
+                               .SharedStringTable
+                               .ElementAt(int.Parse(value))
+                               .InnerText;
             }
 
-            return "";
+            // Inline string
+            if (cell.DataType != null && cell.DataType.Value == CellValues.InlineString)
+            {
+                return cell.InnerText;
+            }
+
+            // Numeric / normal value
+            return value;
+        }
+
+        private async Task SendWhatsAppMessageAsync(string mobileNumber, string name, string campaignName, string imageLink)
+        {
+            var apiUrl = "https://kapi.omni-channel.in/fe/api/v1/iPMessage/One2Many";
+
+            // ✅ Full URL banana - relative path ko absolute mein convert karo
+            string fullImageUrl = GetFullImageUrl(imageLink);
+
+            // ✅ Mobile number se + sign hatao
+            string cleanMobile = mobileNumber.Replace("+", "").Trim();
+
+            var requestBody = new
+            {
+                mode = "waba",
+                wabaPhoneNumber = "+919220363790",
+                wabaTemplateId = "437824",
+                campId = "66012",
+                unicode = false,
+                shortMessages = new[]
+                {
+            new
+            {
+                recipient = cleanMobile,
+                corelationId = Guid.NewGuid().ToString("N").Substring(0, 10), // ✅ Unique ID har baar
+                context = new
+                {
+                    waba_link = fullImageUrl,
+                    waba_name = name,
+                    waba_campaign = campaignName
+                }
+            }
+        }
+            };
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+            System.Diagnostics.Debug.WriteLine("WhatsApp Request JSON: " + json); // ✅ Request log karo
+
+            using (var client = new HttpClient())
+            {
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "Basic UmVsaWFuY2VXQUJBOjhVMU5x");
+
+                try
+                {
+                    var response = await client.PostAsync(apiUrl, content);
+                    string result = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine("WhatsApp Response Status: " + response.StatusCode);
+                    System.Diagnostics.Debug.WriteLine("WhatsApp Response Body: " + result);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"WhatsApp API Error: {ex.Message}");
+                }
+            }
+        }
+
+        // ✅ Relative path ko Full URL mein convert karna
+        private string GetFullImageUrl(string imageLink)
+        {
+            if (string.IsNullOrEmpty(imageLink))
+                return "";
+
+            // Already full URL hai
+            if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
+                return imageLink;
+
+            // ✅ Apna domain yahan daalo
+            string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
+
+            return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
         }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName, string status)
+
+
+
+
+
+
+
+
+        //private async Task SendWhatsAppMessageAsync(string mobileNumber, string name, string campaignName, string imageLink )
         //{
-        //    ServerLog("===== UploadExcel START =====");
-
-        //    if (Session["userid"] == null)
-        //    {
-        //        ServerLog("Session expired");
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    if (string.IsNullOrEmpty(CampaignName))
-        //    {
-        //        ServerLog("CampaignName empty");
-        //        TempData["ErrorMessage"] = "Please select a Campaign before uploading.";
-        //        return RedirectToAction("CentralBlast");
-        //    }
-
-        //    if (excelFile == null || excelFile.ContentLength <= 0)
-        //    {
-        //        ServerLog("Excel file missing");
-        //        TempData["ErrorMessage"] = "Please upload a valid Excel file.";
-        //        return RedirectToAction("CentralBlast");
-        //    }
-
-        //    try
-        //    {
-        //        ServerLog("File Name: " + excelFile.FileName);
-        //        ServerLog("Campaign: " + CampaignName);
-
-        //        using (var stream = excelFile.InputStream)
-        //        using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
-        //        {
-        //            WorkbookPart workbookPart = document.WorkbookPart;
-        //            Sheet sheet = workbookPart.Workbook.Sheets.Elements<Sheet>().FirstOrDefault();
-
-        //            if (sheet == null)
-        //            {
-        //                ServerLog("Sheet NOT FOUND");
-        //                throw new Exception("No sheet found in Excel");
-        //            }
-
-        //            WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-        //            SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
-
-        //            int totalRows = sheetData.Elements<Row>().Count();
-        //            ServerLog("Total rows found (including header): " + totalRows);
-
-        //            //string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        //           string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
-
-        //            using (SqlConnection con = new SqlConnection(conStr))
-        //            {
-        //                con.Open();
-        //                ServerLog("DB Connected");
-
-        //                int insertCount = 0;
-
-        //                foreach (Row row in sheetData.Elements<Row>().Skip(1)) // skip header
-        //                {
-        //                    try
-        //                    {
-        //                        string name = GetCellValue(document, row, "B");
-        //                        string mobile = GetCellValue(document, row, "C");
-        //                        string typeOfData = GetCellValue(document, row, "D");
-        //                        string l1CodeText = GetCellValue(document, row, "E");
-        //                        string l1Name = GetCellValue(document, row, "F");
-        //                        string channel = GetCellValue(document, row, "G");
-
-        //                        ServerLog($"Row {row.RowIndex} Raw Mobile: [{mobile}]");
-
-        //                        if (string.IsNullOrWhiteSpace(mobile))
-        //                        {
-        //                            ServerLog($"Row {row.RowIndex} skipped (mobile empty)");
-        //                            continue;
-        //                        }
-
-        //                        mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
-
-        //                        if (mobile.Length == 10)
-        //                            mobile = "+91" + mobile;
-        //                        else if (mobile.StartsWith("91"))
-        //                            mobile = "+" + mobile;
-        //                        else if (!mobile.StartsWith("+"))
-        //                            mobile = "+91" + mobile;
-
-        //                        int l1Code = 0;
-        //                        int.TryParse(l1CodeText, out l1Code);
-
-        //                        using (SqlCommand cmd = new SqlCommand(@"
-        //                    INSERT INTO CENTRAL_BLAST
-        //                    (Name, Contact_Number, Type_Of_Data, L1_Code, L1_Name, Channel, CampaignName)
-        //                    VALUES
-        //                    (@Name, @Contact_Number, @Type_Of_Data, @L1_Code, @L1_Name, @Channel, @CampaignName)", con))
-        //                        {
-        //                            cmd.Parameters.AddWithValue("@Name", name ?? "");
-        //                            cmd.Parameters.AddWithValue("@Contact_Number", mobile);
-        //                            cmd.Parameters.AddWithValue("@Type_Of_Data", typeOfData ?? "");
-        //                            cmd.Parameters.AddWithValue("@L1_Code", l1Code);
-        //                            cmd.Parameters.AddWithValue("@L1_Name", l1Name ?? "");
-        //                            cmd.Parameters.AddWithValue("@Channel", channel ?? "");
-        //                            cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
-
-        //                            cmd.ExecuteNonQuery();
-        //                        }
-
-        //                        using (SqlCommand cmd = new SqlCommand(@"
-        //                    INSERT INTO CampaignResponses
-        //                    (Mobile, CampaignName, Response, CreatedDate)
-        //                    VALUES
-        //                    (@Mobile, @CampaignName, 'Pending', GETDATE())", con))
-        //                        {
-        //                            cmd.Parameters.AddWithValue("@Mobile", mobile);
-        //                            cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
-        //                            cmd.ExecuteNonQuery();
-        //                        }
-
-        //                        insertCount++;
-        //                        ServerLog($"Row {row.RowIndex} inserted successfully | Mobile: {mobile}");
-
-        //                        await SendWhatsAppMessageAsync(mobile, CampaignName);
-        //                    }
-        //                    catch (Exception rowEx)
-        //                    {
-        //                        ServerLog($"Row {row.RowIndex} ERROR: {rowEx}");
-        //                    }
-        //                }
-
-        //                ServerLog("Total rows inserted: " + insertCount);
-        //                con.Close();
-        //            }
-        //        }
-
-        //        TempData["SuccessMessage"] = "Data saved & WhatsApp messages sent to ALL contacts!";
-        //        ServerLog("===== UploadExcel SUCCESS =====");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ServerLog("FATAL ERROR: " + ex);
-        //        TempData["ErrorMessage"] = "Error: " + ex.Message;
-        //    }
-
-        //    return RedirectToAction("CentralBlast");
-        //}
-
-        //private void ServerLog(string msg)
-        //{
-        //    try
-        //    {
-        //        string path = Server.MapPath("~/UploadExcel_Log.txt");
-        //        System.IO.File.AppendAllText(
-        //            path,
-        //            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " :: " + msg + Environment.NewLine
-        //        );
-        //    }
-        //    catch { }
-        //}
-
-
-        //public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName,string status)
-        //{
-        //    if (Session["userid"] == null)
-        //        return RedirectToAction("Index");
-
-        //    if (string.IsNullOrEmpty(CampaignName))
-        //    {
-        //        TempData["ErrorMessage"] = "Please select a Campaign before uploading.";
-        //        return RedirectToAction("CentralBlast");
-        //    }
-
-        //    if (excelFile == null || excelFile.ContentLength <= 0)
-        //    {
-        //        TempData["ErrorMessage"] = "Please upload a valid Excel file.";
-        //        return RedirectToAction("CentralBlast");
-        //    }
-
-        //    try
-        //    {
-        //        using (var stream = excelFile.InputStream)
-        //        using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
-        //        {
-        //            WorkbookPart workbookPart = document.WorkbookPart;
-        //            Sheet sheet = workbookPart.Workbook.Sheets.GetFirstChild<Sheet>();
-        //            WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
-        //            SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
-
-        //            string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        //            //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=Webinar;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
-
-
-        //            using (SqlConnection con = new SqlConnection(conStr))
-        //            {
-        //                con.Open();
-
-        //                foreach (Row row in sheetData.Elements<Row>().Skip(1)) // skip header
-        //                {
-        //                    // READ ALL CELLS SAFELY
-        //                    string name = GetCellValue(document, row, "B");
-        //                    string mobile = GetCellValue(document, row, "C");
-        //                    string typeOfData = GetCellValue(document, row, "D");
-        //                    string l1CodeText = GetCellValue(document, row, "E");
-        //                    string l1Name = GetCellValue(document, row, "F");
-        //                    string channel = GetCellValue(document, row, "G");
-
-        //                    // --- Normalize Mobile Number ---
-        //                    mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
-
-        //                    if (string.IsNullOrWhiteSpace(mobile))
-        //                        continue;
-
-        //                    // Ensure country code
-        //                    if (mobile.Length == 10)
-        //                        mobile = "+91" + mobile;
-        //                    else if (mobile.StartsWith("91"))
-        //                        mobile = "+" + mobile;
-        //                    else if (!mobile.StartsWith("+"))
-        //                        mobile = "+91" + mobile;
-
-        //                    // Convert L1 Code
-        //                    int l1Code = 0;
-        //                    int.TryParse(l1CodeText, out l1Code);
-
-        //                    // Insert into DB
-        //                    using (SqlCommand cmd = new SqlCommand(@"
-        //                INSERT INTO CENTRAL_BLAST 
-        //                (Name, Contact_Number, Type_Of_Data, L1_Code, L1_Name, Channel, CampaignName)
-        //                VALUES 
-        //                (@Name, @Contact_Number, @Type_Of_Data, @L1_Code, @L1_Name, @Channel, @CampaignName)", con))
-        //                    {
-        //                        cmd.Parameters.AddWithValue("@Name", name);
-        //                        cmd.Parameters.AddWithValue("@Contact_Number", mobile);
-        //                        cmd.Parameters.AddWithValue("@Type_Of_Data", typeOfData);
-        //                        cmd.Parameters.AddWithValue("@L1_Code", l1Code);
-        //                        cmd.Parameters.AddWithValue("@L1_Name", l1Name);
-        //                        cmd.Parameters.AddWithValue("@Channel", channel);
-        //                        cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
-
-        //                        cmd.ExecuteNonQuery();
-        //                    }
-
-        //                    using (SqlCommand cmd = new SqlCommand(@"
-        //                        INSERT INTO CampaignResponses
-        //                        (Mobile, CampaignName, Response, CreatedDate)
-        //                        VALUES 
-        //                        (@Mobile, @CampaignName, 'Pending', GETDATE())", con))
-        //                    {
-        //                        cmd.Parameters.AddWithValue("@Mobile", mobile);
-        //                        cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
-        //                        cmd.ExecuteNonQuery();
-        //                    }
-
-
-        //                    // SEND WHATSAPP (one-by-one for all rows)
-        //                    await SendWhatsAppMessageAsync(mobile, CampaignName);
-        //                    //await SendWhatsAppMessageAsync(mobile, CampaignName, status);
-
-        //                }
-
-        //                con.Close();
-        //            }
-        //        }
-
-        //        TempData["SuccessMessage"] = "Data saved & WhatsApp messages sent to ALL contacts!";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["ErrorMessage"] = "Error: " + ex.Message;
-        //    }
-
-        //    return RedirectToAction("CentralBlast");
-        //}
-
-
-
-        //private string GetCellValue(SpreadsheetDocument document, Row row, string columnName)
-        //{
-        //    if (row == null) return "";
-
-        //    string cellRef = columnName + row.RowIndex;
-
-        //    Cell cell = row.Elements<Cell>()
-        //                   .FirstOrDefault(c => c.CellReference != null &&
-        //                                        c.CellReference.Value == cellRef);
-
-        //    if (cell == null)
-        //        return "";
-
-        //    // If the cell has a value
-        //    string value = cell.CellValue?.InnerText;
-        //    if (value == null)
-        //        return "";
-
-        //    // Shared string
-        //    if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
-        //    {
-        //        return document.WorkbookPart.SharedStringTablePart
-        //                       .SharedStringTable
-        //                       .ElementAt(int.Parse(value))
-        //                       .InnerText;
-        //    }
-
-        //    // Inline string
-        //    if (cell.DataType != null && cell.DataType.Value == CellValues.InlineString)
-        //    {
-        //        return cell.InnerText;
-        //    }
-
-        //    // Numeric / normal value
-        //    return value;
-        //}
-
-        //==========================================
-
-        //public void SaveTicketToDB(string mobile, string campaign, string status, string ticketId)
-        //{
-        //    using (rglinixm_relEntities db = new rglinixm_relEntities())
-        //    {
-        //        var obj = new LeadTicketHistory();
-        //        obj.Mobile = mobile;
-        //        obj.CampaignName = campaign;
-        //        obj.Status = status;
-        //        obj.TicketId = ticketId;
-        //        obj.CreatedDate = DateTime.Now;
-
-        //        db.LeadTicketHistories.Add(obj);
-        //        db.SaveChanges();
-        //    }
-        //}
-
-
-
-        //private async Task SendWhatsAppMessageAsync(string mobileNumber, string CampaignName, string status)
-        //{
-        //     📌 Pehle LeadSquared me Opportunity Save karo
-        //    string ticketId = await SendToLeadSquaredAsync(mobileNumber, CampaignName, status);
-
-        //     📌 TicketId ko Database me Save karo
-        //    SaveTicketToDB(mobileNumber, CampaignName, status, ticketId);
-
-        //     📌 WhatsApp Message Sending
         //    var apiUrl = "https://kapi.omni-channel.in/fe/api/v1/iPMessage/One2Many";
-
+        //    //string imageLink = GetCampaignImage(campaign_master_id);
         //    var requestBody = new
         //    {
         //        mode = "waba",
         //        wabaPhoneNumber = "+919220363790",
-        //        wabaTemplateId = "388940",
+        //        wabaTemplateId = "437824",   
         //        campId = "66012",
         //        unicode = false,
         //        shortMessages = new[]
         //        {
-        //    new {
+        //    new
+        //    {
         //        recipient = mobileNumber,
-        //        corelationId = ticketId,       // <-- TicketId WhatsApp ke sath bhi bhej diya
-        //        context = new {
-        //            waba_var1 = CampaignName
+        //        corelationId = "1234667",
+        //        context = new
+        //        {
+        //            waba_name = name,                
+        //            waba_campaign = campaignName,
+        //            waba_link = !string.IsNullOrEmpty(imageLink) ? imageLink : ""
         //        }
         //    }
         //}
@@ -7903,59 +7783,81 @@ string input_name, string input_mobile, string input_email)
         //    using (var client = new HttpClient())
         //    {
         //        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        //        client.DefaultRequestHeaders.Clear();
         //        client.DefaultRequestHeaders.Add("Authorization", "Basic UmVsaWFuY2VXQUJBOjhVMU5x");
 
-        //        await client.PostAsync(apiUrl, content);
+        //        try
+        //        {
+        //            var response = await client.PostAsync(apiUrl, content);
+        //            string result = await response.Content.ReadAsStringAsync();
+
+        //            System.Diagnostics.Debug.WriteLine("WhatsApp Msg Response: " + result);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            System.Diagnostics.Debug.WriteLine($"WhatsApp API Error: {ex.Message}");
+        //        }
         //    }
         //}
 
 
-        private async Task SendWhatsAppMessageAsync(string mobileNumber, string CampaignName)
+        public string GetCampaignImageUrl(string campaignName)
         {
-            var apiUrl = "https://kapi.omni-channel.in/fe/api/v1/iPMessage/One2Many";
+            string imageName = "";
+            string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+             //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
-            var requestBody = new
+            using (SqlConnection con = new SqlConnection(conStr))
             {
-                mode = "waba",
-                wabaPhoneNumber = "+919220363790",
-                wabaTemplateId = "388940",   // Updated as per your CURL
-                campId = "66012",
-                unicode = false,
-                shortMessages = new[]
-                {
-            new {
-                recipient = mobileNumber,
-                corelationId = "1234667",
-                context = new {
-                    waba_var1 =CampaignName
+                string query = @"SELECT TOP 1 campaign_master_images 
+                         FROM campaign_master 
+                         WHERE CampaignName = @campaignName";
 
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@campaignName", campaignName);
+
+                con.Open();
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                {
+                    imageName = result.ToString();
                 }
             }
+
+            if (string.IsNullOrEmpty(imageName))
+                return "";
+
+           
+            //using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
+            //{
+            //    string query = @"SELECT TOP 1 campaign_master_images 
+            //             FROM campaign_master 
+            //             WHERE CampaignName = @campaignName";
+
+            //    SqlCommand cmd = new SqlCommand(query, con);
+            //    cmd.Parameters.AddWithValue("@campaignName", campaignName);
+
+            //    con.Open();
+            //    var result = cmd.ExecuteScalar();
+
+            //    if (result != null)
+            //    {
+            //        imageName = result.ToString();
+            //    }
+            //}
+
+            //if (string.IsNullOrEmpty(imageName))
+            //    return "";
+
+            string baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
+            string imagePath = "Content/images/campaign/";
+
+            return baseUrl + imagePath + imageName;
         }
-            };
 
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
 
-            using (var client = new HttpClient())
-            {
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", "Basic UmVsaWFuY2VXQUJBOjhVMU5x");
-
-                try
-                {
-                    var response = await client.PostAsync(apiUrl, content);
-                    string result = await response.Content.ReadAsStringAsync();
-
-                    System.Diagnostics.Debug.WriteLine("WhatsApp Msg Response: " + result);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"WhatsApp API Error: {ex.Message}");
-                }
-            }
-        }
         //========================================
         //public async Task<string> SendToLeadSquaredAsync(string phone, string campaignName, string status)
         //{
@@ -8017,169 +7919,6 @@ string input_name, string input_mobile, string input_email)
         //        return ticketId;
         //    }
         //}
-
-
-
-        //=============================
-        //private async Task SendWhatsAppMessageAsync(string mobileNumber, string source, string name)
-        //{
-        //    var apiUrl = "https://kapi.omni-channel.in/fe/api/v1/iPMessage/One2Many";
-
-        //    // JSON Body बनाना
-        //    var requestBody = new
-        //    {
-        //        mode = "waba",
-        //        wabaPhoneNumber = "+919220363790",
-        //        wabaTemplateId = "381660",
-        //        campId = "66012",
-        //        unicode = false,
-        //        shortMessages = new[]
-        //        {
-        //    new {
-        //        recipient = mobileNumber,
-        //        corelationId = "1234667",
-        //        context = new {
-        //            // अगर template variables हैं तो yaha pass करेंगे
-        //            // Example: param1 = name, param2 = source
-        //        }
-        //    }
-        //}
-        //    };
-
-        //    string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
-
-        //    using (var client = new HttpClient())
-        //    {
-        //        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        //        // Add Headers
-        //        content.Headers.Clear();
-        //        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-        //        client.DefaultRequestHeaders.Clear();
-        //        client.DefaultRequestHeaders.Add("Authorization", "Basic UmVsaWFuY2VXQUJBOjhVMU5x");
-
-        //        try
-        //        {
-        //            var response = await client.PostAsync(apiUrl, content);
-        //            string result = await response.Content.ReadAsStringAsync();
-
-        //            System.Diagnostics.Debug.WriteLine("WhatsApp Msg Response: " + result);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            System.Diagnostics.Debug.WriteLine($"WhatsApp API Error: {ex.Message}");
-        //        }
-        //    }
-        //}
-        //=========================
-
-        //private async Task SendWhatsAppMessageAsync(string Contact_Number, string source, string name)
-        //{
-        //    var url = "https://kapi.omni-channel.in/fe/api/v1/iPMessage/One2Many";
-
-        //    var payload = new
-        //    {
-        //        mode = "waba",
-        //        wabaPhoneNumber = "+919027586766",
-        //        wabaTemplateId = "385610",
-        //        campId = "66012",
-        //        unicode = false,
-        //        shortMessages = new[]
-        //        {
-        //    new {
-        //        recipient = Contact_Number,
-        //        corelationId = "1234667",
-        //        context = new {
-        //            waba_var1 = source,  // old 2nd parameter
-        //            waba_var2 = name     // old 3rd parameter
-        //        }
-        //    }
-        //}
-        //    };
-
-        //    string json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
-
-        //    using (var client = new HttpClient())
-        //    {
-        //        client.DefaultRequestHeaders.Clear();
-        //        client.DefaultRequestHeaders.Add("Authorization", "Basic UmVsaWFuY2VXQUJBOjhVMU5x");
-
-        //        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-        //        try
-        //        {
-        //            var response = await client.PostAsync(url, content);
-        //            string result = await response.Content.ReadAsStringAsync();
-
-        //            System.Diagnostics.Debug.WriteLine("WhatsApp Response: " + result);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            System.Diagnostics.Debug.WriteLine("WhatsApp Error: " + ex.Message);
-        //        }
-        //    }
-        //}
-
-
-
-
-        //private async Task SendWhatsAppMessageAsync(string mobileNumber, string source, string name)
-        //{
-
-        //    string envelope = $@"
-        //       <soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" 
-        //                  xmlns:tem=""http://tempuri.org/"" 
-        //                  xmlns:gup=""http://schemas.datacontract.org/2004/07/GupShupWhatsappService"">
-        //         <soapenv:Body>
-        //      <tem:GupShupSendMediaNotification>
-        //         <tem:RecipentNumber>{mobileNumber}</tem:RecipentNumber>
-        //      <tem:Message>Jan25_InstaNACH1</tem:Message> 
-        //     <tem:Source>{source}</tem:Source>
-        //         <tem:paraList>
-        //            <gup:Paramter1>{name}</gup:Paramter1>
-        //         </tem:paraList>
-        //         <tem:MediaURL>https://customerdocs.reliancenipponlife.com/WHATSAPP/UploadedFiles/160125_RNLIC_InstaNACH Features_01-01.jpg</tem:MediaURL>
-        //         <tem:fileName>160125_RNLIC_InstaNACH Features_01-01.jpg</tem:fileName>
-        //         <tem:btnActionURL></tem:btnActionURL>
-        //         <tem:Seq1>https://youtu.be/q7mSwl8-4A0</tem:Seq1>
-        //         <tem:Seq1Type>CTA</tem:Seq1Type>
-        //         <tem:Seq2>https://customer.reliancenipponlife.com/Enach</tem:Seq2>
-        //         <tem:Seq2Type>CTA</tem:Seq2Type>
-        //         <tem:Seq3></tem:Seq3>
-        //         <tem:Seq3Type></tem:Seq3Type>
-        //         <tem:Seq4></tem:Seq4>
-        //         <tem:Seq4Type></tem:Seq4Type>
-        //         <tem:Seq5></tem:Seq5>
-        //         <tem:Seq5Type></tem:Seq5Type>
-        //         <tem:Seq6></tem:Seq6>
-        //         <tem:Seq6Type></tem:Seq6Type>
-        //      </tem:GupShupSendMediaNotification>
-        //   </soapenv:Body>
-        //</soapenv:Envelope>";
-
-        //    using (var client = new HttpClient())
-        //    {
-        //        var content = new StringContent(envelope, Encoding.UTF8, "text/xml");
-        //        content.Headers.Add("SOAPAction", "http://tempuri.org/IGupshupService/GupShupSendMediaNotification");
-        //        //content.Headers.Add("Authorization", "Basic UmVsaWFuY2VXQUJBOjhVMU5x");
-        //        try
-        //        {
-        //            //var response = await client.PostAsync("https://kapi.omni-channel.in/fe/api/v1/iPMessage/One2Many", content);
-        //             var response = await client.PostAsync("https://hrconnectsit.reliancenipponlife.com/Gupshup/GupshupService.svc", content);
-        //            string result = await response.Content.ReadAsStringAsync();
-        //            System.Diagnostics.Debug.WriteLine("WhatsApp Msg Response: " + result);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            System.Diagnostics.Debug.WriteLine($"WhatsApp API Error: {ex.Message}");
-        //        }
-        //    }
-        //}
-
-
-
-
 
 
 
@@ -8579,7 +8318,6 @@ string input_name, string input_mobile, string input_email)
                     return View(data);
                 }
 
-                // 🔹 Fetch Category Name
                 var categoryName = (from cm in db.campaign_master
                                     join cc in db.campaign_category
                                     on cm.campaign_category_id equals cc.campaign_category_id
@@ -8594,8 +8332,10 @@ string input_name, string input_mobile, string input_email)
                     return View(data);
                 }
 
-                var lsqChannels = new List<string> { "AG", "DB", "DL", "DP", "PC", "PM" };
-                var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
+                //var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
+                //var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
+                var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
+                var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
 
                 string apiRequestId = null;
                 string rawJson = "";
@@ -8617,12 +8357,15 @@ string input_name, string input_mobile, string input_email)
                     var result = await TestAPI_SE(
                         data.leads_name,
                         data.leads_mobile.ToString(),
+                        //data.leads_sapcode,
                         SAPCODE,
                         sapName,
                         categoryName);
 
+                    //apiRequestId = result.Response?.RequestId;
+                    //rawJson = null;
                     apiRequestId = result.Response?.RequestId;
-                    rawJson = null;
+                    rawJson = result.RawJson;
                 }
                 else
                 {
@@ -9686,10 +9429,6 @@ string input_name, string input_mobile, string input_email)
             return PartialView("_Campaign");
         }
 
-
-
-
-
         //[ChildActionOnly]
         //public ActionResult GetCampaign(decimal cam_cat_id)
         //{
@@ -9710,10 +9449,6 @@ string input_name, string input_mobile, string input_email)
         //}
 
 
-
-
-
-
         [ChildActionOnly]
         public ActionResult GetCategory(decimal cat_id)
         {
@@ -9722,9 +9457,6 @@ string input_name, string input_mobile, string input_email)
             ///ViewBag.lstpcampaign = db.campaigns.Where(x => x.campaign_delflag == null && x.campaign_category_id == cat_id).ToList();
             return PartialView("_Category");
         }
-
-
-
 
 
         [ChildActionOnly]
@@ -9785,21 +9517,31 @@ string input_name, string input_mobile, string input_email)
                 ViewBag.dt1 = dt1;
                 ViewBag.dt2 = dt2;
 
-                ViewBag.lstChannel = (from a in db.NEW_TEMP_HIERARCHY
-                                      where a.X_SM_STATUS == "if"
-                                      select new
-                                      {
-                                          channelname = a.X_CHANNEL
-                                      }).ToList().Distinct();
+                //ViewBag.lstChannel = (from a in db.NEW_TEMP_HIERARCHY
+                //                      where a.X_SM_STATUS == "if"
+                //                      select new
+                //                      {
+                //                          channelname = a.X_CHANNEL
+                //                      }).ToList().Distinct();
+                ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
+                .Where(a => a.X_SM_STATUS == "if" && a.X_CHANNEL != null)
+                .Select(a => a.X_CHANNEL)
+                .Distinct()
+                .ToList();
 
-                ViewBag.lstZone = (from a in db.NEW_TEMP_HIERARCHY
-                                   where a.X_SM_STATUS == "if"
-                                   where a.X_ZONE != null
-                                   select new
-                                   {
-                                       zonename = a.X_ZONE
-                                   }).ToList().Distinct();
 
+                //ViewBag.lstZone = (from a in db.NEW_TEMP_HIERARCHY
+                //                   where a.X_SM_STATUS == "if"
+                //                   where a.X_ZONE != null
+                //                   select new
+                //                   {
+                //                       zonename = a.X_ZONE
+                //                   }).ToList().Distinct();
+                     ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
+                    .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
+                    .Select(a => a.X_ZONE.Trim())
+                    .Distinct()
+                    .ToList();
 
 
 
@@ -9827,46 +9569,81 @@ string input_name, string input_mobile, string input_email)
         [HttpPost]
         public ActionResult DateWiseShare(string fromdate, string todate, string channel, string zone)
         {
+            log.Info("DateWiseShare method started");
 
-            DateTime dt1 = Convert.ToDateTime(fromdate);
-            DateTime dt2 = Convert.ToDateTime(todate);
+            try
+            {
+                log.Info($"Input => fromdate: {fromdate}, todate: {todate}, channel: {channel}, zone: {zone}");
 
+                DateTime dt1, dt2;
 
-            ViewBag.dt1 = dt1;
-            ViewBag.dt2 = dt2;
-            ViewBag.channel = channel;
-            ViewBag.zone = zone;
+                // ✅ Date parsing (server safe)
+                if (!DateTime.TryParseExact(fromdate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt1))
+                {
+                    log.Error("Invalid From Date");
+                    return Content("Invalid From Date");
+                }
 
-            ViewBag.lstChannel = (from a in db.NEW_TEMP_HIERARCHY
-                                  where a.X_SM_STATUS == "if"
-                                  select new
-                                  {
-                                      channelname = a.X_CHANNEL
-                                  }).ToList().Distinct();
+                if (!DateTime.TryParseExact(todate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt2))
+                {
+                    log.Error("Invalid To Date");
+                    return Content("Invalid To Date");
+                }
 
-            ViewBag.lstZone = (from a in db.NEW_TEMP_HIERARCHY
-                               where a.X_SM_STATUS == "if"
-                               where a.X_ZONE != null
-                               select new
-                               {
-                                   zonename = a.X_ZONE
-                               }).ToList().Distinct();
+                ViewBag.dt1 = dt1;
+                ViewBag.dt2 = dt2;
+                ViewBag.channel = channel;
+                ViewBag.zone = zone;
 
+                // ✅ Channel dropdown (STRING LIST)
+                //ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
+                //    .Where(a => a.X_SM_STATUS == "if")
+                //    .Select(a => a.X_CHANNEL)
+                //    .Distinct()
+                //    .ToList();
+                // ✅ Channel dropdown (STRING ONLY)
+                ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
+                    .Where(a => a.X_SM_STATUS == "if" && a.X_CHANNEL != null)
+                    .Select(a => a.X_CHANNEL.Trim())
+                    .Distinct()
+                    .ToList();
 
-            var sharecount = (from p in db.ENGAGE_SHARECOUNT
-                              where p.SHC_DATE >= dt1 && p.SHC_DATE <= dt2
-                              where p.SHC_DATE != null
-                              group p by new
-                              {
-                                  p.SHC_SAPCODE
-                              }
-                            into g
-                              select new CustomModel.ViewGroupByShare
-                              {
-                                  count = g.Count(),
-                                  sapcode = g.Key.SHC_SAPCODE
-                              }).ToList();
-            return View(sharecount);
+                // ✅ Zone dropdown (STRING LIST)
+                //ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
+                //    .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
+                //    .Select(a => a.X_ZONE)
+                //    .Distinct()
+                //    .ToList();
+                ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
+                .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
+                .Select(a => a.X_ZONE.Trim())
+                .Distinct()
+                 .ToList();
+
+                log.Info("Dropdown data loaded");
+
+                // ✅ Main data
+                var sharecount = db.ENGAGE_SHARECOUNT
+                    .Where(p => p.SHC_DATE.HasValue &&
+                                p.SHC_DATE.Value >= dt1 &&
+                                p.SHC_DATE.Value <= dt2)
+                    .GroupBy(p => p.SHC_SAPCODE)
+                    .Select(g => new CustomModel.ViewGroupByShare
+                    {
+                        count = g.Count(),
+                        sapcode = g.Key
+                    })
+                    .ToList();
+
+                log.Info($"Records fetched: {sharecount.Count}");
+
+                return View(sharecount);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error in DateWiseShare", ex);
+                return Content("Error occurred. Check logs.");
+            }
         }
 
         [ChildActionOnly]
@@ -9877,36 +9654,24 @@ string input_name, string input_mobile, string input_email)
             ViewBag.sapcode = sapcode;
             ViewBag.rqstchannel = channel;
             ViewBag.rqstzone = zone;
-
+            ViewBag.dt1 = fd;
+            ViewBag.dt2 = td;
 
             DateTime dt1 = Convert.ToDateTime(fd);
             DateTime dt2 = Convert.ToDateTime(td);
 
+            // ✅ Step 1: Get Hierarchy (ZONE + CHANNEL)
+            var hierarchy = db.NEW_TEMP_HIERARCHY.FirstOrDefault(x =>
+                x.X_ZM_EMP_CD == sapcode ||
+                x.X_RM_EMP_EMP_CD == sapcode ||
+                x.X_BM_EMP_CD == sapcode ||
+                x.X_SM_EMP_CD == sapcode
+            );
 
-
-            if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_ZM_EMP_CD == sapcode).FirstOrDefault() != null)
+            if (hierarchy != null)
             {
-                var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_ZM_EMP_CD == sapcode).FirstOrDefault();
-                ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
-                ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
-            }
-            else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_RM_EMP_EMP_CD == sapcode).FirstOrDefault() != null)
-            {
-                var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_RM_EMP_EMP_CD == sapcode).FirstOrDefault();
-                ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
-                ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
-            }
-            else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_BM_EMP_CD == sapcode).FirstOrDefault() != null)
-            {
-                var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_BM_EMP_CD == sapcode).FirstOrDefault();
-                ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
-                ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
-            }
-            else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_SM_EMP_CD == sapcode).FirstOrDefault() != null)
-            {
-                var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_SM_EMP_CD == sapcode).FirstOrDefault();
-                ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
-                ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+                ViewBag.zone = hierarchy.X_ZONE;
+                ViewBag.channel = hierarchy.X_CHANNEL;
             }
             else
             {
@@ -9914,17 +9679,146 @@ string input_name, string input_mobile, string input_email)
                 ViewBag.channel = "-";
             }
 
+            // ✅ Step 2: Share Count (ENGAGE_SHARECOUNT based)
+            var shareCount = db.ENGAGE_SHARECOUNT
+                .Where(e => e.SHC_SAPCODE == sapcode
+                         && e.SHC_DATE >= dt1
+                         && e.SHC_DATE <= dt2)
+                .GroupBy(e => new { e.SHC_SAPCODE })
+                .Select(g => new
+                {
+                    SHC_SAPCODE = g.Key.SHC_SAPCODE,
+                    ShareCount = g.Count()
+                })
+                .FirstOrDefault();
 
-
-
-            ViewBag.lstLeads = (from a in db.Leads
-                                where a.leads_sapcode == sapcode
-                                where a.leads_date >= dt1 && a.leads_date <= dt2
-                                select a).Count();
+            ViewBag.lstLeads = shareCount != null ? shareCount.ShareCount : 0;
 
             return PartialView("_LeadRecords");
-
         }
+
+        //[ChildActionOnly]
+        //public ActionResult GetLeadRecord(int srno, string fd, string td, string sapcode, string sharecount, string channel, string zone)
+        //{
+        //    ViewBag.id = srno;
+        //    ViewBag.sharecount = sharecount;
+        //    ViewBag.sapcode = sapcode;
+        //    ViewBag.rqstchannel = channel;
+        //    ViewBag.rqstzone = zone;
+
+
+        //    DateTime dt1 = Convert.ToDateTime(fd);
+        //    DateTime dt2 = Convert.ToDateTime(td);
+
+
+
+        //    if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_ZM_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_ZM_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_RM_EMP_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_RM_EMP_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_BM_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_BM_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_SM_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_SM_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else
+        //    {
+        //        ViewBag.zone = "-";
+        //        ViewBag.channel = "-";
+        //    }
+
+
+
+
+        //    ViewBag.lstLeads = (from a in db.Leads
+        //                        where a.leads_sapcode == sapcode
+        //                        where a.leads_date >= dt1 && a.leads_date <= dt2
+        //                        select a).Count();
+
+        //    return PartialView("_LeadRecords");
+
+        //}
+
+
+
+
+
+
+
+
+///================================================================
+
+
+        //[ChildActionOnly]
+        //public ActionResult GetLeadRecord(int srno, string fd, string td, string sapcode, string sharecount, string channel, string zone)
+        //{
+        //    ViewBag.id = srno;
+        //    ViewBag.sharecount = sharecount;
+        //    ViewBag.sapcode = sapcode;
+        //    ViewBag.rqstchannel = channel;
+        //    ViewBag.rqstzone = zone;
+        //    ViewBag.dt1 = fd;
+        //    ViewBag.dt2 = td;
+
+        //    DateTime dt1 = Convert.ToDateTime(fd);
+        //    DateTime dt2 = Convert.ToDateTime(td);
+
+
+
+        //    if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_ZM_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_ZM_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_RM_EMP_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_RM_EMP_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_BM_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_BM_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else if (db.NEW_TEMP_HIERARCHY.Where(x => x.X_SM_EMP_CD == sapcode).FirstOrDefault() != null)
+        //    {
+        //        var NEW_TEMP_HIERARCHY = db.NEW_TEMP_HIERARCHY.Where(x => x.X_SM_EMP_CD == sapcode).FirstOrDefault();
+        //        ViewBag.zone = NEW_TEMP_HIERARCHY.X_ZONE;
+        //        ViewBag.channel = NEW_TEMP_HIERARCHY.X_CHANNEL;
+        //    }
+        //    else
+        //    {
+        //        ViewBag.zone = "-";
+        //        ViewBag.channel = "-";
+        //    }
+
+        //    ViewBag.lstLeads = (from a in db.Leads
+        //                        where a.leads_sapcode == sapcode
+        //                        where a.leads_date >= dt1 && a.leads_date <= dt2
+
+        //                        select a).Count();
+
+        //    return PartialView("_LeadRecords");
+
+        //}
 
 
 
@@ -9933,7 +9827,6 @@ string input_name, string input_mobile, string input_email)
 
 
         ///----------------------
-
         public ActionResult LeadCampaign()
         {
             if (Session["userid"] == null)
@@ -9941,72 +9834,63 @@ string input_name, string input_mobile, string input_email)
                 return RedirectToAction("Index");
             }
 
-            // Check if subchannel is assigned for Sub-Admin(Read-Only)
             string userRole = Session["role"]?.ToString()?.ToLower();
+
+            // ✅ Subadmin readonly check
             if (userRole == "subadmin_readonly" && string.IsNullOrEmpty(Session["subchannel"]?.ToString()))
             {
                 TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
                 return RedirectToAction("Index");
             }
 
-            DateTime dt1 = DateTime.UtcNow.AddMinutes(330); // IST offset
-            DateTime dt2 = DateTime.UtcNow.AddMinutes(330);
+            // ✅ IST Date (Better way)
+            DateTime dt1 = DateTime.Now.Date;
+            DateTime dt2 = DateTime.Now.Date.AddDays(1).AddTicks(-1);
 
-            // Set ViewBag.X_CHANNEL based on user role
-            ViewBag.X_CHANNEL = userRole == "admin" || userRole == "subadmin_creator"
-                ? "" // Admins and Sub-Admin(Creator) see all data
-                : Session["subchannel"]?.ToString() ?? ""; // Sub-Admin(Read-Only) filtered by subchannel
+            // ✅ Channel logic fix
+            string xChannel = "";
 
-            // Fetch dropdowns
+            if (userRole == "admin" || userRole == "subadmin_creator")
+                xChannel = "";
+            else
+                xChannel = Session["subchannel"]?.ToString();
+
+            ViewBag.X_CHANNEL = xChannel;
+
+            // ✅ Dropdowns
             ViewBag.Channels = db.NEW_TEMP_HIERARCHY
                 .Select(t => t.X_CHANNEL)
-                .Distinct()
                 .Where(c => !string.IsNullOrEmpty(c))
+                .Distinct()
                 .OrderBy(c => c)
                 .ToList();
 
-            //ViewBag.CampaignCategories = db.campaign_category
-            //    .Select(c => c.campaign_category_name)
-            //    .Distinct()
-            //    .OrderBy(c => c)
-            //    .ToList();
-
             ViewBag.CampaignCategories = db.campaign_category
-    .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
-    .Select(c => c.campaign_category_name)
-    .OrderBy(name => name)
-        .Distinct()
-    .ToList();
-
-
-
-
-
-
-            //ViewBag.SubCampaigns = db.subcampaigns
-            //    .Select(s => s.subcampaign_name)
-            //    .Distinct()
-            //    .OrderBy(s => s)
-            //    .ToList();
+                .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
+                .Select(c => c.campaign_category_name)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToList();
 
             ViewBag.SubCampaigns = db.subcampaigns
-    .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
-    .Select(s => s.subcampaign_name)
-    .Distinct()
-    .OrderBy(name => name)
-    .ToList();
-
+                .Where(s => s.subcampaign_delflag == null)
+                .Select(s => s.subcampaign_name)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToList();
 
             ViewBag.dt1 = dt1;
             ViewBag.dt2 = dt2;
             ViewBag.SubCampaignName = "";
             ViewBag.CampaignCategoryName = "";
 
-            var lstLeads = GetLeads(dt1, dt2, ViewBag.X_CHANNEL, null, null);
+            // ✅ IMPORTANT: null bhejo, empty string nahi
+            var lstLeads = GetLeads(dt1, dt2, xChannel, null, null);
             ViewBag.lstLeads = lstLeads;
 
             return View();
         }
+
 
         [HttpPost]
         public ActionResult LeadCampaign(string fromdate, string todate, string X_CHANNEL, string SubCampaignName, string CampaignCategoryName)
@@ -10016,124 +9900,324 @@ string input_name, string input_mobile, string input_email)
                 return RedirectToAction("Index");
             }
 
-            // Check if subchannel is assigned for Sub-Admin(Read-Only)
             string userRole = Session["role"]?.ToString()?.ToLower();
+
+            // ✅ Subadmin readonly check
             if (userRole == "subadmin_readonly" && string.IsNullOrEmpty(Session["subchannel"]?.ToString()))
             {
                 TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
                 return RedirectToAction("Index");
             }
 
-            DateTime dt1 = Convert.ToDateTime(fromdate);
-            DateTime dt2 = Convert.ToDateTime(todate).AddDays(1).AddTicks(-1);
+            // ✅ Date fix (important)
+            DateTime dt1 = Convert.ToDateTime(fromdate).Date;
+            DateTime dt2 = Convert.ToDateTime(todate).Date.AddDays(1).AddTicks(-1);
 
-            // Set ViewBag.X_CHANNEL based on user role
-            ViewBag.X_CHANNEL = userRole == "admin" ? (X_CHANNEL ?? "") // Admins can filter by channel
-                : userRole == "subadmin_creator" ? "" // Sub-Admin(Creator) ignores subchannel
-                : Session["subchannel"]?.ToString() ?? ""; // Sub-Admin(Read-Only) filtered by subchannel
+            // ✅ Channel logic (FIXED)
+            string xChannel = "";
 
-            // Fetch dropdowns
+            if (userRole == "admin")
+                xChannel = string.IsNullOrEmpty(X_CHANNEL) ? null : X_CHANNEL;
+            else if (userRole == "subadmin_creator")
+                xChannel = null;
+            else
+                xChannel = Session["subchannel"]?.ToString();
+
+            ViewBag.X_CHANNEL = xChannel;
+
+            // ✅ Dropdowns (same as GET)
             ViewBag.Channels = db.NEW_TEMP_HIERARCHY
                 .Select(t => t.X_CHANNEL)
-                .Distinct()
                 .Where(c => !string.IsNullOrEmpty(c))
+                .Distinct()
                 .OrderBy(c => c)
                 .ToList();
 
-            //ViewBag.CampaignCategories = db.campaign_category
-            //    .Select(c => c.campaign_category_name)
-            //    .Distinct()
-            //    .OrderBy(c => c)
-            //    .ToList();
             ViewBag.CampaignCategories = db.campaign_category
-  .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
-  .Select(c => c.campaign_category_name)
-  .OrderBy(name => name)
-  .Distinct()
-  .ToList();
+                .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
+                .Select(c => c.campaign_category_name)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToList();
 
-            //ViewBag.SubCampaigns = db.subcampaigns
-            //    .Select(s => s.subcampaign_name)
-            //    .Distinct()
-            //    .OrderBy(s => s)
-            //    .ToList();
             ViewBag.SubCampaigns = db.subcampaigns
-    .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
-    .Select(s => s.subcampaign_name)
-    .Distinct()
-    .OrderBy(name => name)
-    .ToList();
-
+                .Where(s => s.subcampaign_delflag == null)
+                .Select(s => s.subcampaign_name)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToList();
 
             ViewBag.dt1 = dt1;
             ViewBag.dt2 = dt2;
             ViewBag.SubCampaignName = SubCampaignName ?? "";
             ViewBag.CampaignCategoryName = CampaignCategoryName ?? "";
 
-            var lstLeads = GetLeads(dt1, dt2, ViewBag.X_CHANNEL, SubCampaignName, CampaignCategoryName);
+            // ✅ IMPORTANT: empty → null convert
+            var lstLeads = GetLeads(
+                dt1,
+                dt2,
+                xChannel,
+                string.IsNullOrEmpty(SubCampaignName) ? null : SubCampaignName,
+                string.IsNullOrEmpty(CampaignCategoryName) ? null : CampaignCategoryName
+            );
+
             ViewBag.lstLeads = lstLeads;
 
             return View();
         }
+        //      public ActionResult LeadCampaign()
+        //      {
+        //          if (Session["userid"] == null)
+        //          {
+        //              return RedirectToAction("Index");
+        //          }
+
+        //          // Check if subchannel is assigned for Sub-Admin(Read-Only)
+        //          string userRole = Session["role"]?.ToString()?.ToLower();
+        //          if (userRole == "subadmin_readonly" && string.IsNullOrEmpty(Session["subchannel"]?.ToString()))
+        //          {
+        //              TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
+        //              return RedirectToAction("Index");
+        //          }
+
+        //          DateTime dt1 = DateTime.UtcNow.AddMinutes(330); // IST offset
+        //          DateTime dt2 = DateTime.UtcNow.AddMinutes(330);
+
+        //          // Set ViewBag.X_CHANNEL based on user role
+        //          ViewBag.X_CHANNEL = userRole == "admin" || userRole == "subadmin_creator"
+        //              ? "" // Admins and Sub-Admin(Creator) see all data
+        //              : Session["subchannel"]?.ToString() ?? ""; // Sub-Admin(Read-Only) filtered by subchannel
+
+        //          // Fetch dropdowns
+        //          ViewBag.Channels = db.NEW_TEMP_HIERARCHY
+        //              .Select(t => t.X_CHANNEL)
+        //              .Distinct()
+        //              .Where(c => !string.IsNullOrEmpty(c))
+        //              .OrderBy(c => c)
+        //              .ToList();
+
+        //          //ViewBag.CampaignCategories = db.campaign_category
+        //          //    .Select(c => c.campaign_category_name)
+        //          //    .Distinct()
+        //          //    .OrderBy(c => c)
+        //          //    .ToList();
+
+        //          ViewBag.CampaignCategories = db.campaign_category
+        //  .Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
+        //  .Select(c => c.campaign_category_name)
+        //  .OrderBy(name => name)
+        //      .Distinct()
+        //  .ToList();
 
 
 
-        private List<CustomModel.ViewModelLeads> GetLeads(DateTime dt1, DateTime dt2, string xChannel, string subCampaignName, string campaignCategoryName)
+
+
+
+        //          //ViewBag.SubCampaigns = db.subcampaigns
+        //          //    .Select(s => s.subcampaign_name)
+        //          //    .Distinct()
+        //          //    .OrderBy(s => s)
+        //          //    .ToList();
+
+        //          ViewBag.SubCampaigns = db.subcampaigns
+        //  .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
+        //  .Select(s => s.subcampaign_name)
+        //  .Distinct()
+        //  .OrderBy(name => name)
+        //  .ToList();
+
+
+        //          ViewBag.dt1 = dt1;
+        //          ViewBag.dt2 = dt2;
+        //          ViewBag.SubCampaignName = "";
+        //          ViewBag.CampaignCategoryName = "";
+
+        //          var lstLeads = GetLeads(dt1, dt2, ViewBag.X_CHANNEL, null, null);
+        //          ViewBag.lstLeads = lstLeads;
+
+        //          return View();
+        //      }
+
+        //      [HttpPost]
+        //      public ActionResult LeadCampaign(string fromdate, string todate, string X_CHANNEL, string SubCampaignName, string CampaignCategoryName)
+        //      {
+        //          if (Session["userid"] == null)
+        //          {
+        //              return RedirectToAction("Index");
+        //          }
+
+        //          // Check if subchannel is assigned for Sub-Admin(Read-Only)
+        //          string userRole = Session["role"]?.ToString()?.ToLower();
+        //          if (userRole == "subadmin_readonly" && string.IsNullOrEmpty(Session["subchannel"]?.ToString()))
+        //          {
+        //              TempData["warning"] = "No subchannel assigned for this Sub-Admin!";
+        //              return RedirectToAction("Index");
+        //          }
+
+        //          DateTime dt1 = Convert.ToDateTime(fromdate);
+        //          DateTime dt2 = Convert.ToDateTime(todate).AddDays(1).AddTicks(-1);
+
+        //          // Set ViewBag.X_CHANNEL based on user role
+        //          ViewBag.X_CHANNEL = userRole == "admin" ? (X_CHANNEL ?? "") // Admins can filter by channel
+        //              : userRole == "subadmin_creator" ? "" // Sub-Admin(Creator) ignores subchannel
+        //              : Session["subchannel"]?.ToString() ?? ""; // Sub-Admin(Read-Only) filtered by subchannel
+
+        //          // Fetch dropdowns
+        //          ViewBag.Channels = db.NEW_TEMP_HIERARCHY
+        //              .Select(t => t.X_CHANNEL)
+        //              .Distinct()
+        //              .Where(c => !string.IsNullOrEmpty(c))
+        //              .OrderBy(c => c)
+        //              .ToList();
+
+        //          //ViewBag.CampaignCategories = db.campaign_category
+        //          //    .Select(c => c.campaign_category_name)
+        //          //    .Distinct()
+        //          //    .OrderBy(c => c)
+        //          //    .ToList();
+        //          ViewBag.CampaignCategories = db.campaign_category
+        //.Where(c => c.campaign_category_delflag == null && c.Campaign_Category_Status == "0")
+        //.Select(c => c.campaign_category_name)
+        //.OrderBy(name => name)
+        //.Distinct()
+        //.ToList();
+
+        //          //ViewBag.SubCampaigns = db.subcampaigns
+        //          //    .Select(s => s.subcampaign_name)
+        //          //    .Distinct()
+        //          //    .OrderBy(s => s)
+        //          //    .ToList();
+        //          ViewBag.SubCampaigns = db.subcampaigns
+        //  .Where(s => s.subcampaign_delflag == null)   // ✔ null check (string column)
+        //  .Select(s => s.subcampaign_name)
+        //  .Distinct()
+        //  .OrderBy(name => name)
+        //  .ToList();
+
+
+        //          ViewBag.dt1 = dt1;
+        //          ViewBag.dt2 = dt2;
+        //          ViewBag.SubCampaignName = SubCampaignName ?? "";
+        //          ViewBag.CampaignCategoryName = CampaignCategoryName ?? "";
+
+        //          var lstLeads = GetLeads(dt1, dt2, ViewBag.X_CHANNEL, SubCampaignName, CampaignCategoryName);
+        //          ViewBag.lstLeads = lstLeads;
+
+        //          return View();
+        //      }
+
+
+        private List<CustomModel.ViewModelLeads> GetLeads(
+    DateTime dt1,
+    DateTime dt2,
+    string xChannel,
+    string subCampaignName,
+    string campaignCategoryName)
         {
-            var query = (from a in db.Leads
-                         where a.leads_date >= dt1 && a.leads_date <= dt2
-                         join b in db.campaign_master on a.leads_creativeid equals b.campaign_master_id
-                         join c in (
-                                from temp in db.NEW_TEMP_HIERARCHY
-                                where temp.X_BM_EMP_CD != null
-                                select new { SHC_SAPCODE = temp.X_BM_EMP_CD, temp.X_ZONE, temp.X_REGION, temp.X_CHANNEL, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_BM_NM, ROLE = "BM" })
+            var query = from a in db.Leads
+
+                            // ✅ Date filter (same as SQL BETWEEN)
+                        where a.leads_date >= dt1 && a.leads_date <= dt2
+
+                        join b in db.campaign_master
+                            on a.leads_creativeid equals b.campaign_master_id
+
+                        // ✅ UNION hierarchy (BM + SM + AGENT)
+                        join c in
+                            (
+                                (from temp in db.NEW_TEMP_HIERARCHY
+                                 where temp.X_BM_EMP_CD != null
+                                 select new
+                                 {
+                                     SHC_SAPCODE = temp.X_BM_EMP_CD,
+                                     temp.X_ZONE,
+                                     temp.X_REGION,
+                                     temp.X_CHANNEL,
+                                     temp.X_SALES_UNIT_NM,
+                                     temp.X_SALES_UNIT_CD,
+                                     SAP_NAME = temp.X_BM_NM,
+                                     ROLE = "BM"
+                                 })
+
                                 .Union(
+
                                 from temp in db.NEW_TEMP_HIERARCHY
                                 where temp.X_SM_EMP_CD != null
-                                select new { SHC_SAPCODE = temp.X_SM_EMP_CD, temp.X_ZONE, temp.X_REGION, X_CHANNEL = temp.X_CHANNEL, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_SM_NM, ROLE = "SM" })
+                                select new
+                                {
+                                    SHC_SAPCODE = temp.X_SM_EMP_CD,
+                                    temp.X_ZONE,
+                                    temp.X_REGION,
+                                    X_CHANNEL = temp.X_CHANNEL,
+                                    temp.X_SALES_UNIT_NM,
+                                    temp.X_SALES_UNIT_CD,
+                                    SAP_NAME = temp.X_SM_NM,
+                                    ROLE = "SM"
+                                })
+
                                 .Union(
+
                                 from temp in db.NEW_TEMP_HIERARCHY
                                 where temp.AGENT_CODE != null
-                                select new { SHC_SAPCODE = temp.AGENT_CODE, temp.X_ZONE, temp.X_REGION, X_CHANNEL = temp.SUBCHANNEL, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.AGENT_NAME, ROLE = "AGENT" })
-                         on a.leads_sapcode equals c.SHC_SAPCODE
-                         join cc in db.campaign_category on b.campaign_category_id equals cc.campaign_category_id
-                         join ca in db.campaigns on b.campaign_id equals ca.campaign_id
-                         join sc in db.subcampaigns on b.subcampaign_id equals sc.subcampaign_id
-                         select new CustomModel.ViewModelLeads
-                         {
-                             cm = b,
-                             l = a,
-                             X_CHANNEL = c.X_CHANNEL,
-                             CampaignCategoryName = cc.campaign_category_name,
-                             CampaignName = ca.campaign_name,
-                             SubCampaignName = sc.subcampaign_name,
-                             SapcodeName = c.SAP_NAME,
-                             CampaignMasterId = b.campaign_master_id,
-                             X_ZONE = c.X_ZONE,
-                             X_REGION = c.X_REGION,
-                             X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
-                             X_SALES_UNIT_CD = c.X_SALES_UNIT_CD
-                         });
+                                select new
+                                {
+                                    SHC_SAPCODE = temp.AGENT_CODE,
+                                    temp.X_ZONE,
+                                    temp.X_REGION,
+                                    X_CHANNEL = temp.SUBCHANNEL, // ✅ IMPORTANT (SQL match)
+                                    temp.X_SALES_UNIT_NM,
+                                    temp.X_SALES_UNIT_CD,
+                                    SAP_NAME = temp.AGENT_NAME,
+                                    ROLE = "AGENT"
+                                })
+                            )
 
-            if (!string.IsNullOrEmpty(xChannel))
-            {
+                        on a.leads_sapcode equals c.SHC_SAPCODE
+
+                        join cc in db.campaign_category
+                            on b.campaign_category_id equals cc.campaign_category_id
+
+                        join ca in db.campaigns
+                            on b.campaign_id equals ca.campaign_id
+
+                        join sc in db.subcampaigns
+                            on b.subcampaign_id equals sc.subcampaign_id
+
+                        select new CustomModel.ViewModelLeads
+                        {
+                            cm = b,
+                            l = a,
+
+                            X_CHANNEL = c.X_CHANNEL,
+                            X_ZONE = c.X_ZONE,
+                            X_REGION = c.X_REGION,
+                            X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
+                            X_SALES_UNIT_CD = c.X_SALES_UNIT_CD,
+
+                            CampaignCategoryName = cc.campaign_category_name,
+                            CampaignName = ca.campaign_name,
+                            SubCampaignName = sc.subcampaign_name,
+
+                            SapcodeName = c.SAP_NAME,
+                            CampaignMasterId = b.campaign_master_id
+                        };
+
+            // ✅ Optional filters (same as SQL)
+            if (!string.IsNullOrWhiteSpace(xChannel))
                 query = query.Where(x => x.X_CHANNEL == xChannel);
-            }
 
-            if (!string.IsNullOrEmpty(subCampaignName))
-            {
+            if (!string.IsNullOrWhiteSpace(subCampaignName))
                 query = query.Where(x => x.SubCampaignName == subCampaignName);
-            }
 
-            if (!string.IsNullOrEmpty(campaignCategoryName))
-            {
+            if (!string.IsNullOrWhiteSpace(campaignCategoryName))
                 query = query.Where(x => x.CampaignCategoryName == campaignCategoryName);
-            }
 
             var lstLeads = query
                 .OrderByDescending(x => x.l.leads_date)
                 .ToList();
 
+            // ✅ CreativeId generation (same as SQL)
             foreach (var lead in lstLeads)
             {
                 lead.CreativeId = "ADS" + (100000 + lead.CampaignMasterId);
@@ -10141,6 +10225,70 @@ string input_name, string input_mobile, string input_email)
 
             return lstLeads;
         }
+        //private List<CustomModel.ViewModelLeads> GetLeads(DateTime dt1, DateTime dt2, string xChannel, string subCampaignName, string campaignCategoryName)
+        //{
+        //    var query = (from a in db.Leads
+        //                 where a.leads_date >= dt1 && a.leads_date <= dt2
+        //                 join b in db.campaign_master on a.leads_creativeid equals b.campaign_master_id
+        //                 join c in (
+        //                        from temp in db.NEW_TEMP_HIERARCHY
+        //                        where temp.X_BM_EMP_CD != null
+        //                        select new { SHC_SAPCODE = temp.X_BM_EMP_CD, temp.X_ZONE, temp.X_REGION, temp.X_CHANNEL, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_BM_NM, ROLE = "BM" })
+        //                        .Union(
+        //                        from temp in db.NEW_TEMP_HIERARCHY
+        //                        where temp.X_SM_EMP_CD != null
+        //                        select new { SHC_SAPCODE = temp.X_SM_EMP_CD, temp.X_ZONE, temp.X_REGION, X_CHANNEL = temp.X_CHANNEL, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.X_SM_NM, ROLE = "SM" })
+        //                        .Union(
+        //                        from temp in db.NEW_TEMP_HIERARCHY
+        //                        where temp.AGENT_CODE != null
+        //                        select new { SHC_SAPCODE = temp.AGENT_CODE, temp.X_ZONE, temp.X_REGION, X_CHANNEL = temp.SUBCHANNEL, temp.X_SALES_UNIT_NM, temp.X_SALES_UNIT_CD, SAP_NAME = temp.AGENT_NAME, ROLE = "AGENT" })
+        //                 on a.leads_sapcode equals c.SHC_SAPCODE
+        //                 join cc in db.campaign_category on b.campaign_category_id equals cc.campaign_category_id
+        //                 join ca in db.campaigns on b.campaign_id equals ca.campaign_id
+        //                 join sc in db.subcampaigns on b.subcampaign_id equals sc.subcampaign_id
+        //                 select new CustomModel.ViewModelLeads
+        //                 {
+        //                     cm = b,
+        //                     l = a,
+        //                     X_CHANNEL = c.X_CHANNEL,
+        //                     CampaignCategoryName = cc.campaign_category_name,
+        //                     CampaignName = ca.campaign_name,
+        //                     SubCampaignName = sc.subcampaign_name,
+        //                     SapcodeName = c.SAP_NAME,
+        //                     CampaignMasterId = b.campaign_master_id,
+        //                     X_ZONE = c.X_ZONE,
+        //                     X_REGION = c.X_REGION,
+        //                     X_SALES_UNIT_NM = c.X_SALES_UNIT_NM,
+        //                     X_SALES_UNIT_CD = c.X_SALES_UNIT_CD
+        //                 });
+
+        //    if (!string.IsNullOrEmpty(xChannel))
+        //    {
+        //        query = query.Where(x => x.X_CHANNEL == xChannel);
+        //    }
+
+        //    if (!string.IsNullOrEmpty(subCampaignName))
+        //    {
+        //        query = query.Where(x => x.SubCampaignName == subCampaignName);
+        //    }
+
+        //    if (!string.IsNullOrEmpty(campaignCategoryName))
+        //    {
+        //        query = query.Where(x => x.CampaignCategoryName == campaignCategoryName);
+        //    }
+
+        //    var lstLeads = query
+        //        .OrderByDescending(x => x.l.leads_date)
+        //        .ToList();
+
+        //    foreach (var lead in lstLeads)
+        //    {
+        //        lead.CreativeId = "ADS" + (100000 + lead.CampaignMasterId);
+        //    }
+
+        //    return lstLeads;
+        //}
+
 
 
 
@@ -10262,6 +10410,11 @@ string input_name, string input_mobile, string input_email)
 
             return View();
         }
+
+
+       
+
+
 
         private List<CustomModel.ViewModelLeads> GetCreativeWiseLeads(
     DateTime dt1,
@@ -10475,88 +10628,194 @@ string input_name, string input_mobile, string input_email)
 
             return View();
         }
+        //private List<SharecountViewModel> GetSharecountData(DateTime dt1, DateTime dt2, string role, string subadminType, string sessionSubChannel, string X_CHANNEL, string SAP_NAME, string ROLE)
+        //{
+        //    var rawData = (from a in
+        //                      (from e in db.ENGAGE_SHARECOUNT
+        //                       where e.SHC_DATE >= dt1 && e.SHC_DATE <= dt2
+        //                       group e by new { e.SHC_SAPCODE, e.SHC_DATE } into grouped
+        //                       select new
+        //                       {
+        //                           SHC_SAPCODE = grouped.Key.SHC_SAPCODE,
+        //                           SHC_DATE = grouped.Key.SHC_DATE,
+        //                           facebook_count = grouped.Where(x => x.SHC_PLATEFORM == "FACEBOOK").Sum(x => x.SHC_SHARECOUNT) ?? 0,
+        //                           whatsapp_count = grouped.Where(x => x.SHC_PLATEFORM == "WHATSAPP").Sum(x => x.SHC_SHARECOUNT) ?? 0,
+        //                           twitter_count = grouped.Where(x => x.SHC_PLATEFORM == "TWITTER").Sum(x => x.SHC_SHARECOUNT) ?? 0,
+        //                           instagram_count = grouped.Where(x => x.SHC_PLATEFORM == "INSTAGRAM").Sum(x => x.SHC_SHARECOUNT) ?? 0,
+        //                           linkedin_count = grouped.Where(x => x.SHC_PLATEFORM == "LINKEDIN").Sum(x => x.SHC_SHARECOUNT) ?? 0
+        //                       })
+        //                   join b in
+        //                       (from tempHierarchy in db.NEW_TEMP_HIERARCHY
+        //                        where tempHierarchy.X_BM_EMP_CD != null
+        //                        select new
+        //                        {
+        //                            SHC_SAPCODE = tempHierarchy.X_BM_EMP_CD,
+        //                            X_CHANNEL = tempHierarchy.X_CHANNEL,
+        //                            SAP_NAME = tempHierarchy.X_BM_NM,
+        //                            ROLE = "BM"
+        //                        })
+        //                       .Union
+        //                       (from tempHierarchy in db.NEW_TEMP_HIERARCHY
+        //                        where tempHierarchy.X_SM_EMP_CD != null
+        //                        select new
+        //                        {
+        //                            SHC_SAPCODE = tempHierarchy.X_SM_EMP_CD,
+        //                            X_CHANNEL = tempHierarchy.X_CHANNEL,
+        //                            SAP_NAME = tempHierarchy.X_SM_NM,
+        //                            ROLE = "SM"
+        //                        })
+        //                       .Union
+        //                       (from tempHierarchy in db.NEW_TEMP_HIERARCHY
+        //                        where tempHierarchy.AGENT_CODE != null
+        //                        select new
+        //                        {
+        //                            SHC_SAPCODE = tempHierarchy.AGENT_CODE,
+        //                            X_CHANNEL = tempHierarchy.SUBCHANNEL,
+        //                            SAP_NAME = tempHierarchy.AGENT_NAME,
+        //                            ROLE = "AGENT"
+        //                        })
+        //                       on a.SHC_SAPCODE equals b.SHC_SAPCODE
+        //                   select new SharecountViewModel
+        //                   {
+        //                       SHC_SAPCODE = b.SHC_SAPCODE,
+        //                       X_CHANNEL = b.X_CHANNEL,
+        //                       SAP_NAME = b.SAP_NAME,
+        //                       ROLE = b.ROLE,
+        //                       SHC_DATE = a.SHC_DATE ?? DateTime.MinValue,
+        //                       facebook_count = (int)a.facebook_count,
+        //                       whatsapp_count = (int)a.whatsapp_count,
+        //                       twitter_count = (int)a.twitter_count,
+        //                       instagram_count = (int)a.instagram_count,
+        //                       linkedin_count = (int)a.linkedin_count
+        //                   }).ToList();
+
+        //    // ✅ Restrict for Sub-Admin(Read-Only)
+        //    if (subadminType == "ReadOnly" && !string.IsNullOrEmpty(sessionSubChannel))
+        //        rawData = rawData.Where(x => x.X_CHANNEL == sessionSubChannel).ToList();
+
+        //    // ✅ Admin/SubAdminCreator → allow filter normally
+        //    if (!string.IsNullOrEmpty(X_CHANNEL))
+        //        rawData = rawData.Where(x => x.X_CHANNEL != null && x.X_CHANNEL.ToLower().Contains(X_CHANNEL.ToLower())).ToList();
+
+        //    if (!string.IsNullOrEmpty(SAP_NAME))
+        //        rawData = rawData.Where(x => x.SAP_NAME != null && x.SAP_NAME.ToLower().Contains(SAP_NAME.ToLower())).ToList();
+
+        //    if (!string.IsNullOrEmpty(ROLE))
+        //        rawData = rawData.Where(x => x.ROLE != null && x.ROLE.ToLower().Contains(ROLE.ToLower())).ToList();
+
+        //    return rawData;
+        //}
+
         private List<SharecountViewModel> GetSharecountData(
-    DateTime dt1, DateTime dt2,
-    string role, string subadminType, string sessionSubChannel,
-    string X_CHANNEL, string SAP_NAME, string ROLE)
+    DateTime dt1,
+    DateTime dt2,
+    string role,
+    string subadminType,
+    string sessionSubChannel,
+    string X_CHANNEL,
+    string SAP_NAME,
+    string ROLE)
         {
-            var rawData = (from a in
-                              (from e in db.ENGAGE_SHARECOUNT
-                               where e.SHC_DATE >= dt1 && e.SHC_DATE <= dt2
-                               group e by new { e.SHC_SAPCODE, e.SHC_DATE } into grouped
-                               select new
-                               {
-                                   SHC_SAPCODE = grouped.Key.SHC_SAPCODE,
-                                   SHC_DATE = grouped.Key.SHC_DATE,
-                                   facebook_count = grouped.Where(x => x.SHC_PLATEFORM == "FACEBOOK").Sum(x => x.SHC_SHARECOUNT) ?? 0,
-                                   whatsapp_count = grouped.Where(x => x.SHC_PLATEFORM == "WHATSAPP").Sum(x => x.SHC_SHARECOUNT) ?? 0,
-                                   twitter_count = grouped.Where(x => x.SHC_PLATEFORM == "TWITTER").Sum(x => x.SHC_SHARECOUNT) ?? 0,
-                                   instagram_count = grouped.Where(x => x.SHC_PLATEFORM == "INSTAGRAM").Sum(x => x.SHC_SHARECOUNT) ?? 0,
-                                   linkedin_count = grouped.Where(x => x.SHC_PLATEFORM == "LINKEDIN").Sum(x => x.SHC_SHARECOUNT) ?? 0
-                               })
-                           join b in
-                               (from tempHierarchy in db.NEW_TEMP_HIERARCHY
-                                where tempHierarchy.X_BM_EMP_CD != null
-                                select new
-                                {
-                                    SHC_SAPCODE = tempHierarchy.X_BM_EMP_CD,
-                                    X_CHANNEL = tempHierarchy.X_CHANNEL,
-                                    SAP_NAME = tempHierarchy.X_BM_NM,
-                                    ROLE = "BM"
-                                })
-                               .Union
-                               (from tempHierarchy in db.NEW_TEMP_HIERARCHY
-                                where tempHierarchy.X_SM_EMP_CD != null
-                                select new
-                                {
-                                    SHC_SAPCODE = tempHierarchy.X_SM_EMP_CD,
-                                    X_CHANNEL = tempHierarchy.X_CHANNEL,
-                                    SAP_NAME = tempHierarchy.X_SM_NM,
-                                    ROLE = "SM"
-                                })
-                               .Union
-                               (from tempHierarchy in db.NEW_TEMP_HIERARCHY
-                                where tempHierarchy.AGENT_CODE != null
-                                select new
-                                {
-                                    SHC_SAPCODE = tempHierarchy.AGENT_CODE,
-                                    X_CHANNEL = tempHierarchy.SUBCHANNEL,
-                                    SAP_NAME = tempHierarchy.AGENT_NAME,
-                                    ROLE = "AGENT"
-                                })
-                               on a.SHC_SAPCODE equals b.SHC_SAPCODE
-                           select new SharecountViewModel
-                           {
-                               SHC_SAPCODE = b.SHC_SAPCODE,
-                               X_CHANNEL = b.X_CHANNEL,
-                               SAP_NAME = b.SAP_NAME,
-                               ROLE = b.ROLE,
-                               SHC_DATE = a.SHC_DATE ?? DateTime.MinValue,
-                               facebook_count = (int)a.facebook_count,
-                               whatsapp_count = (int)a.whatsapp_count,
-                               twitter_count = (int)a.twitter_count,
-                               instagram_count = (int)a.instagram_count,
-                               linkedin_count = (int)a.linkedin_count
-                           }).ToList();
+            var endDate = dt2.AddDays(1);
 
-            // ✅ Restrict for Sub-Admin(Read-Only)
-            if (subadminType == "ReadOnly" && !string.IsNullOrEmpty(sessionSubChannel))
-                rawData = rawData.Where(x => x.X_CHANNEL == sessionSubChannel).ToList();
+            // ShareData (CTE equivalent)
+            var shareData =
+                from e in db.ENGAGE_SHARECOUNT
+                where e.SHC_DATE >= dt1 && e.SHC_DATE < endDate
+                group e by new { e.SHC_SAPCODE, e.SHC_DATE } into g
+                select new
+                {
+                    SHC_SAPCODE = g.Key.SHC_SAPCODE,
+                    SHC_DATE = g.Key.SHC_DATE,
 
-            // ✅ Admin/SubAdminCreator → allow filter normally
-            if (!string.IsNullOrEmpty(X_CHANNEL))
-                rawData = rawData.Where(x => x.X_CHANNEL != null && x.X_CHANNEL.ToLower().Contains(X_CHANNEL.ToLower())).ToList();
+                    facebook_count = g.Where(x => x.SHC_PLATEFORM == "FACEBOOK")
+                                      .Sum(x => (int?)x.SHC_SHARECOUNT) ?? 0,
 
-            if (!string.IsNullOrEmpty(SAP_NAME))
-                rawData = rawData.Where(x => x.SAP_NAME != null && x.SAP_NAME.ToLower().Contains(SAP_NAME.ToLower())).ToList();
+                    whatsapp_count = g.Where(x => x.SHC_PLATEFORM == "WHATSAPP")
+                                      .Sum(x => (int?)x.SHC_SHARECOUNT) ?? 0,
 
-            if (!string.IsNullOrEmpty(ROLE))
-                rawData = rawData.Where(x => x.ROLE != null && x.ROLE.ToLower().Contains(ROLE.ToLower())).ToList();
+                    twitter_count = g.Where(x => x.SHC_PLATEFORM == "TWITTER")
+                                     .Sum(x => (int?)x.SHC_SHARECOUNT) ?? 0,
 
-            return rawData;
+                    instagram_count = g.Where(x => x.SHC_PLATEFORM == "INSTAGRAM")
+                                       .Sum(x => (int?)x.SHC_SHARECOUNT) ?? 0,
+
+                    linkedin_count = g.Where(x => x.SHC_PLATEFORM == "LINKEDIN")
+                                      .Sum(x => (int?)x.SHC_SHARECOUNT) ?? 0
+                };
+
+            // HierarchyData (CTE equivalent)
+
+            var bmData =
+                from h in db.NEW_TEMP_HIERARCHY
+                where h.X_BM_EMP_CD != null
+                select new
+                {
+                    SHC_SAPCODE = h.X_BM_EMP_CD,
+                    X_CHANNEL = h.X_CHANNEL,
+                    SAP_NAME = h.X_BM_NM,
+                    ROLE = "BM"
+                };
+
+            var smData =
+                from h in db.NEW_TEMP_HIERARCHY
+                where h.X_SM_EMP_CD != null
+                select new
+                {
+                    SHC_SAPCODE = h.X_SM_EMP_CD,
+                    X_CHANNEL = h.X_CHANNEL,
+                    SAP_NAME = h.X_SM_NM,
+                    ROLE = "SM"
+                };
+
+            var agentData =
+                from h in db.NEW_TEMP_HIERARCHY
+                where h.AGENT_CODE != null
+                select new
+                {
+                    SHC_SAPCODE = h.AGENT_CODE,
+                    X_CHANNEL = h.X_CHANNEL,
+                    SAP_NAME = h.AGENT_NAME,
+                    ROLE = "AGENT"
+                };
+
+            var hierarchyData = bmData.Concat(smData).Concat(agentData);
+
+            var query =
+                from a in shareData
+                join b in hierarchyData
+                on a.SHC_SAPCODE equals b.SHC_SAPCODE
+                where
+                    (subadminType != "ReadOnly" || b.X_CHANNEL == sessionSubChannel)
+                    && (string.IsNullOrEmpty(X_CHANNEL) || b.X_CHANNEL.Contains(X_CHANNEL))
+                    && (string.IsNullOrEmpty(SAP_NAME) || b.SAP_NAME.Contains(SAP_NAME))
+                    && (string.IsNullOrEmpty(ROLE) || b.ROLE.Contains(ROLE))
+                group new { a, b } by new
+                {
+                    b.SHC_SAPCODE,
+                    b.X_CHANNEL,
+                    b.SAP_NAME,
+                    b.ROLE,
+                    a.SHC_DATE
+                } into g
+                orderby g.Key.SHC_DATE descending
+                select new SharecountViewModel
+                {
+                    SHC_SAPCODE = g.Key.SHC_SAPCODE,
+                    X_CHANNEL = g.Key.X_CHANNEL,
+                    SAP_NAME = g.Key.SAP_NAME,
+                    ROLE = g.Key.ROLE,
+                    SHC_DATE = g.Key.SHC_DATE ?? DateTime.MinValue,
+
+                    facebook_count = g.Sum(x => x.a.facebook_count),
+                    whatsapp_count = g.Sum(x => x.a.whatsapp_count),
+                    twitter_count = g.Sum(x => x.a.twitter_count),
+                    instagram_count = g.Sum(x => x.a.instagram_count),
+                    linkedin_count = g.Sum(x => x.a.linkedin_count)
+                };
+
+            return query.ToList();
         }
-
-
 
 
 

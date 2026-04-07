@@ -250,7 +250,6 @@
           <EntitySet Name="campaign_master" EntityType="rglinixm_relModel.campaign_master" />
           <EntitySet Name="channels" EntityType="rglinixm_relModel.channel" />
           <EntitySet Name="UserNotifications" EntityType="rglinixm_relModel.UserNotification" />
-          <EntitySet Name="CampaignResponses" EntityType="rglinixm_relModel.CampaignRespons" />
           <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
           <EntitySet Name="Leads" EntityType="rglinixm_relModel.Lead" />
         </EntityContainer>
@@ -376,17 +375,6 @@
           <Property Name="Message" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="IsRead" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="CampaignRespons">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Mobile" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CampaignName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Response" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ResponseCampaignName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
@@ -586,18 +574,6 @@
                 <ScalarProperty Name="Channel_code" ColumnName="Channel_code" />
                 <ScalarProperty Name="SAPCode" ColumnName="SAPCode" />
                 <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CampaignResponses">
-            <EntityTypeMapping TypeName="rglinixm_relModel.CampaignRespons">
-              <MappingFragment StoreEntitySet="CampaignResponses">
-                <ScalarProperty Name="ResponseCampaignName" ColumnName="ResponseCampaignName" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Response" ColumnName="Response" />
-                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
-                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

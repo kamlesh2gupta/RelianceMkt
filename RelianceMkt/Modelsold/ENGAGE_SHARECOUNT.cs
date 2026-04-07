@@ -15,20 +15,20 @@ namespace RelianceMkt.Models
 using System;
     using System.Collections.Generic;
     
-public partial class CampaignRespons
+public partial class ENGAGE_SHARECOUNT
 {
 
-    public int Id { get; set; }
+    public decimal SHC_ID { get; set; }
 
-    public string Mobile { get; set; }
+    public string SHC_SAPCODE { get; set; }
 
-    public string CampaignName { get; set; }
+    public string SHC_PLATEFORM { get; set; }
 
-    public string Response { get; set; }
+    public Nullable<decimal> SHC_SHARECOUNT { get; set; }
 
-    public System.DateTime CreatedDate { get; set; }
+    public Nullable<System.DateTime> SHC_DATE { get; set; }
 
-    public string ResponseCampaignName { get; set; }
+    public Nullable<decimal> CREATIVE_ID { get; set; }
 
 }
 

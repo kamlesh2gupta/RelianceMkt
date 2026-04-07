@@ -15,20 +15,16 @@ namespace RelianceMkt.Models
 using System;
     using System.Collections.Generic;
     
-public partial class CampaignRespons
+public partial class channel
 {
 
-    public int Id { get; set; }
+    public decimal channel_id { get; set; }
 
-    public string Mobile { get; set; }
+    public string channel_name { get; set; }
 
-    public string CampaignName { get; set; }
+    public string channel_delflag { get; set; }
 
-    public string Response { get; set; }
-
-    public System.DateTime CreatedDate { get; set; }
-
-    public string ResponseCampaignName { get; set; }
+    public string subchannel_name { get; set; }
 
 }
 

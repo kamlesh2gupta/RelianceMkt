@@ -104,17 +104,46 @@
                             <div class="form-group col-md-3">
                                 <label> To: </label>@Html.TextBox("todate", "", new { @type = "date", @class = "form-control", @Value = ViewBag.dt2.ToString("yyyy-MM-dd") })
                             </div>
+                            @*@if (Session["subadmin_type"] == null || Session["subadmin_type"].ToString() != "ReadOnly")
+        {
+            <div class="form-group col-md-3">
+                <label> Channel: </label>
+                @Html.DropDownList("channel", new SelectList(ViewBag.lstChannel, "channelname", "channelname"), "SELECT CHANNEL", new { @class = "form-control" })
+            </div>
+        }
+        <div class="form-group col-md-3">
+            <label> Zone: </label>
+            @Html.DropDownList("zone", new SelectList(ViewBag.lstZone, "zonename", "zonename"), "SELECT ZONE", new { @class = "form-control" })
+        </div>*@
                             @if (Session["subadmin_type"] == null || Session["subadmin_type"].ToString() != "ReadOnly")
                             {
                                 <div class="form-group col-md-3">
                                     <label> Channel: </label>
-                                    @Html.DropDownList("channel", new SelectList(ViewBag.lstChannel, "channelname", "channelname"), "SELECT CHANNEL", new { @class = "form-control" })
+                                    @Html.DropDownList(
+                                     "channel",
+                                     new SelectList(ViewBag.lstChannel, ViewBag.channel),
+                                     "SELECT CHANNEL",
+                                     new { @class = "form-control" }
+ 
+                                      )
                                 </div>
                             }
-                            <div class="form-group col-md-3">
-                                <label> Zone: </label>
-                                @Html.DropDownList("zone", new SelectList(ViewBag.lstZone, "zonename", "zonename"), "SELECT ZONE", new { @class = "form-control" })
-                            </div>
+
+                        <div class="form-group col-md-3">
+                            <label> Zone: </label>
+                            @*@Html.DropDownList(
+                            "zone",
+                            new SelectList(ViewBag.lstZone, ViewBag.zone),
+                            "SELECT ZONE",
+                            new { @class = "form-control" }
+                        )*@
+                           @Html.DropDownList(
+                            "zone",
+                            new SelectList(ViewBag.lstZone, ViewBag.zone),
+                            "SELECT ZONE",
+                            new { @class = "form-control" }
+                            )
+                        </div>
 
                             <div class="col-md-4" style="padding-top:28px;">
                                 <button type="submit" class="btn btn-warning ml-3">APPLY</button>
@@ -171,15 +200,46 @@
     <script src="~/Content/js/jquery.table2excel.js"></script>
 
     <script>
+        //$(document).ready(function () {
+        //    $('#table2excel').DataTable({
+        //        "paging": true,
+        //        "pageLength": 10,
+        //        "lengthMenu": [10, 25, 50, 100],
+        //        "ordering": false,
+        //        "searching": false,
+        //        "info": true,
+        //        autoWidth: true
+        //    });
+        //});
         $(document).ready(function () {
-            $('#table2excel').DataTable({
-                "paging": true,
-                "pageLength": 10,
-                "lengthMenu": [10, 25, 50, 100],
-                "ordering": false,
-                "searching": false,
-                "info": true,
+            var table = $('#table2excel').DataTable({
+                paging: true,
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                ordering: false,
+                searching: false,
+                info: true,
                 autoWidth: true
+            });
+
+            $("#btnexport").click(function () {
+
+                // Show all rows temporarily
+                table.page.len(-1).draw();
+
+                setTimeout(function () {
+
+                    $("#table2excel").table2excel({
+                        exclude: ".noExl",
+                        name: "Worksheet Name",
+                        filename: "Shares",
+                        fileext: ".xls"
+                    });
+
+                    // Restore pagination
+                    table.page.len(10).draw();
+
+                }, 500);
             });
         });
 
