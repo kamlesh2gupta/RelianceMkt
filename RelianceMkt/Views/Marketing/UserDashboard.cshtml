@@ -6,6 +6,44 @@
     var notifCount = ViewBag.NotificationCount as int? ?? 0;
     //End here
 }
+
+<!-- _AlertPartial.cshtml ya seedha View ke top pe -->
+@if (ViewBag.AlertMessage != null)
+{
+    <div id="alertModal" style="
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;">
+        <div style="
+            background: #fff; border-radius: 10px; padding: 30px 40px;
+            max-width: 450px; width: 90%; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+
+            @{
+                string icon = ViewBag.AlertType == "error" ? "❌" :
+                               ViewBag.AlertType == "warning" ? "⚠️" :
+                               ViewBag.AlertType == "info" ? "ℹ️" : "✅";
+                string color = ViewBag.AlertType == "error" ? "#dc3545" :
+                               ViewBag.AlertType == "warning" ? "#fd7e14" :
+                               ViewBag.AlertType == "info" ? "#0d6efd" : "#198754";
+            }
+
+            <div style="font-size: 48px; margin-bottom: 10px;">@icon</div>
+            <h4 style="color: @color; margin-bottom: 15px;">
+                @(ViewBag.AlertType == "error"   ? "Error"   :
+                  ViewBag.AlertType == "warning" ? "Warning" :
+                  ViewBag.AlertType == "info"    ? "Notice"  : "Success")
+            </h4>
+            <p style="color: #333; font-size: 15px;">@ViewBag.AlertMessage</p>
+            <button onclick="document.getElementById('alertModal').style.display='none'"
+                    style="margin-top:15px; padding:10px 30px;
+                           background:@color; color:#fff;
+                           border:none; border-radius:6px; cursor:pointer; font-size:14px;">
+                OK
+            </button>
+        </div>
+    </div>
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -247,14 +285,12 @@
                 margin: 0 auto;
                 top: 20px;
             }
- 
-
-</style>
+    </style>
 
     <style>
         #user-activity .card-body canvas {
-            width: 100% !important; 
-            height: 250px !important; 
+            width: 100% !important;
+            height: 250px !important;
         }
 
         /* //================text color-profile side bar===============*/
@@ -300,7 +336,7 @@
         Preloader end
     ********************-->
     <!--**********************************
-        Main wrapper start 
+        Main wrapper start
     ***********************************-->
     <div id="main-wrapper" class="right-profile">
 
@@ -387,7 +423,7 @@
             </div>
 
         </div>
-       
+
         <div class="content-body" style=" margin-right: 7rem; margin-top: 120px;">
             <!-- row -->
             <div class="container-fluid" style="padding-right: 0px; padding-left: 110px; padding-top: 3px; ">

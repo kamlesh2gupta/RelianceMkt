@@ -2,6 +2,43 @@
 @{ ViewBag.Title = "campaignview";
     Layout = "~/Views/Shared/_LayoutUser.cshtml"; }
 
+<!-- _AlertPartial.cshtml ya seedha View ke top pe -->
+@if (ViewBag.AlertMessage != null)
+{
+    <div id="alertModal" style="
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;">
+        <div style="
+            background: #fff; border-radius: 10px; padding: 30px 40px;
+            max-width: 450px; width: 90%; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+
+            @{
+                string icon = ViewBag.AlertType == "error" ? "❌" :
+                               ViewBag.AlertType == "warning" ? "⚠️" :
+                               ViewBag.AlertType == "info" ? "ℹ️" : "✅";
+                string color = ViewBag.AlertType == "error" ? "#dc3545" :
+                               ViewBag.AlertType == "warning" ? "#fd7e14" :
+                               ViewBag.AlertType == "info" ? "#0d6efd" : "#198754";
+            }
+
+            <div style="font-size: 48px; margin-bottom: 10px;">@icon</div>
+            <h4 style="color: @color; margin-bottom: 15px;">
+                @(ViewBag.AlertType == "error"   ? "Error"   :
+                  ViewBag.AlertType == "warning" ? "Warning" :
+                  ViewBag.AlertType == "info"    ? "Notice"  : "Success")
+            </h4>
+            <p style="color: #333; font-size: 15px;">@ViewBag.AlertMessage</p>
+            <button onclick="document.getElementById('alertModal').style.display='none'"
+                    style="margin-top:15px; padding:10px 30px;
+                           background:@color; color:#fff;
+                           border:none; border-radius:6px; cursor:pointer; font-size:14px;">
+                OK
+            </button>
+        </div>
+    </div>
+}
 
 @section css
 {
@@ -10,21 +47,24 @@
             display: block;
             max-width: 240px;
         }
+
         .open-filter {
             z-index: 9999;
             width: 100%;
             height: 70px;
             left: 80%;
             position: fixed;
-            right: 0px; 
+            right: 0px;
             bottom: 0px;
         }
+
         .nav-tabs {
             width: 100% !important;
             border-bottom: 1px solid #dee2e6;
             overflow-x: auto;
             white-space: nowrap;
         }
+
         .nav {
             display: flex !important;
             flex-wrap: nowrap !important;
@@ -32,6 +72,7 @@
             margin-bottom: 1rem !important;
             list-style: none !important;
         }
+
         .accordion__header {
             padding: 0.3rem 1.75rem;
             border: 1px solid #f0f1f5;
@@ -44,9 +85,11 @@
             -ms-transition: all 0.5s;
             transition: all 0.5s;
         }
+
         .accordion__body--text {
             padding: 0.875rem 0rem;
         }
+
         .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col, .col-auto, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm, .col-sm-auto, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-md, .col-md-auto, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg, .col-lg-auto, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl, .col-xl-auto, .col-xxl-1, .col-xxl-2, .col-xxl-3, .col-xxl-4, .col-xxl-5, .col-xxl-6, .col-xxl-7, .col-xxl-8, .col-xxl-9, .col-xxl-10, .col-xxl-11, .col-xxl-12, .col-xxl, .col-xxl-auto {
             position: relative;
             width: 100%;
@@ -74,8 +117,8 @@
                 @Html.Partial("_PartialDateTime")
             </div>
             @*<a class="ml-4 text-black p-3 rounded border text-center width60" href="#">
-                <i class="las la-cog scale5"></i>
-            </a>*@
+                    <i class="las la-cog scale5"></i>
+                </a>*@
         </div>
     </div>
     <div class="row">
@@ -88,31 +131,31 @@
                 <div class="card-body">
                     <div class="custom-tab-1">
                         <ul class="nav nav-tabs  mb-4">
-                            @{ 
-                                    decimal cat = 1;
-                                    foreach (var cam_category in ViewBag.lstcategory)
-                                    {
-                                        <li class="nav-item">
-                                            <a href = "#navpills2-@cam_category.campaign_category_id" class="nav-link @if(cat == 1) { @Html.Raw("active"); }
+                            @{
+                                decimal cat = 1;
+                                foreach (var cam_category in ViewBag.lstcategory)
+                                {
+                                    <li class="nav-item">
+                                        <a href="#navpills2-@cam_category.campaign_category_id" class="nav-link @if(cat == 1) { @Html.Raw("active"); }
                                            " data-toggle="tab" aria-expanded="false">@cam_category.campaign_category_name</a>
-                                        </li>
+                                    </li>
 
-                                        cat = cat + 1;
-                                    }
+                                    cat = cat + 1;
+                                }
                             }
 
                         </ul>
                         <div class="tab-content">
-                              @foreach (var cam_category in ViewBag.lstcategory)
-                              {
-                                
-                                   
-                                    Html.RenderAction("GetCategory", "Marketing", new { @cat_id = cam_category.campaign_category_id });                                  
-                                       
+                            @foreach (var cam_category in ViewBag.lstcategory)
+                            {
 
-                               }
 
-                            </div>
+                                Html.RenderAction("GetCategory", "Marketing", new { @cat_id = cam_category.campaign_category_id });
+
+
+                            }
+
+                        </div>
                         <div class="row">
                             <div class="col-xl-6 col-xxl-6 col-sm-6">
                                 <div class="card">
@@ -186,72 +229,71 @@
                     </button>
                 </div>
                 <div class="modal-body">*@
-                    @*<div class="card-body">
-                        @using (Html.BeginForm("campaignview", "Marketing", FormMethod.Post, new {@SAPCODE=Session["SAPCODE"], @TYPE=Session["TYPE"],@LOGIN=Session["LOGIN"] }))
-                        {
+    @*<div class="card-body">
+        @using (Html.BeginForm("campaignview", "Marketing", FormMethod.Post, new {@SAPCODE=Session["SAPCODE"], @TYPE=Session["TYPE"],@LOGIN=Session["LOGIN"] }))
+        {
 
 
-                        <div class="form-row">*@
-                            @*<div class="form-group col-xl-3">
+        <div class="form-row">*@
+    @*<div class="form-group col-xl-3">
             <label class="text-black font-w500 mb-3">Channel:</label><span class="text-danger ml-1">*</span>
             @Html.DropDownList("channel", new SelectList(ViewBag.lstchannels, "channel_id", "channel_name", ViewBag.channel),
                                                         "Select Channel", new { @class = "form-control" })
 
         </div>*@
-                            @*<div class="form-group col-xl-3">
+    @*<div class="form-group col-xl-3">
             <label class="text-black font-w500 mb-3">Category:</label><span class="text-danger ml-1">*</span>
             @Html.DropDownList("category", new SelectList(ViewBag.lstcategory, "campaign_category_id", "campaign_category_name", ViewBag.category),
                                                        "Select Category", new { @class = "form-control" })
 
         </div>*@
-                            @*<div class="form-group col-xl-3">
+    @*<div class="form-group col-xl-3">
             <label class="text-black font-w500 mb-3">Campaign:</label><span class="text-danger ml-1">*</span>
             @Html.DropDownList("campaign", new SelectList(ViewBag.lstcampaign, "campaign_id", "campaign_name", ViewBag.campaign),
                                                      "Select Campaign", new { @class = "form-control" })
 
         </div>*@
 
-                            @*<div class="form-group col-xl-3">
+    @*<div class="form-group col-xl-3">
             <label class="text-black font-w500 mb-3">Sub Campaign</label><span class="text-danger ml-1">*</span>
             @Html.DropDownList("subcampaign", new SelectList(ViewBag.lstsubcampaign, "subcampaign_id", "subcampaign_name", ViewBag.subcampaign),
                                                      "Select Sub Campaign"
                                                      , new { @class = "form-control" })
 
         </div>*@
-                            <!--<div class="form-group col-xl-3">
-                                <label class="text-black font-w500 mb-3">Language</label><span class="text-danger ml-1">*</span>
-                                @Html.DropDownList("language", new SelectList(ViewBag.lstlanguage, "Value", "Text", ViewBag.language), "Select Language", new { @class = "form-control" })
-                            </div>
+    <!--<div class="form-group col-xl-3">
+        <label class="text-black font-w500 mb-3">Language</label><span class="text-danger ml-1">*</span>
+        @Html.DropDownList("language", new SelectList(ViewBag.lstlanguage, "Value", "Text", ViewBag.language), "Select Language", new { @class = "form-control" })
+    </div>
 
-                            <div class="form-group col-xl-3">
-                                <label class="text-black font-w500 mb-3">Type</label><span class="text-danger ml-1">*</span>
-                                @Html.DropDownList("campaigntype", new SelectList(ViewBag.lsttype, "Value", "Text", ViewBag.type), "Select Campaign Type", new { @class = "form-control" })
-                            </div>
-                            <div class="form-group col-xl-3">
-                                <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>-->
-                                @*@Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.type)
+    <div class="form-group col-xl-3">
+        <label class="text-black font-w500 mb-3">Type</label><span class="text-danger ml-1">*</span>
+        @Html.DropDownList("campaigntype", new SelectList(ViewBag.lsttype, "Value", "Text", ViewBag.type), "Select Campaign Type", new { @class = "form-control" })
+    </div>
+    <div class="form-group col-xl-3">
+        <label class="text-black font-w500 mb-3">Status</label><span class="text-danger ml-1">*</span>-->
+    @*@Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.type)
         ,
                                         "Select Campaign Type", new { @class = "form-control" })*@
-                           <!--@Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.status), "Select Status",new { @class = "form-control" })
-                            </div>
+    <!--@Html.DropDownList("campaignstatus", new SelectList(ViewBag.lstStatus, "Value", "Text", ViewBag.status), "Select Status",new { @class = "form-control" })
+        </div>
 
-                            <div class="form-group col-xl-3" style="padding-top:39px;">
-                                <button type="submit" class="btn btn-warning">Apply Filter</button>
-                            </div>
+        <div class="form-group col-xl-3" style="padding-top:39px;">
+            <button type="submit" class="btn btn-warning">Apply Filter</button>
+        </div>
 
-                        </div>}-->
-                    <!--</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>-->
-                    @*<button type="button" class="btn btn-primary">Submit</button>*@
-                <!--</div>
+    </div>}-->
+    <!--</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>-->
+    @*<button type="button" class="btn btn-primary">Submit</button>*@
+    <!--</div>
             </div>
         </div>
     </div>-->
     @*<div class="open-filter">   <button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-filter fa-lg"></i></button></div>*@
 </div>
-<br/>
 <br />
 <br />
 <br />
@@ -260,7 +302,8 @@
 <br />
 <br />
 <br />
-<br/>
+<br />
+<br />
 <!--**********************************
     Content body end
 ***********************************-->
@@ -283,4 +326,3 @@
         }
     </script>
 }
- 

@@ -153,6 +153,8 @@
           <Property Name="api_response_json" Type="nvarchar(max)" />
           <Property Name="LeadType" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ILW DIGIMYIN PROJECT .dbo.NEW_TEMP_HIERARCHY' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
             <PropertyRef Name="ID" />
@@ -212,9 +214,34 @@
           <EntitySet Name="ENGAGE_SHARECOUNT" EntityType="Self.ENGAGE_SHARECOUNT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="landingpage" EntityType="Self.landingpage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Leads" EntityType="Self.Leads" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="Self.NEW_TEMP_HIERARCHY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="subcampaign" EntityType="Self.subcampaign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserNotification" EntityType="Self.UserNotification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="Self.NEW_TEMP_HIERARCHY" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[NEW_TEMP_HIERARCHY].[ID] AS [ID], 
+[NEW_TEMP_HIERARCHY].[X_CHANNEL] AS [X_CHANNEL], 
+[NEW_TEMP_HIERARCHY].[X_BM_EMP_CD] AS [X_BM_EMP_CD], 
+[NEW_TEMP_HIERARCHY].[X_BM_NM] AS [X_BM_NM], 
+[NEW_TEMP_HIERARCHY].[X_BRANCH] AS [X_BRANCH], 
+[NEW_TEMP_HIERARCHY].[X_REGION] AS [X_REGION], 
+[NEW_TEMP_HIERARCHY].[X_SALES_UNIT_CD] AS [X_SALES_UNIT_CD], 
+[NEW_TEMP_HIERARCHY].[X_SALES_UNIT_NM] AS [X_SALES_UNIT_NM], 
+[NEW_TEMP_HIERARCHY].[X_ZM_EMP_CD] AS [X_ZM_EMP_CD], 
+[NEW_TEMP_HIERARCHY].[X_ZM_NM] AS [X_ZM_NM], 
+[NEW_TEMP_HIERARCHY].[X_ZONE] AS [X_ZONE], 
+[NEW_TEMP_HIERARCHY].[X_RM_EMP_EMP_CD] AS [X_RM_EMP_EMP_CD], 
+[NEW_TEMP_HIERARCHY].[X_RM_NM] AS [X_RM_NM], 
+[NEW_TEMP_HIERARCHY].[X_SM_EMP_CD] AS [X_SM_EMP_CD], 
+[NEW_TEMP_HIERARCHY].[X_SM_NM] AS [X_SM_NM], 
+[NEW_TEMP_HIERARCHY].[X_SM_STATUS] AS [X_SM_STATUS], 
+[NEW_TEMP_HIERARCHY].[SUBCHANNEL] AS [SUBCHANNEL], 
+[NEW_TEMP_HIERARCHY].[AGENT_CODE] AS [AGENT_CODE], 
+[NEW_TEMP_HIERARCHY].[AGENT_NAME] AS [AGENT_NAME], 
+[NEW_TEMP_HIERARCHY].[BM_NAME] AS [BM_NAME], 
+[NEW_TEMP_HIERARCHY].[ZM_NAME] AS [ZM_NAME], 
+[NEW_TEMP_HIERARCHY].[X_CHANNEL_DESC] AS [X_CHANNEL_DESC]
+FROM [dbo].[NEW_TEMP_HIERARCHY] AS [NEW_TEMP_HIERARCHY]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -251,8 +278,8 @@
           <EntitySet Name="channels" EntityType="rglinixm_relModel.channel" />
           <EntitySet Name="UserNotifications" EntityType="rglinixm_relModel.UserNotification" />
           <EntitySet Name="CampaignResponses" EntityType="rglinixm_relModel.CampaignRespons" />
-          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
           <EntitySet Name="Leads" EntityType="rglinixm_relModel.Lead" />
+          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
         </EntityContainer>
         <EntityType Name="subcampaign">
           <Key>
@@ -388,6 +415,22 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ResponseCampaignName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Lead">
+          <Key>
+            <PropertyRef Name="leads_id" />
+          </Key>
+          <Property Name="leads_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="leads_name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="leads_mobile" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="leads_sapcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="leads_creativeid" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="leads_date" Type="DateTime" Precision="0" />
+          <Property Name="leads_plateform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="leads_email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="api_leads_id" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="api_response_json" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LeadType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
             <PropertyRef Name="ID" />
@@ -414,22 +457,6 @@
           <Property Name="BM_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ZM_NAME" Type="String" MaxLength="125" FixedLength="false" Unicode="false" />
           <Property Name="X_CHANNEL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Lead">
-          <Key>
-            <PropertyRef Name="leads_id" />
-          </Key>
-          <Property Name="leads_id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="leads_name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="leads_mobile" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="leads_sapcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="leads_creativeid" Type="Decimal" Precision="18" Scale="0" />
-          <Property Name="leads_date" Type="DateTime" Precision="0" />
-          <Property Name="leads_plateform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="leads_email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="api_leads_id" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="api_response_json" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="LeadType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -601,6 +628,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Leads">
+            <EntityTypeMapping TypeName="rglinixm_relModel.Lead">
+              <MappingFragment StoreEntitySet="Leads">
+                <ScalarProperty Name="LeadType" ColumnName="LeadType" />
+                <ScalarProperty Name="api_response_json" ColumnName="api_response_json" />
+                <ScalarProperty Name="api_leads_id" ColumnName="api_leads_id" />
+                <ScalarProperty Name="leads_email" ColumnName="leads_email" />
+                <ScalarProperty Name="leads_plateform" ColumnName="leads_plateform" />
+                <ScalarProperty Name="leads_date" ColumnName="leads_date" />
+                <ScalarProperty Name="leads_creativeid" ColumnName="leads_creativeid" />
+                <ScalarProperty Name="leads_sapcode" ColumnName="leads_sapcode" />
+                <ScalarProperty Name="leads_mobile" ColumnName="leads_mobile" />
+                <ScalarProperty Name="leads_name" ColumnName="leads_name" />
+                <ScalarProperty Name="leads_id" ColumnName="leads_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NEW_TEMP_HIERARCHY">
             <EntityTypeMapping TypeName="rglinixm_relModel.NEW_TEMP_HIERARCHY">
               <MappingFragment StoreEntitySet="NEW_TEMP_HIERARCHY">
@@ -626,23 +670,6 @@
                 <ScalarProperty Name="X_BM_EMP_CD" ColumnName="X_BM_EMP_CD" />
                 <ScalarProperty Name="X_CHANNEL" ColumnName="X_CHANNEL" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Leads">
-            <EntityTypeMapping TypeName="rglinixm_relModel.Lead">
-              <MappingFragment StoreEntitySet="Leads">
-                <ScalarProperty Name="LeadType" ColumnName="LeadType" />
-                <ScalarProperty Name="api_response_json" ColumnName="api_response_json" />
-                <ScalarProperty Name="api_leads_id" ColumnName="api_leads_id" />
-                <ScalarProperty Name="leads_email" ColumnName="leads_email" />
-                <ScalarProperty Name="leads_plateform" ColumnName="leads_plateform" />
-                <ScalarProperty Name="leads_date" ColumnName="leads_date" />
-                <ScalarProperty Name="leads_creativeid" ColumnName="leads_creativeid" />
-                <ScalarProperty Name="leads_sapcode" ColumnName="leads_sapcode" />
-                <ScalarProperty Name="leads_mobile" ColumnName="leads_mobile" />
-                <ScalarProperty Name="leads_name" ColumnName="leads_name" />
-                <ScalarProperty Name="leads_id" ColumnName="leads_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

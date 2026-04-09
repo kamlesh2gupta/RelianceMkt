@@ -56,13 +56,11 @@ public partial class rglinixm_relEntities : DbContext
 
     public DbSet<CampaignRespons> CampaignResponses { get; set; }
 
-    public DbSet<NEW_TEMP_HIERARCHY> NEW_TEMP_HIERARCHY { get; set; }
-
     public DbSet<Lead> Leads { get; set; }
 
+    public DbSet<NEW_TEMP_HIERARCHY> NEW_TEMP_HIERARCHY { get; set; }
+
 }
-
-
 
 }
 

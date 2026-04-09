@@ -51,4 +51,6 @@ public partial class Lead
         public object AdditionalDetails { get; set; }
     }
 
+
+
 }

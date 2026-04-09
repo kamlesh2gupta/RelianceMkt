@@ -1077,3 +1077,78 @@ Error Number:207,State:1,Class:16
 2026-04-06 14:29:45 :: Row 3 inserted successfully | Mobile: +919027586766
 2026-04-06 14:29:47 :: Total rows inserted: 2
 2026-04-06 14:29:47 :: ===== UploadExcel SUCCESS =====
+2026-04-07 16:53:21 :: ===== UploadExcel START =====
+2026-04-07 16:53:21 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-07 16:53:21 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-07 16:53:21 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-07 16:53:22 :: Total rows found (including header): 3
+2026-04-07 16:53:22 :: DB Connected
+2026-04-07 16:53:22 :: Row 2 Raw Mobile: [9027586766]
+2026-04-07 16:53:22 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-07 16:53:24 :: Row 3 Raw Mobile: [9027586766]
+2026-04-07 16:53:24 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-07 16:53:25 :: Total rows inserted: 2
+2026-04-07 16:53:25 :: ===== UploadExcel SUCCESS =====
+2026-04-07 16:53:48 :: ===== UploadExcel START =====
+2026-04-07 16:53:48 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-07 16:53:48 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-07 16:53:48 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-07 16:53:48 :: Total rows found (including header): 3
+2026-04-07 16:53:48 :: DB Connected
+2026-04-07 16:53:48 :: Row 2 Raw Mobile: [9027586766]
+2026-04-07 16:53:48 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-07 16:53:52 :: Row 3 Raw Mobile: [9027586766]
+2026-04-07 16:53:52 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-07 16:53:54 :: Total rows inserted: 2
+2026-04-07 16:53:54 :: ===== UploadExcel SUCCESS =====
+2026-04-07 16:55:59 :: ===== UploadExcel START =====
+2026-04-07 16:56:01 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-07 16:56:01 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-07 16:56:01 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-07 16:56:03 :: Total rows found (including header): 3
+2026-04-07 16:56:05 :: DB Connected
+2026-04-07 16:56:07 :: Row 2 Raw Mobile: [9027586766]
+2026-04-07 16:56:13 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-07 16:56:16 :: Row 3 Raw Mobile: [9027586766]
+2026-04-07 16:56:16 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-07 16:56:21 :: Total rows inserted: 2
+2026-04-07 16:56:21 :: ===== UploadExcel SUCCESS =====
+2026-04-07 16:56:50 :: ===== UploadExcel START =====
+2026-04-07 16:56:50 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-07 16:56:50 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-07 16:56:50 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-07 16:56:50 :: Total rows found (including header): 3
+2026-04-07 16:56:50 :: DB Connected
+2026-04-07 16:56:50 :: Row 2 Raw Mobile: [9027586766]
+2026-04-07 16:56:50 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-07 16:56:51 :: Row 3 Raw Mobile: [9027586766]
+2026-04-07 16:56:51 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-07 16:56:53 :: Total rows inserted: 2
+2026-04-07 16:56:53 :: ===== UploadExcel SUCCESS =====
+2026-04-07 16:57:19 :: ===== UploadExcel START =====
+2026-04-07 16:57:19 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-07 16:57:19 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-07 16:57:19 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-07 16:57:19 :: Total rows found (including header): 3
+2026-04-07 16:57:19 :: DB Connected
+2026-04-07 16:57:19 :: Row 2 Raw Mobile: [9027586766]
+2026-04-07 16:57:19 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-07 16:57:26 :: Row 3 Raw Mobile: [9027586766]
+2026-04-07 16:57:26 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-07 16:57:30 :: Total rows inserted: 2
+2026-04-07 16:57:30 :: ===== UploadExcel SUCCESS =====
+2026-04-07 16:59:03 :: ===== UploadExcel START =====
+2026-04-07 16:59:03 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-07 16:59:03 :: Campaign: Returns Ka Aakhri Mauka
+2026-04-07 16:59:03 :: Image URL: Content/images/campaign/261712065Logo16.png
+2026-04-07 16:59:03 :: Total rows found (including header): 3
+2026-04-07 16:59:03 :: DB Connected
+2026-04-07 16:59:03 :: Row 2 Raw Mobile: [9027586766]
+2026-04-07 16:59:03 :: Row 2 inserted successfully | Mobile: +919027586766
+2026-04-07 16:59:07 :: Row 3 Raw Mobile: [9027586766]
+2026-04-07 16:59:07 :: Row 3 inserted successfully | Mobile: +919027586766
+2026-04-07 16:59:10 :: Total rows inserted: 2
+2026-04-07 16:59:10 :: ===== UploadExcel SUCCESS =====
+2026-04-09 11:44:21 :: ===== UploadExcel START =====
+2026-04-09 11:44:21 :: File Name: CentralBlast_Template correct.xlsx
+2026-04-09 11:44:21 :: Campaign: Engage444

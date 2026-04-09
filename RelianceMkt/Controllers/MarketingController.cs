@@ -731,14 +731,390 @@ namespace RelianceMkt.Controllers
             }
         }
 
+        //public void SetData()
+        //{
+        //    string SAPCODE = Session["SAPCODE"]?.ToString();
+        //    string LOGIN = Session["LOGIN"]?.ToString();
+        //    string TYPE = Session["TYPE"]?.ToString();
 
+        //    // ✅ Early exit if session missing
+        //    if (string.IsNullOrEmpty(SAPCODE) || string.IsNullOrEmpty(TYPE))
+        //    {
+        //        logger.Warn("SetData: SAPCODE or TYPE session is empty. SAPCODE=" + SAPCODE + " | TYPE=" + TYPE);
+        //        return;
+        //    }
+
+        //    logger.Info($"SetData called | SAPCODE: {SAPCODE} | TYPE: {TYPE}");
+
+        //    string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+
+        //    decimal selfshare = 0;
+        //    decimal selflead = 0;
+        //    decimal teamshare = 0;
+        //    decimal teamslead = 0;
+
+        //    List<SelectListItem> downline = new List<SelectListItem>();
+
+        //    try
+        //    {
+        //        switch (TYPE)
+        //        {
+        //            case "CH":
+        //                break;
+
+        //            // ✅ ZM CASE
+        //            case "ZM":
+        //                ViewBag.NextType = "RM";
+        //                ViewBag.PrevType = "ZM";
+
+        //                var zm = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.X_ZM_EMP_CD == SAPCODE).FirstOrDefault();
+
+        //                if (zm != null)
+        //                {
+        //                    ViewBag.username = zm.X_ZM_NM;
+        //                    ViewBag.zone = zm.X_ZONE;
+        //                    ViewBag.ZM_NAME = zm.X_ZONE;
+        //                    ViewBag.ZM_CODE = zm.X_ZM_EMP_CD;
+        //                    ViewBag.RM_NAME = zm.X_REGION;
+        //                    ViewBag.RM_CODE = zm.X_RM_EMP_EMP_CD;
+        //                    ViewBag.BM_NAME = zm.X_SALES_UNIT_NM;
+        //                    ViewBag.BM_CODE = zm.X_SALES_UNIT_CD;
+        //                    ViewBag.ARDM_NAME = zm.X_SM_NM;
+        //                    ViewBag.ARDM_CODE = zm.X_SM_EMP_CD;
+        //                    ViewBag.AGENT_CODE = zm.AGENT_CODE;
+        //                    ViewBag.AGENT_NAME = zm.AGENT_NAME;
+        //                }
+        //                else
+        //                {
+        //                    logger.Warn("SetData ZM: No hierarchy data found for SAPCODE: " + SAPCODE);
+        //                }
+
+        //                selfshare = db.ENGAGE_SHARECOUNT.Where(x => x.SHC_SAPCODE == SAPCODE).Count();
+        //                selflead = db.Leads.Where(x => x.leads_sapcode == SAPCODE).Count();
+
+        //                var listRM = (from a in db.NEW_TEMP_HIERARCHY
+        //                              where a.X_ZM_EMP_CD == SAPCODE
+        //                                 && a.X_SM_STATUS == "IF"
+        //                                 && a.X_RM_EMP_EMP_CD != "77777777"
+        //                              select new { a.X_REGION, a.X_RM_EMP_EMP_CD })
+        //                             .ToList().Distinct();
+
+        //                foreach (var item in listRM)
+        //                    downline.Add(new SelectListItem { Text = item.X_REGION, Value = item.X_RM_EMP_EMP_CD });
+
+        //                ViewBag.lstDownline = downline;
+
+        //                // ✅ Using clause — connection auto close hoga
+        //                using (SqlConnection con = new SqlConnection(Constr))
+        //                {
+        //                    con.Open();
+        //                    string sql_zm_teamleads = @"
+        //                SELECT COUNT(leads_id) FROM Leads WHERE leads_sapcode IN(
+        //                    SELECT X_RM_EMP_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_ZM_EMP_CD=@SAPCODE AND X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD!='77777777'
+        //                    UNION 
+        //                    SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_RM_EMP_EMP_CD IN(
+        //                        SELECT X_RM_EMP_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                        WHERE X_ZM_EMP_CD=@SAPCODE AND X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD!='77777777'
+        //                    ) AND X_SM_STATUS='IF' AND X_BM_EMP_CD!='77777777'
+        //                    UNION 
+        //                    SELECT X_SM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_BM_EMP_CD IN(
+        //                        SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                        WHERE X_RM_EMP_EMP_CD IN(
+        //                            SELECT X_RM_EMP_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                            WHERE X_ZM_EMP_CD=@SAPCODE AND X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD!='77777777'
+        //                        ) AND X_SM_STATUS='IF' AND X_BM_EMP_CD!='77777777'
+        //                    ) AND X_SM_STATUS='IF' AND X_SM_EMP_CD!='77777777'
+        //                )";
+
+        //                    using (SqlCommand cmd = new SqlCommand(sql_zm_teamleads, con))
+        //                    {
+        //                        cmd.Parameters.AddWithValue("@SAPCODE", SAPCODE);
+        //                        teamslead = Convert.ToDecimal(cmd.ExecuteScalar() ?? 0);
+        //                    }
+
+        //                    string sql_zm_teamshare = @"
+        //                SELECT COUNT(SHC_SHARECOUNT) FROM ENGAGE_SHARECOUNT WHERE SHC_SAPCODE IN(
+        //                    SELECT X_RM_EMP_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_ZM_EMP_CD=@SAPCODE AND X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD!='77777777'
+        //                    UNION 
+        //                    SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_RM_EMP_EMP_CD IN(
+        //                        SELECT X_RM_EMP_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                        WHERE X_ZM_EMP_CD=@SAPCODE AND X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD!='77777777'
+        //                    ) AND X_SM_STATUS='IF' AND X_BM_EMP_CD!='77777777'
+        //                    UNION 
+        //                    SELECT X_SM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_BM_EMP_CD IN(
+        //                        SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                        WHERE X_RM_EMP_EMP_CD IN(
+        //                            SELECT X_RM_EMP_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                            WHERE X_ZM_EMP_CD=@SAPCODE AND X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD!='77777777'
+        //                        ) AND X_SM_STATUS='IF' AND X_BM_EMP_CD!='77777777'
+        //                    ) AND X_SM_STATUS='IF' AND X_SM_EMP_CD!='77777777'
+        //                )";
+
+        //                    using (SqlCommand cmd = new SqlCommand(sql_zm_teamshare, con))
+        //                    {
+        //                        cmd.Parameters.AddWithValue("@SAPCODE", SAPCODE);
+        //                        teamshare = Convert.ToDecimal(cmd.ExecuteScalar() ?? 0);
+        //                    }
+        //                }
+        //                break;
+
+        //            // ✅ RM CASE
+        //            case "RM":
+        //                ViewBag.NextType = "BM";
+        //                ViewBag.PrevType = "RM";
+
+        //                var rm = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.X_RM_EMP_EMP_CD == SAPCODE).FirstOrDefault();
+
+        //                if (rm != null)
+        //                {
+        //                    ViewBag.username = rm.X_RM_NM;
+        //                    ViewBag.zone = rm.X_REGION;
+        //                    ViewBag.ZM_NAME = rm.X_ZONE;
+        //                    ViewBag.ZM_CODE = rm.X_ZM_EMP_CD;
+        //                    ViewBag.RM_NAME = rm.X_REGION;
+        //                    ViewBag.RM_CODE = rm.X_RM_EMP_EMP_CD;
+        //                    ViewBag.BM_NAME = rm.X_SALES_UNIT_NM;
+        //                    ViewBag.BM_CODE = rm.X_BM_EMP_CD;
+        //                    ViewBag.ARDM_NAME = rm.X_SM_NM;
+        //                    ViewBag.ARDM_CODE = rm.X_SM_EMP_CD;
+        //                    ViewBag.AGENT_CODE = rm.AGENT_CODE;
+        //                    ViewBag.AGENT_NAME = rm.AGENT_NAME;
+        //                }
+        //                else
+        //                {
+        //                    logger.Warn("SetData RM: No hierarchy data for SAPCODE: " + SAPCODE);
+        //                }
+
+        //                var listBM = (from a in db.NEW_TEMP_HIERARCHY
+        //                              where a.X_RM_EMP_EMP_CD == SAPCODE
+        //                                 && a.X_SM_STATUS == "IF"
+        //                                 && a.X_BM_EMP_CD != "77777777"
+        //                              select new { a.X_SALES_UNIT_NM, a.X_BM_EMP_CD })
+        //                             .ToList().Distinct();
+
+        //                foreach (var item in listBM)
+        //                    downline.Add(new SelectListItem { Text = item.X_SALES_UNIT_NM, Value = item.X_BM_EMP_CD });
+
+        //                ViewBag.lstDownline = downline;
+
+        //                selfshare = db.ENGAGE_SHARECOUNT.Where(x => x.SHC_SAPCODE == SAPCODE).Count();
+        //                selflead = db.Leads.Where(x => x.leads_sapcode == SAPCODE).Count();
+
+        //                using (SqlConnection con = new SqlConnection(Constr))
+        //                {
+        //                    con.Open();
+        //                    string sql_rm_teamleads = @"
+        //                SELECT COUNT(leads_id) FROM Leads WHERE leads_sapcode IN(
+        //                    SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD=@SAPCODE AND X_BM_EMP_CD!='77777777'
+        //                    UNION 
+        //                    SELECT X_SM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_BM_EMP_CD IN(
+        //                        SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                        WHERE X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD=@SAPCODE AND X_BM_EMP_CD!='77777777'
+        //                    ) AND X_SM_STATUS='IF' AND X_SM_EMP_CD!='77777777'
+        //                )";
+
+        //                    using (SqlCommand cmd = new SqlCommand(sql_rm_teamleads, con))
+        //                    {
+        //                        cmd.Parameters.AddWithValue("@SAPCODE", SAPCODE);
+        //                        teamslead = Convert.ToDecimal(cmd.ExecuteScalar() ?? 0);
+        //                    }
+
+        //                    string sql_rm_teamshare = @"
+        //                SELECT COUNT(SHC_SHARECOUNT) FROM ENGAGE_SHARECOUNT WHERE SHC_SAPCODE IN(
+        //                    SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD=@SAPCODE AND X_BM_EMP_CD!='77777777'
+        //                    UNION 
+        //                    SELECT X_SM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                    WHERE X_BM_EMP_CD IN(
+        //                        SELECT X_BM_EMP_CD FROM NEW_TEMP_HIERARCHY 
+        //                        WHERE X_SM_STATUS='IF' AND X_RM_EMP_EMP_CD=@SAPCODE AND X_BM_EMP_CD!='77777777'
+        //                    ) AND X_SM_STATUS='IF' AND X_SM_EMP_CD!='77777777'
+        //                )";
+
+        //                    using (SqlCommand cmd = new SqlCommand(sql_rm_teamshare, con))
+        //                    {
+        //                        cmd.Parameters.AddWithValue("@SAPCODE", SAPCODE);
+        //                        teamshare = Convert.ToDecimal(cmd.ExecuteScalar() ?? 0);
+        //                    }
+        //                }
+        //                break;
+
+        //            // ✅ BM CASE
+        //            case "BM":
+        //                ViewBag.NextType = "ARDM";
+        //                ViewBag.PrevType = "BM";
+
+        //                var bm = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.X_BM_EMP_CD == SAPCODE).FirstOrDefault();
+
+        //                if (bm != null)
+        //                {
+        //                    ViewBag.username = bm.X_BM_NM;
+        //                    ViewBag.zone = bm.X_BRANCH;
+        //                    ViewBag.ZM_NAME = bm.X_ZONE;
+        //                    ViewBag.ZM_CODE = bm.X_ZM_EMP_CD;
+        //                    ViewBag.RM_NAME = bm.X_REGION;
+        //                    ViewBag.RM_CODE = bm.X_RM_EMP_EMP_CD;
+        //                    ViewBag.BM_NAME = bm.X_SALES_UNIT_NM;
+        //                    ViewBag.BM_CODE = bm.X_BM_EMP_CD;
+        //                    ViewBag.ARDM_NAME = bm.X_SM_NM;
+        //                    ViewBag.ARDM_CODE = bm.X_SM_EMP_CD;
+        //                    ViewBag.AGENT_CODE = bm.AGENT_CODE;
+        //                    ViewBag.AGENT_NAME = bm.AGENT_NAME;
+        //                }
+        //                else
+        //                {
+        //                    logger.Warn("SetData BM: No hierarchy data for SAPCODE: " + SAPCODE);
+        //                }
+
+        //                var listARDM = (from a in db.NEW_TEMP_HIERARCHY
+        //                                where a.X_BM_EMP_CD == SAPCODE
+        //                                   && a.X_SM_STATUS == "IF"
+        //                                   && a.X_SM_EMP_CD != "77777777"
+        //                                select new { a.X_SM_EMP_CD, a.X_SALES_UNIT_CD, a.X_SM_NM })
+        //                               .ToList().Distinct();
+
+        //                foreach (var item in listARDM)
+        //                    downline.Add(new SelectListItem { Text = item.X_SM_NM, Value = item.X_SM_EMP_CD });
+
+        //                ViewBag.lstDownline = downline;
+
+        //                var lstARDManager = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.X_BM_EMP_CD == SAPCODE)
+        //                    .Select(x => x.X_SM_EMP_CD).ToList().Distinct();
+
+        //                selfshare = db.ENGAGE_SHARECOUNT.Where(x => x.SHC_SAPCODE == SAPCODE).Count();
+        //                selflead = db.Leads.Where(x => x.leads_sapcode == SAPCODE).Count();
+
+        //                teamshare = Convert.ToDecimal((from a in db.ENGAGE_SHARECOUNT
+        //                                               where lstARDManager.Contains(a.SHC_SAPCODE)
+        //                                               select a.SHC_SHARECOUNT).Count());
+
+        //                teamslead = Convert.ToDecimal((from a in db.Leads
+        //                                               where lstARDManager.Contains(a.leads_sapcode)
+        //                                               select a.leads_id).Count());
+        //                break;
+
+        //            // ✅ ARDM CASE — BUG FIX: X_BM_EMP_CD → X_SM_EMP_CD
+        //            case "ARDM":
+        //                ViewBag.NextType = "AGENT";
+        //                ViewBag.PrevType = "ARDM";
+
+        //                var ardm = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.X_SM_EMP_CD == SAPCODE).FirstOrDefault();
+
+        //                if (ardm != null)
+        //                {
+        //                    ViewBag.username = ardm.X_SM_NM;   // ✅ Fix: X_BM_NM → X_SM_NM
+        //                    ViewBag.zone = ardm.X_BRANCH;
+        //                    ViewBag.ZM_NAME = ardm.X_ZONE;
+        //                    ViewBag.ZM_CODE = ardm.X_ZM_EMP_CD;
+        //                    ViewBag.RM_NAME = ardm.X_REGION;
+        //                    ViewBag.RM_CODE = ardm.X_RM_EMP_EMP_CD;
+        //                    ViewBag.BM_NAME = ardm.X_SALES_UNIT_NM;
+        //                    ViewBag.BM_CODE = ardm.X_BM_EMP_CD;
+        //                    ViewBag.ARDM_NAME = ardm.X_SM_NM;
+        //                    ViewBag.ARDM_CODE = ardm.X_SM_EMP_CD;
+        //                    ViewBag.AGENT_CODE = ardm.AGENT_CODE;
+        //                    ViewBag.AGENT_NAME = ardm.AGENT_NAME;
+        //                }
+        //                else
+        //                {
+        //                    logger.Warn("SetData ARDM: No hierarchy data for SAPCODE: " + SAPCODE);
+        //                }
+
+        //                var listAgent = (from a in db.NEW_TEMP_HIERARCHY
+        //                                 where a.X_SM_EMP_CD == SAPCODE
+        //                                    && a.X_SM_STATUS == "IF"
+        //                                    && a.AGENT_CODE != "77777777"
+        //                                 select new { a.X_SM_EMP_CD, a.AGENT_CODE, a.AGENT_NAME })
+        //                                .ToList().Distinct();
+
+        //                foreach (var item in listAgent)
+        //                    downline.Add(new SelectListItem { Text = item.AGENT_NAME, Value = item.AGENT_CODE });
+
+        //                ViewBag.lstDownline = downline;
+
+        //                // ✅ BUG FIX: X_BM_EMP_CD == SAPCODE → X_SM_EMP_CD == SAPCODE
+        //                var lstAgentManager = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.X_SM_EMP_CD == SAPCODE)
+        //                    .Select(x => x.AGENT_CODE).ToList().Distinct();
+
+        //                selfshare = db.ENGAGE_SHARECOUNT.Where(x => x.SHC_SAPCODE == SAPCODE).Count();
+        //                selflead = db.Leads.Where(x => x.leads_sapcode == SAPCODE).Count();
+
+        //                teamshare = Convert.ToDecimal((from a in db.ENGAGE_SHARECOUNT
+        //                                               where lstAgentManager.Contains(a.SHC_SAPCODE)
+        //                                               select a.SHC_SHARECOUNT).Count());
+
+        //                teamslead = Convert.ToDecimal((from a in db.Leads
+        //                                               where lstAgentManager.Contains(a.leads_sapcode)
+        //                                               select a.leads_id).Count());
+        //                break;
+
+        //            // ✅ AGENT CASE
+        //            case "AGENT":
+        //                var agent = db.NEW_TEMP_HIERARCHY
+        //                    .Where(x => x.AGENT_CODE == SAPCODE).FirstOrDefault();
+
+        //                if (agent != null)
+        //                {
+        //                    ViewBag.username = agent.AGENT_NAME; // ✅ Fix: X_SM_NM → AGENT_NAME
+        //                    ViewBag.ZM_NAME = agent.X_ZONE;
+        //                    ViewBag.ZM_CODE = agent.X_ZM_EMP_CD;
+        //                    ViewBag.RM_NAME = agent.X_REGION;
+        //                    ViewBag.RM_CODE = agent.X_RM_EMP_EMP_CD;
+        //                    ViewBag.BM_NAME = agent.X_SALES_UNIT_NM;
+        //                    ViewBag.BM_CODE = agent.X_BM_EMP_CD;
+        //                    ViewBag.ARDM_NAME = agent.X_SM_NM;
+        //                    ViewBag.ARDM_CODE = agent.X_SM_EMP_CD;
+        //                    ViewBag.AGENT_CODE = agent.AGENT_CODE;
+        //                    ViewBag.AGENT_NAME = agent.AGENT_NAME;
+        //                }
+        //                else
+        //                {
+        //                    logger.Warn("SetData AGENT: No hierarchy data for SAPCODE: " + SAPCODE);
+        //                }
+
+        //                selfshare = db.ENGAGE_SHARECOUNT.Where(x => x.SHC_SAPCODE == SAPCODE).Count();
+        //                selflead = db.Leads.Where(x => x.leads_sapcode == SAPCODE).Count();
+        //                break;
+
+        //            default:
+        //                logger.Warn("SetData: Unknown TYPE = " + TYPE + " for SAPCODE: " + SAPCODE);
+        //                break;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Error($"SetData FAILED | SAPCODE: {SAPCODE} | TYPE: {TYPE} | Error: {ex.Message}", ex);
+        //        // ❌ Exception throw mat karo — ViewBag defaults rahenge 0
+        //    }
+
+        //    ViewBag.selfshare = selfshare;
+        //    ViewBag.selflead = selflead;
+        //    ViewBag.teamshare = teamshare;
+        //    ViewBag.teamslead = teamslead;
+
+        //    logger.Info($"SetData completed | SAPCODE: {SAPCODE} | selfshare:{selfshare} | selflead:{selflead} | teamshare:{teamshare} | teamslead:{teamslead}");
+        //}
 
         public void SetData()
         {
 
-           string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+           // string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
 
-           //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             SqlConnection con = new SqlConnection(Constr);
             string SAPCODE = Session["SAPCODE"]?.ToString();
@@ -1061,219 +1437,66 @@ namespace RelianceMkt.Controllers
             ViewBag.teamslead = teamslead;
         }
 
-
-        //====================================================================
-
-        //        public ActionResult UserDashboard(string REF_Key)
-        //        {
-        //            // ===============================
-        //            // 1️⃣ Decode REF_Key → SAPCODE
-        //            // ===============================
-        //            Session["REF_KEY"] = REF_Key;
-        //            string SAPCODE = string.Empty;
-
-        //            var valueBytes = Convert.FromBase64String(REF_Key);
-        //            string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
-
-        //            foreach (var item in str_REFKEY.Split('&'))
-        //            {
-        //                if (item.Contains("SAPCODE"))
-        //                {
-        //                    SAPCODE = item.Split('=')[1];
-        //                }
-        //            }
-
-        //            Session["SAPCODE"] = SAPCODE;
-
-        //            // ===============================
-        //            // 2️⃣ Get user from hierarchy
-        //            // ===============================
-        //            var userData = db.NEW_TEMP_HIERARCHY.FirstOrDefault(x =>
-        //                x.X_ZM_EMP_CD == SAPCODE ||
-        //                x.X_RM_EMP_EMP_CD == SAPCODE ||
-        //                x.X_BM_EMP_CD == SAPCODE ||
-        //                x.X_SM_EMP_CD == SAPCODE ||
-        //                x.AGENT_CODE == SAPCODE
-        //            );
-
-        //            if (userData != null)
-        //            {
-        //                if (userData.X_ZM_EMP_CD == SAPCODE)
-        //                {
-        //                    Session["TYPE"] = "ZM";
-        //                    if (Session["LOGIN"] == null)
-        //                        Session["LOGIN"] = "ZM";
-        //                }
-        //                else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
-        //                {
-        //                    Session["TYPE"] = "RM";
-        //                    if (Session["LOGIN"] == null)
-        //                        Session["LOGIN"] = "RM";
-        //                }
-        //                else if (userData.X_BM_EMP_CD == SAPCODE)
-        //                {
-        //                    Session["TYPE"] = "BM";
-        //                    if (Session["LOGIN"] == null)
-        //                        Session["LOGIN"] = "BM";
-        //                }
-        //                else if (userData.X_SM_EMP_CD == SAPCODE)
-        //                {
-        //                    Session["TYPE"] = "ARDM";
-        //                    if (Session["LOGIN"] == null)
-        //                        Session["LOGIN"] = "ARDM";
-        //                }
-        //                else if (userData.AGENT_CODE == SAPCODE)
-        //                {
-        //                    Session["TYPE"] = "AGENT";
-        //                    if (Session["LOGIN"] == null)
-        //                        Session["LOGIN"] = "AGENT";
-        //                }
-
-        //                // 🔥 Set user's channel
-        //                Session["X_CHANNEL"] = userData.X_CHANNEL;
-        //            }
-        //            else
-        //            {
-        //                Session.Clear();
-        //            }
-
-        //            // ===============================
-        //            // 🔔 3️⃣ Notifications (Channel + SAPCODE)
-        //            // ===============================
-        //            string userChannel = Convert.ToString(Session["X_CHANNEL"]);
-
-        //            var notifications = db.UserNotifications
-        //                .Where(n =>
-        //                    n.SAPCode == SAPCODE &&
-        //                    n.Channel_code == userChannel &&
-        //                    n.IsRead == false)
-        //                .OrderByDescending(n => n.CreatedDate)
-        //                .ToList();
-
-        //            ViewBag.Notifications = notifications;
-        //            ViewBag.NotificationCount = notifications.Count;
-
-        //            // ===============================
-        //            // 4️⃣ Existing Dashboard Data
-        //            // ===============================
-        //            SetData();
-
-        //            // Share leaderboard
-        //            ViewBag.ShareLeaderBoard = db.ENGAGE_SHARECOUNT.SqlQuery(@"
-        //        SELECT TOP 10 * FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) SHC_ID,
-        //                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) SHC_SHARECOUNT,
-        //                SHC_SAPCODE,
-        //                '' SHC_PLATEFORM,
-        //                CAST('2022-01-01' AS DATE) SHC_DATE,
-        //                CREATIVE_ID
-        //            FROM ENGAGE_SHARECOUNT
-        //            GROUP BY SHC_SAPCODE, CREATIVE_ID
-        //        ) A").ToList<ENGAGE_SHARECOUNT>();
-
-        //            ViewBag.ShareLeaderBoardMyRank = db.ENGAGE_SHARECOUNT.SqlQuery(@"
-        //        SELECT * FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) SHC_ID,
-        //                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) SHC_SHARECOUNT,
-        //                SHC_SAPCODE,
-        //                '' SHC_PLATEFORM,
-        //                CAST('2022-01-01' AS DATE) SHC_DATE,
-        //                CREATIVE_ID
-        //            FROM ENGAGE_SHARECOUNT
-        //            GROUP BY SHC_SAPCODE, CREATIVE_ID
-        //        ) A WHERE A.SHC_SAPCODE = @SAPCODE",
-        //                new SqlParameter("@SAPCODE", SAPCODE))
-        //                .FirstOrDefault<ENGAGE_SHARECOUNT>();
-
-        //            // Leads leaderboard
-        //            ViewBag.LeadLeaderBoardMyRank = db.Leads.SqlQuery(@"
-        //    SELECT * FROM (
-        //        SELECT 
-        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS leads_id,
-        //            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS leads_sapcode,
-        //            '' AS LEADS_NAME,
-        //            CAST(0 AS DECIMAL(18,2)) AS LEADS_MOBILE,
-        //            CAST(0 AS DECIMAL(18,2)) AS LEADS_CREATIVEID,
-        //            CAST(NULL AS DATETIME) AS LEADS_DATE,
-        //            '' AS LEADS_PLATEFORM,
-        //            leads_email,
-        //            api_leads_id
-        //        FROM leads
-        //        GROUP BY leads_SAPCODE, leads_email, api_leads_id
-        //    ) A
-        //    WHERE A.leads_SAPCODE = @SAPCODE
-        //", new SqlParameter("@SAPCODE", SAPCODE))
-        //  .FirstOrDefault<Lead>();
-
-
-        //            ViewBag.LeadLeaderBoardMyRank = db.Leads.SqlQuery(@"
-        //        SELECT * FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) leads_id,
-        //                CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) leads_sapcode,
-        //                '' LEADS_NAME,
-        //                0 LEADS_MOBILE,
-        //                0 LEADS_CREATIVEID,
-        //                '' LEADS_DATE,
-        //                '' LEADS_PLATEFORM,
-        //                leads_email,
-        //                api_leads_id
-        //            FROM leads
-        //            GROUP BY leads_SAPCODE, leads_email, api_leads_id
-        //        ) A WHERE A.leads_SAPCODE = @SAPCODE",
-        //                new SqlParameter("@SAPCODE", SAPCODE))
-        //                .FirstOrDefault<Lead>();
-
-        //            return View();
-        //        }
-
-
-
-
-
-        //====================================
+         //============================================================
         public ActionResult UserDashboard(string REF_Key)
         {
+            log4net.Config.XmlConfigurator.Configure();
+
             try
             {
-                // 🔹 Always set REF_KEY first
-                if (!string.IsNullOrEmpty(REF_Key))
-                {
-                    Session["REF_KEY"] = REF_Key;
-                }
+                logger.Info("UserDashboard called. REF_Key: " + (string.IsNullOrEmpty(REF_Key) ? "NULL/EMPTY" : REF_Key));
 
-                string SAPCODE = string.Empty;
-
+                // ✅ Step 1: REF_Key Validation
                 if (string.IsNullOrEmpty(REF_Key))
                 {
-                    ViewBag.Error = "Invalid Reference Key";
+                    logger.Warn("UserDashboard: REF_Key is null or empty.");
+                    ViewBag.AlertMessage = "Invalid Reference Key. Please use a valid link.";
+                    ViewBag.AlertType = "error";
                     return View();
                 }
 
-                // 🔹 Decode Base64 REF_Key
-                var valueBytes = Convert.FromBase64String(REF_Key);
-                string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+                Session["REF_KEY"] = REF_Key;
 
-                // 🔹 Extract SAPCODE
+                // ✅ Step 2: Base64 Decode with error handling
+                string str_REFKEY = string.Empty;
+                try
+                {
+                    var valueBytes = Convert.FromBase64String(REF_Key);
+                    str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+                    logger.Info("Decoded REF_Key: " + str_REFKEY);
+                }
+                catch (FormatException fex)
+                {
+                    logger.Error("Base64 decode failed for REF_Key: " + REF_Key, fex);
+                    ViewBag.AlertMessage = "Invalid Reference Key format.";
+                    ViewBag.AlertType = "error";
+                    return View();
+                }
+
+                // ✅ Step 3: Extract SAPCODE
+                string SAPCODE = string.Empty;
                 string[] separate_params = str_REFKEY.Split('&');
                 foreach (var item in separate_params)
                 {
-                    if (item.Contains("SAPCODE"))
+                    if (item.Contains("SAPCODE") && item.Contains("="))
                     {
                         SAPCODE = item.Split('=')[1];
                     }
                 }
 
-                // 🔹 Set SAPCODE Session
+                if (string.IsNullOrEmpty(SAPCODE))
+                {
+                    logger.Warn("UserDashboard: SAPCODE could not be extracted from REF_Key. Decoded: " + str_REFKEY);
+                    ViewBag.AlertMessage = "SAPCODE missing in Reference Key. Please contact support.";
+                    ViewBag.AlertType = "error";
+                    return View();
+                }
+
+                logger.Info("Extracted SAPCODE: " + SAPCODE);
+
                 Session["SAPCODE"] = SAPCODE;
-                Session["REF_KEY"] = REF_Key;
 
-                // 🔹 Determine user type and name
-                string userType = string.Empty;
-                string userName = string.Empty;
-
+                // ✅ Step 4: Fetch user data
                 var userData = db.NEW_TEMP_HIERARCHY
                     .Where(x => x.X_ZM_EMP_CD == SAPCODE
                              || x.X_RM_EMP_EMP_CD == SAPCODE
@@ -1282,48 +1505,81 @@ namespace RelianceMkt.Controllers
                              || x.AGENT_CODE == SAPCODE)
                     .FirstOrDefault();
 
-                if (userData != null)
+                if (userData == null)
                 {
-                    if (userData.X_ZM_EMP_CD == SAPCODE)
-                    {
-                        userType = "ZM";
-                        userName = userData.X_ZM_NM;
-                    }
-                    else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
-                    {
-                        userType = "RM";
-                        userName = userData.X_RM_NM;
-                    }
-                    else if (userData.X_BM_EMP_CD == SAPCODE)
-                    {
-                        userType = "BM";
-                        userName = userData.X_BM_NM;
-                    }
-                    else if (userData.X_SM_EMP_CD == SAPCODE)
-                    {
-                        userType = "ARDM";
-                        userName = userData.X_SM_NM;
-                    }
-                    else if (userData.AGENT_CODE == SAPCODE)
-                    {
-                        userType = "AGENT";
-                        userName = userData.AGENT_NAME;
-                    }
+                    logger.Warn("UserDashboard: No user found in NEW_TEMP_HIERARCHY for SAPCODE: " + SAPCODE);
+                    ViewBag.AlertMessage = "User not found for this Reference Key. Please contact support.";
+                    ViewBag.AlertType = "error";
+                    return View();
                 }
 
-                // 🔹 Set Sessions
+                // ✅ Step 5: Determine userType and userName
+                string userType = string.Empty;
+                string userName = string.Empty;
+
+                if (userData.X_ZM_EMP_CD == SAPCODE)
+                {
+                    userType = "ZM";
+                    userName = userData.X_ZM_NM;
+                }
+                else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
+                {
+                    userType = "RM";
+                    userName = userData.X_RM_NM;
+                }
+                else if (userData.X_BM_EMP_CD == SAPCODE)
+                {
+                    userType = "BM";
+                    userName = userData.X_BM_NM;
+                }
+                else if (userData.X_SM_EMP_CD == SAPCODE)
+                {
+                    userType = "ARDM";
+                    userName = userData.X_SM_NM;
+                }
+                else if (userData.AGENT_CODE == SAPCODE)
+                {
+                    userType = "AGENT";
+                    userName = userData.AGENT_NAME;
+                }
+
+                if (string.IsNullOrEmpty(userType))
+                {
+                    logger.Warn("UserDashboard: userType could not be determined for SAPCODE: " + SAPCODE);
+                    ViewBag.AlertMessage = "User role not found. Please contact support.";
+                    ViewBag.AlertType = "warning";
+                    return View();
+                }
+
+                logger.Info($"SAPCODE: {SAPCODE} | UserType: {userType} | UserName: {userName}");
+
+                // ✅ Step 6: Channel Validation - YAHI PROBLEM THI!
+                string channel = userData.X_CHANNEL?.Trim();
+                if (string.IsNullOrEmpty(channel))
+                {
+                    logger.Warn($"UserDashboard: X_CHANNEL is EMPTY for SAPCODE: {SAPCODE}, UserType: {userType}");
+                    ViewBag.AlertMessage = $"Channel not assigned for user '{userName}' (SAP: {SAPCODE}). Please contact your administrator.";
+                    ViewBag.AlertType = "warning";
+                    // Channel missing hai to bhi dashboard show kar sakte ho ya return kar sakte ho
+                    // Agar continue karna hai: comment out the return below
+                    return View();
+                }
+
+                logger.Info($"Channel found: {channel} for SAPCODE: {SAPCODE}");
+
+                // ✅ Step 7: Set Sessions
                 Session["TYPE"] = userType;
                 Session["USERNAME"] = userName;
-                Session["X_CHANNEL"] = userData?.X_CHANNEL;
+                Session["X_CHANNEL"] = channel;
                 Session["REF_KEY"] = REF_Key;
 
                 if (Session["LOGIN"] == null)
                     Session["LOGIN"] = userType;
 
-                // 🔹 Set Dashboard Data
+                // ✅ Step 8: Dashboard Data
                 SetData();
 
-                // 🔹 Share Leaderboard
+                // ✅ Step 9: Share Leaderboard
                 var qry = db.ENGAGE_SHARECOUNT.SqlQuery(@"
             SELECT TOP 10 *
             FROM (
@@ -1358,7 +1614,7 @@ namespace RelianceMkt.Controllers
                 ViewBag.ShareLeaderBoard = qry;
                 ViewBag.ShareLeaderBoardMyRank = qry2;
 
-                // 🔹 Leads Leaderboard
+                // ✅ Step 10: Leads Leaderboard
                 var qry3 = db.Leads.SqlQuery(@"
             SELECT TOP 10 *
             FROM (
@@ -1370,12 +1626,9 @@ namespace RelianceMkt.Controllers
                     CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
                     CAST('' AS DATETIME) AS LEADS_DATE,
                     '' AS LEADS_PLATEFORM,
-                    leads_email,
-                    api_leads_id,
-                  api_response_json,
-                  LeadType
+                    leads_email, api_leads_id, api_response_json, LeadType
                 FROM leads
-                GROUP BY leads_SAPCODE, leads_email, api_leads_id,api_response_json, LeadType
+                GROUP BY leads_SAPCODE, leads_email, api_leads_id, api_response_json, LeadType
             ) A
         ").ToList<Lead>();
 
@@ -1390,12 +1643,9 @@ namespace RelianceMkt.Controllers
                     CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
                     CAST('' AS DATETIME) AS LEADS_DATE,
                     '' AS LEADS_PLATEFORM,
-                    leads_email,
-                    api_leads_id,
-                  api_response_json,
-                  LeadType
+                    leads_email, api_leads_id, api_response_json, LeadType
                 FROM leads
-                GROUP BY leads_SAPCODE, leads_email, api_leads_id,api_response_json, LeadType
+                GROUP BY leads_SAPCODE, leads_email, api_leads_id, api_response_json, LeadType
             ) A
             WHERE A.leads_SAPCODE = @SAPCODE",
                     new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<Lead>();
@@ -1403,13 +1653,15 @@ namespace RelianceMkt.Controllers
                 ViewBag.LeadLeaderBoard = qry3;
                 ViewBag.LeadLeaderBoardMyRank = qry4;
 
+                logger.Info($"UserDashboard loaded successfully for SAPCODE: {SAPCODE}");
                 return View();
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Something went wrong: " + ex.Message;
+                logger.Error("UserDashboard: Unhandled exception occurred.", ex);
+                ViewBag.AlertMessage = "Something went wrong: " + ex.Message;
+                ViewBag.AlertType = "error";
 
-                // ❌ Don't remove REF_KEY
                 Session.Remove("SAPCODE");
                 Session.Remove("LOGIN");
                 Session.Remove("TYPE");
@@ -1417,340 +1669,212 @@ namespace RelianceMkt.Controllers
                 return View();
             }
         }
+        //================7-4-26============
+        //  public ActionResult UserDashboard(string REF_Key)
+        //  {
+        //      try
+        //      {
+        //          // 🔹 Always set REF_KEY first
+        //          if (!string.IsNullOrEmpty(REF_Key))
+        //          {
+        //              Session["REF_KEY"] = REF_Key;
+        //          }
 
+        //          string SAPCODE = string.Empty;
 
-        //public ActionResult UserDashboard(string REF_Key)
+        //          if (string.IsNullOrEmpty(REF_Key))
+        //          {
+        //              ViewBag.Error = "Invalid Reference Key";
+        //              return View();
+        //          }
+
+        //          // 🔹 Decode Base64 REF_Key
+        //          var valueBytes = Convert.FromBase64String(REF_Key);
+        //          string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
+
+        //          // 🔹 Extract SAPCODE
+        //          string[] separate_params = str_REFKEY.Split('&');
+        //          foreach (var item in separate_params)
+        //          {
+        //              if (item.Contains("SAPCODE"))
+        //              {
+        //                  SAPCODE = item.Split('=')[1];
+        //              }
+        //          }
+
+        //          // 🔹 Set SAPCODE Session
+        //          Session["SAPCODE"] = SAPCODE;
+        //          Session["REF_KEY"] = REF_Key;
+
+        //          // 🔹 Determine user type and name
+        //          string userType = string.Empty;
+        //          string userName = string.Empty;
+
+        //          var userData = db.NEW_TEMP_HIERARCHY
+        //              .Where(x => x.X_ZM_EMP_CD == SAPCODE
+        //                       || x.X_RM_EMP_EMP_CD == SAPCODE
+        //                       || x.X_BM_EMP_CD == SAPCODE
+        //                       || x.X_SM_EMP_CD == SAPCODE
+        //                       || x.AGENT_CODE == SAPCODE)
+        //              .FirstOrDefault();
+
+        //          if (userData != null)
+        //          {
+        //              if (userData.X_ZM_EMP_CD == SAPCODE)
+        //              {
+        //                  userType = "ZM";
+        //                  userName = userData.X_ZM_NM;
+        //              }
+        //              else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
+        //              {
+        //                  userType = "RM";
+        //                  userName = userData.X_RM_NM;
+        //              }
+        //              else if (userData.X_BM_EMP_CD == SAPCODE)
+        //              {
+        //                  userType = "BM";
+        //                  userName = userData.X_BM_NM;
+        //              }
+        //              else if (userData.X_SM_EMP_CD == SAPCODE)
+        //              {
+        //                  userType = "ARDM";
+        //                  userName = userData.X_SM_NM;
+        //              }
+        //              else if (userData.AGENT_CODE == SAPCODE)
+        //              {
+        //                  userType = "AGENT";
+        //                  userName = userData.AGENT_NAME;
+        //              }
+        //          }
+
+        //          // 🔹 Set Sessions
+        //          Session["TYPE"] = userType;
+        //          Session["USERNAME"] = userName;
+        //          Session["X_CHANNEL"] = userData?.X_CHANNEL;
+        //          Session["REF_KEY"] = REF_Key;
+
+        //          //===================
+
+        //          // ✅ FIX: Zone set karo (NULL safe)
+        //          ViewBag.zone = Session["ZONE"]?.ToString() ?? "Select Zone";
+        //          Session["X_CHANNEL"] = userData?.X_CHANNEL;
+        //          Session["ZONE"] = userData?.X_ZONE;   // 👈 ADD THIS
+        //          //================
+
+        //          if (Session["LOGIN"] == null)
+        //              Session["LOGIN"] = userType;
+
+        //          // 🔹 Set Dashboard Data
+        //          SetData();
+
+        //          // 🔹 Share Leaderboard
+        //          var qry = db.ENGAGE_SHARECOUNT.SqlQuery(@"
+        //      SELECT TOP 10 *
+        //      FROM (
+        //          SELECT 
+        //              CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID',
+        //              CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT',
+        //              SHC_SAPCODE AS 'SHC_SAPCODE',
+        //              '' AS 'SHC_PLATEFORM',
+        //              CAST('2022-01-01' AS DATE) AS 'SHC_DATE',
+        //              CREATIVE_ID
+        //          FROM ENGAGE_SHARECOUNT
+        //          GROUP BY SHC_SAPCODE, CREATIVE_ID
+        //      ) A
+        //  ").ToList<ENGAGE_SHARECOUNT>();
+
+        //          var qry2 = db.ENGAGE_SHARECOUNT.SqlQuery(@"
+        //      SELECT *
+        //      FROM (
+        //          SELECT 
+        //              CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID',
+        //              CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT',
+        //              SHC_SAPCODE AS 'SHC_SAPCODE',
+        //              '' AS 'SHC_PLATEFORM',
+        //              CAST('2022-01-01' AS DATE) AS 'SHC_DATE',
+        //              CREATIVE_ID
+        //          FROM ENGAGE_SHARECOUNT
+        //          GROUP BY SHC_SAPCODE, CREATIVE_ID
+        //      ) A
+        //      WHERE A.SHC_SAPCODE = @SAPCODE",
+        //              new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<ENGAGE_SHARECOUNT>();
+
+        //          ViewBag.ShareLeaderBoard = qry;
+        //          ViewBag.ShareLeaderBoardMyRank = qry2;
+
+        //          // 🔹 Leads Leaderboard
+        //          var qry3 = db.Leads.SqlQuery(@"
+        //      SELECT TOP 10 *
+        //      FROM (
+        //          SELECT 
+        //              CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id',
+        //              CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode',
+        //              '' AS LEADS_NAME,
+        //              CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE,
+        //              CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
+        //              CAST('' AS DATETIME) AS LEADS_DATE,
+        //              '' AS LEADS_PLATEFORM,
+        //              leads_email,
+        //              api_leads_id,
+        //            api_response_json,
+        //            LeadType
+        //          FROM leads
+        //          GROUP BY leads_SAPCODE, leads_email, api_leads_id,api_response_json, LeadType
+        //      ) A
+        //  ").ToList<Lead>();
+
+        //          var qry4 = db.Leads.SqlQuery(@"
+        //      SELECT *
+        //      FROM (
+        //          SELECT 
+        //              CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id',
+        //              CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode',
+        //              '' AS LEADS_NAME,
+        //              CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE,
+        //              CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
+        //              CAST('' AS DATETIME) AS LEADS_DATE,
+        //              '' AS LEADS_PLATEFORM,
+        //              leads_email,
+        //              api_leads_id,
+        //            api_response_json,
+        //            LeadType
+        //          FROM leads
+        //          GROUP BY leads_SAPCODE, leads_email, api_leads_id,api_response_json, LeadType
+        //      ) A
+        //      WHERE A.leads_SAPCODE = @SAPCODE",
+        //              new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<Lead>();
+
+        //          ViewBag.LeadLeaderBoard = qry3;
+        //          ViewBag.LeadLeaderBoardMyRank = qry4;
+        //          //============
+        //          ViewBag.lstDownline = db.NEW_TEMP_HIERARCHY
+        //.Where(x => x.X_CHANNEL == userData.X_CHANNEL && x.X_ZONE != null)
+        //.Select(x => x.X_ZONE)
+        //.Distinct()
+        //.Select(z => new SelectListItem
         //{
-        //    try
-        //    {
+        //    Text = z,
+        //    Value = z   // ya koi aur mapping agar chahiye
+        //})
+        //.ToList();
+        //          //==================
+        //          return View();
+        //      }
+        //      catch (Exception ex)
+        //      {
+        //          ViewBag.Error = "Something went wrong: " + ex.Message;
+
+        //          // ❌ Don't remove REF_KEY
+        //          Session.Remove("SAPCODE");
+        //          Session.Remove("LOGIN");
+        //          Session.Remove("TYPE");
+
+        //          return View();
+        //      }
+        //  }
 
 
-        //        Session["REF_KEY"] = REF_Key;
-        //        string SAPCODE = string.Empty;
 
-        //        // Decode Base64 REF_Key
-        //        var valueBytes = Convert.FromBase64String(REF_Key);
-        //        string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
-
-        //        // Extract SAPCODE
-        //        string[] separate_params = str_REFKEY.Split('&');
-        //        foreach (var item in separate_params)
-        //        {
-        //            if (item.Contains("SAPCODE"))
-        //            {
-        //                SAPCODE = item.Split('=')[1];
-        //            }
-        //        }
-
-        //        Session["SAPCODE"] = SAPCODE;
-
-        //        // 🔹 Determine user type and name from NEW_TEMP_HIERARCHY
-        //        string userType = string.Empty;
-        //        string userName = string.Empty;
-
-        //        var userData = db.NEW_TEMP_HIERARCHY
-        //            .Where(x => x.X_ZM_EMP_CD == SAPCODE
-        //                     || x.X_RM_EMP_EMP_CD == SAPCODE
-        //                     || x.X_BM_EMP_CD == SAPCODE
-        //                     || x.X_SM_EMP_CD == SAPCODE
-        //                     || x.AGENT_CODE == SAPCODE)
-        //            .FirstOrDefault();
-
-        //        if (userData != null)
-        //        {
-        //            if (userData.X_ZM_EMP_CD == SAPCODE)
-        //            {
-        //                userType = "ZM";
-        //                userName = userData.X_ZM_NM;
-        //            }
-        //            else if (userData.X_RM_EMP_EMP_CD == SAPCODE)
-        //            {
-        //                userType = "RM";
-        //                userName = userData.X_RM_NM;
-        //            }
-        //            else if (userData.X_BM_EMP_CD == SAPCODE)
-        //            {
-        //                userType = "BM";
-        //                userName = userData.X_BM_NM;
-        //            }
-        //            else if (userData.X_SM_EMP_CD == SAPCODE)
-        //            {
-        //                userType = "ARDM";
-        //                userName = userData.X_SM_NM;
-        //            }
-        //            else if (userData.AGENT_CODE == SAPCODE)
-        //            {
-        //                userType = "AGENT";
-        //                userName = userData.AGENT_NAME;
-        //            }
-        //        }
-
-        //        Session["TYPE"] = userType;
-        //        Session["USERNAME"] = userName;
-        //        if (Session["LOGIN"] == null) Session["LOGIN"] = userType;
-
-        //        // 🔹 Get user's X_CHANNEL
-        //        var userChannel = userData?.X_CHANNEL;
-        //        Session["X_CHANNEL"] = userChannel;
-
-        //        // Set additional dashboard data (if any)
-        //        SetData();
-
-        //        // 🔹 Share Leaderboard
-        //        var qry = db.ENGAGE_SHARECOUNT.SqlQuery(@"
-        //    SELECT TOP 10 *
-        //    FROM (
-        //        SELECT 
-        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID',
-        //            CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT',
-        //            SHC_SAPCODE AS 'SHC_SAPCODE',
-        //            '' AS 'SHC_PLATEFORM',
-        //            CAST('2022-01-01' AS DATE) AS 'SHC_DATE',
-        //            CREATIVE_ID
-        //        FROM ENGAGE_SHARECOUNT
-        //        GROUP BY SHC_SAPCODE, CREATIVE_ID
-        //    ) A
-        //").ToList<ENGAGE_SHARECOUNT>();
-
-        //        var qry2 = db.ENGAGE_SHARECOUNT.SqlQuery(@"
-        //    SELECT *
-        //    FROM (
-        //        SELECT 
-        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID',
-        //            CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT',
-        //            SHC_SAPCODE AS 'SHC_SAPCODE',
-        //            '' AS 'SHC_PLATEFORM',
-        //            CAST('2022-01-01' AS DATE) AS 'SHC_DATE',
-        //            CREATIVE_ID
-        //        FROM ENGAGE_SHARECOUNT
-        //        GROUP BY SHC_SAPCODE, CREATIVE_ID
-        //    ) A
-        //    WHERE A.SHC_SAPCODE = @SAPCODE",
-        //            new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<ENGAGE_SHARECOUNT>();
-
-        //        ViewBag.ShareLeaderBoard = qry;
-        //        ViewBag.ShareLeaderBoardMyRank = qry2;
-
-        //        // 🔹 Leads Leaderboard
-        //        var qry3 = db.Leads.SqlQuery(@"
-        //    SELECT TOP 10 *
-        //    FROM (
-        //        SELECT 
-        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id',
-        //            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode',
-        //            '' AS LEADS_NAME,
-        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE,
-        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
-        //            CAST('' AS DATETIME) AS LEADS_DATE,
-        //            '' AS LEADS_PLATEFORM,
-        //            leads_email,
-        //            api_leads_id
-        //        FROM leads
-        //        GROUP BY leads_SAPCODE, leads_email, api_leads_id
-        //    ) A
-        //").ToList<Lead>();
-
-        //        var qry4 = db.Leads.SqlQuery(@"
-        //    SELECT *
-        //    FROM (
-        //        SELECT 
-        //            CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id',
-        //            CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode',
-        //            '' AS LEADS_NAME,
-        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE,
-        //            CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID,
-        //            CAST('' AS DATETIME) AS LEADS_DATE,
-        //            '' AS LEADS_PLATEFORM,
-        //            leads_email,
-        //            api_leads_id
-        //        FROM leads
-        //        GROUP BY leads_SAPCODE, leads_email, api_leads_id
-        //    ) A
-        //    WHERE A.leads_SAPCODE = @SAPCODE",
-        //            new SqlParameter("@SAPCODE", SAPCODE)).FirstOrDefault<Lead>();
-
-        //        ViewBag.LeadLeaderBoard = qry3;
-        //        ViewBag.LeadLeaderBoardMyRank = qry4;
-
-        //        return View();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewBag.Error = "Something went wrong: " + ex.Message;
-        //        Session.Remove("SAPCODE");
-        //        Session.Remove("LOGIN");
-        //        Session.Remove("TYPE");
-        //        return View();
-        //    }
-        //}
-
-
-        //===================================================
-
-
-        //public ActionResult UserDashboard(string REF_Key)
-        //{
-        //    try
-        //    {
-        //        Session["REF_KEY"] = REF_Key;
-        //        string SAPCODE = string.Empty;
-
-        //        // Decode Base64
-        //        var valueBytes = Convert.FromBase64String(REF_Key);
-        //        string str_REFKEY = System.Text.Encoding.UTF8.GetString(valueBytes);
-
-        //        // Split parameters
-        //        string[] separate_params = str_REFKEY.Split('&');
-        //        foreach (var item in separate_params)
-        //        {
-        //            if (item.Contains("SAPCODE"))
-        //            {
-        //                SAPCODE = item.Split('=')[1];
-        //            }
-        //        }
-
-        //        Session["SAPCODE"] = SAPCODE;
-
-        //        // Determine user type
-        //        if (db.NEW_TEMP_HIERARCHY.Any(x => x.X_ZM_EMP_CD == SAPCODE))
-        //        {
-        //            Session["TYPE"] = "ZM";
-        //            if (Session["LOGIN"] == null) Session["LOGIN"] = "ZM";
-        //        }
-        //        else if (db.NEW_TEMP_HIERARCHY.Any(x => x.X_RM_EMP_EMP_CD == SAPCODE))
-        //        {
-        //            Session["TYPE"] = "RM";
-        //            if (Session["LOGIN"] == null) Session["LOGIN"] = "RM";
-        //        }
-        //        else if (db.NEW_TEMP_HIERARCHY.Any(x => x.X_BM_EMP_CD == SAPCODE))
-        //        {
-        //            Session["TYPE"] = "BM";
-        //            if (Session["LOGIN"] == null) Session["LOGIN"] = "BM";
-        //        }
-        //        else if (db.NEW_TEMP_HIERARCHY.Any(x => x.X_SM_EMP_CD == SAPCODE))
-        //        {
-        //            Session["TYPE"] = "ARDM";
-        //            if (Session["LOGIN"] == null) Session["LOGIN"] = "ARDM";
-        //        }
-        //        else if (db.NEW_TEMP_HIERARCHY.Any(x => x.AGENT_CODE == SAPCODE))
-        //        {
-        //            Session["TYPE"] = "AGENT";
-        //            if (Session["LOGIN"] == null) Session["LOGIN"] = "AGENT";
-        //        }
-        //        else
-        //        {
-        //            Session.Remove("SAPCODE");
-        //            Session.Remove("LOGIN");
-        //            Session.Remove("TYPE");
-        //        }
-
-        //        // 🔹 Get user's X_CHANNEL
-        //        var userChannel = db.NEW_TEMP_HIERARCHY
-        //            .Where(x => x.X_ZM_EMP_CD == SAPCODE || x.X_RM_EMP_EMP_CD == SAPCODE
-        //                     || x.X_BM_EMP_CD == SAPCODE || x.X_SM_EMP_CD == SAPCODE
-        //                     || x.AGENT_CODE == SAPCODE)
-        //            .Select(x => x.X_CHANNEL)
-        //            .FirstOrDefault();
-
-        //        Session["X_CHANNEL"] = userChannel;
-
-        //        // Set additional data
-        //        SetData();
-
-        //        // Share Leaderboard
-        //        var qry = db.ENGAGE_SHARECOUNT
-        //            .SqlQuery(@"
-        //        SELECT TOP 10 *
-        //        FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID', 
-        //                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT', 
-        //                SHC_SAPCODE AS 'SHC_SAPCODE', 
-        //                '' AS 'SHC_PLATEFORM',  
-        //                CAST('2022-01-01' AS DATE) AS 'SHC_DATE',  
-        //                CREATIVE_ID 
-        //            FROM ENGAGE_SHARECOUNT 
-        //            GROUP BY SHC_SAPCODE, CREATIVE_ID
-        //        ) A")
-        //            .ToList<ENGAGE_SHARECOUNT>();
-
-        //        var qry2 = db.ENGAGE_SHARECOUNT
-        //            .SqlQuery(@"
-        //        SELECT * 
-        //        FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(SHC_SAPCODE) DESC) AS NUMERIC(18,0)) AS 'SHC_ID', 
-        //                CAST(COUNT(SHC_SAPCODE) AS NUMERIC(18,0)) AS 'SHC_SHARECOUNT', 
-        //                SHC_SAPCODE AS 'SHC_SAPCODE', 
-        //                '' AS 'SHC_PLATEFORM',  
-        //                CAST('2022-01-01' AS DATE) AS 'SHC_DATE',  
-        //                CREATIVE_ID 
-        //            FROM ENGAGE_SHARECOUNT 
-        //            GROUP BY SHC_SAPCODE, CREATIVE_ID
-        //        ) A 
-        //        WHERE A.SHC_SAPCODE = @SAPCODE", new SqlParameter("@SAPCODE", Session["SAPCODE"]))
-        //            .FirstOrDefault<ENGAGE_SHARECOUNT>();
-
-        //        ViewBag.ShareLeaderBoard = qry;
-        //        ViewBag.ShareLeaderBoardMyRank = qry2;
-
-        //        // Lead Leaderboard
-        //        var qry3 = db.Leads
-        //            .SqlQuery(@"
-        //        SELECT TOP 10 *
-        //        FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id', 
-        //                CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode', 
-        //                '' AS LEADS_NAME, 
-        //                CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE, 
-        //                CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID, 
-        //                CAST('' AS DATETIME) AS LEADS_DATE, 
-        //                '' AS LEADS_PLATEFORM,
-        //                leads_email, 
-        //                api_leads_id
-        //            FROM leads 
-        //            GROUP BY leads_SAPCODE, leads_email, api_leads_id
-        //        ) A")
-        //            .ToList<Lead>();
-
-        //        var qry4 = db.Leads
-        //            .SqlQuery(@"
-        //        SELECT * 
-        //        FROM (
-        //            SELECT 
-        //                CAST(ROW_NUMBER() OVER(ORDER BY COUNT(leads_id) DESC) AS NUMERIC(18,0)) AS 'leads_id', 
-        //                CAST(COUNT(leads_SAPCODE) AS VARCHAR(50)) AS 'leads_sapcode', 
-        //                '' AS LEADS_NAME, 
-        //                CAST(0 AS NUMERIC(18,0)) AS LEADS_MOBILE, 
-        //                CAST(0 AS NUMERIC(18,0)) AS LEADS_CREATIVEID, 
-        //                CAST('' AS DATETIME) AS LEADS_DATE, 
-        //                '' AS LEADS_PLATEFORM, 
-        //                leads_email, 
-        //                api_leads_id
-        //            FROM leads 
-        //            GROUP BY leads_SAPCODE, leads_email, api_leads_id
-        //        ) A 
-        //        WHERE A.leads_SAPCODE = @SAPCODE", new SqlParameter("@SAPCODE", Session["SAPCODE"]))
-        //            .FirstOrDefault<Lead>();
-
-        //        ViewBag.LeadLeaderBoard = qry3;
-        //        ViewBag.LeadLeaderBoardMyRank = qry4;
-
-        //        return View();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewBag.Error = "Something went wrong: " + ex.Message;
-        //        Session.Remove("SAPCODE");
-        //        Session.Remove("LOGIN");
-        //        Session.Remove("TYPE");
-        //        return View();
-        //    }
-
-        //}
-
-        //=====================================================================
         public JsonResult GetLeadsCounts(string period)
         {
             try
@@ -2041,157 +2165,214 @@ namespace RelianceMkt.Controllers
 
 
 
-        //======================================
-        //    private string GetUserChannel()
-        //    {
-        //        string sapCode = Session["SAP_CODE"]?.ToString();
+        //==================================================
 
-        //        if (string.IsNullOrWhiteSpace(sapCode))
-        //            return string.Empty;
+        public ActionResult campaignview()
+        {
+            log4net.Config.XmlConfigurator.Configure();
 
-        //        sapCode = sapCode.Trim();
+            try
+            {
+                logger.Info("campaignview: Action called.");
 
-        //        var user = db.NEW_TEMP_HIERARCHY
-        //                     .AsNoTracking()
-        //                     .FirstOrDefault(x => x.X_BM_EMP_CD == sapCode);
+                SetData();
 
-        //        return user?.X_CHANNEL?.Trim().ToUpper() ?? string.Empty;
-        //    }
+                // 🔹 Status
+                ViewBag.lstStatus = new List<SelectListItem>()
+        {
+            new SelectListItem { Text = "Start", Value = "Start" },
+            new SelectListItem { Text = "Pause", Value = "Pause" }
+        };
 
+                // 🔹 Channels
+                var channels = db.channels
+                                 .Where(x => x.channel_delflag == null)
+                                 .ToList();
+                ViewBag.lstchannels = channels;
 
-        //    public ActionResult campaignview()
-        //    {
-        //        SetData();
+                if (channels == null || !channels.Any())
+                {
+                    logger.Warn("campaignview: No channels found in database.");
+                    ViewBag.AlertMessage = "No channels are configured in the system. Please contact admin.";
+                    ViewBag.AlertType = "warning";
+                }
 
-        //        // dropdowns (same as your code)
-        //        ViewBag.lstStatus = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="Start", Value="Start"},
-        //    new SelectListItem{Text="Pause", Value="Pause"}
-        //};
+                // 🔹 Categories
+                var categories = db.campaign_category
+                    .Where(x => x.campaign_category_delflag == null
+                        && db.campaign_master
+                             .Any(c => c.campaign_category_id == x.campaign_category_id))
+                    .ToList();
+                ViewBag.lstcategory = categories;
 
-        //        ViewBag.lstchannels = db.channels.Where(x => x.channel_delflag == null).ToList();
-        //        ViewBag.lstcategory = db.campaign_category.Where(x => x.campaign_category_delflag == null).ToList();
-        //        ViewBag.lstcampaign = db.campaigns.Where(x => x.campaign_delflag == null).ToList();
-        //        ViewBag.lstsubcampaign = db.subcampaigns.Where(x => x.subcampaign_delflag == null).ToList();
+                // 🔹 Campaigns & SubCampaigns
+                ViewBag.lstcampaign = db.campaigns.Where(x => x.campaign_delflag == null).ToList();
+                ViewBag.lstsubcampaign = db.subcampaigns.Where(x => x.subcampaign_delflag == null).ToList();
 
-        //        ViewBag.lstlanguage = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="English", Value="English"},
-        //    new SelectListItem{Text="Hindi", Value="Hindi"},
-        //    new SelectListItem{Text="Marathi", Value="Marathi"},
-        //    new SelectListItem{Text="Tamil", Value="Tamil"}
-        //};
+                // 🔹 Language
+                ViewBag.lstlanguage = new List<SelectListItem>()
+        {
+            new SelectListItem { Text = "English",  Value = "English"  },
+            new SelectListItem { Text = "Hindi",    Value = "Hindi"    },
+            new SelectListItem { Text = "Marathi",  Value = "Marathi"  },
+            new SelectListItem { Text = "Tamil",    Value = "Tamil"    }
+        };
 
-        //        ViewBag.lsttype = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="Creative", Value="Creative"},
-        //    new SelectListItem{Text="Video", Value="Video"},
-        //    new SelectListItem{Text="Blogs", Value="Blogs"}
-        //};
+                // 🔹 Type
+                ViewBag.lsttype = new List<SelectListItem>()
+        {
+            new SelectListItem { Text = "Creative", Value = "Creative" },
+            new SelectListItem { Text = "Video",    Value = "Video"    },
+            new SelectListItem { Text = "Blogs",    Value = "Blogs"    }
+        };
 
-        //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
+                // 🔹 Default filters
+                ViewBag.channel = "";
+                ViewBag.category = "";
+                ViewBag.campaign = "";
+                ViewBag.subcampaign = "";
+                ViewBag.language = "";
+                ViewBag.type = "";
 
-        //        // 🔹 MAIN FIX: SAP_CODE → X_CHANNEL
-        //        string userChannel = GetUserChannel();
+                // 🔹 IST Time
+                DateTime dt = DateTime.UtcNow.AddMinutes(330);
 
-        //        var qry = db.campaign_master
-        //                    .Where(x =>
-        //                           x.channel_code.Trim().ToUpper() == userChannel &&
-        //                           (
-        //                             x.camapaign_master_status == "Pause" ||
-        //                             (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt) ||
-        //                             x.campaign_master_start_date > dt
-        //                           ))
-        //                    .OrderByDescending(x => x.campaign_master_id)
-        //                    .ToList();
+                // ✅ Channel Session - SAFE HANDLING (YAHI ROOT CAUSE THI)
+                string sessionChannel = Session["X_CHANNEL"]?.ToString()?.Trim() ?? "";
+                string userChannel = string.Empty;
 
-        //        ViewBag.lstAllCampaigns = qry;
+                if (!string.IsNullOrEmpty(sessionChannel))
+                {
+                    userChannel = sessionChannel.ToUpper();
+                    logger.Info("campaignview: Channel from Session: " + userChannel);
+                }
+                else
+                {
+                    // ⚠️ Session mein channel nahi tha — DB se try karo
+                    logger.Warn("campaignview: X_CHANNEL session is EMPTY. Attempting fallback from DB.");
 
-        //        return View();
-        //    }
-        //    [HttpPost]
-        //    public ActionResult campaignview(FormCollection form)
-        //    {
-        //        SetData();
+                    string sapCode = Session["SAPCODE"]?.ToString() ?? "";
+                    if (!string.IsNullOrEmpty(sapCode))
+                    {
+                        var hierarchyUser = db.NEW_TEMP_HIERARCHY
+                            .Where(x => x.X_ZM_EMP_CD == sapCode
+                                     || x.X_RM_EMP_EMP_CD == sapCode
+                                     || x.X_BM_EMP_CD == sapCode
+                                     || x.X_SM_EMP_CD == sapCode
+                                     || x.AGENT_CODE == sapCode)
+                            .FirstOrDefault();
 
-        //        var predicate = PredicateBuilder.True<campaign_master>();
+                        if (hierarchyUser != null && !string.IsNullOrEmpty(hierarchyUser.X_CHANNEL))
+                        {
+                            userChannel = hierarchyUser.X_CHANNEL.Trim().ToUpper();
+                            Session["X_CHANNEL"] = userChannel; // ✅ Session fix karo
+                            logger.Info($"campaignview: Channel recovered from DB for SAPCODE {sapCode}: {userChannel}");
+                        }
+                        else
+                        {
+                            logger.Warn($"campaignview: Channel NOT found in DB for SAPCODE: {sapCode}. Using first available channel as fallback.");
+                            userChannel = channels.FirstOrDefault()?.channel_name?.Trim().ToUpper() ?? "";
 
-        //        // form filters
-        //        if (!string.IsNullOrEmpty(form["category"]))
-        //            predicate = predicate.And(x => x.campaign_category_id == Convert.ToDecimal(form["category"]));
+                            if (string.IsNullOrEmpty(userChannel))
+                            {
+                                logger.Error("campaignview: No channels available at all. Cannot load campaigns.");
+                                ViewBag.AlertMessage = "Channel not assigned to your account and no default channel found. Please contact admin.";
+                                ViewBag.AlertType = "error";
+                                ViewBag.lstAllCampaigns = new List<campaign_master>();
+                                return View();
+                            }
 
-        //        if (!string.IsNullOrEmpty(form["campaign"]))
-        //            predicate = predicate.And(x => x.campaign_id == Convert.ToDecimal(form["campaign"]));
+                            // ⚠️ Popup alert show karo View mein
+                            ViewBag.AlertMessage = "Your channel information was missing. Showing default channel data. Please contact admin if this is incorrect.";
+                            ViewBag.AlertType = "warning";
+                        }
+                    }
+                    else
+                    {
+                        logger.Error("campaignview: SAPCODE session also empty. Cannot determine channel.");
+                        ViewBag.AlertMessage = "Session expired or invalid. Please re-login.";
+                        ViewBag.AlertType = "error";
+                        ViewBag.lstAllCampaigns = new List<campaign_master>();
+                        return View();
+                    }
+                }
 
-        //        if (!string.IsNullOrEmpty(form["subcampaign"]))
-        //            predicate = predicate.And(x => x.subcampaign_id == Convert.ToDecimal(form["subcampaign"]));
+                logger.Info($"campaignview: Final userChannel used for query: '{userChannel}'");
 
-        //        if (!string.IsNullOrEmpty(form["language"]))
-        //            predicate = predicate.And(x => x.campaign_master_lang == form["language"]);
+                // ✅ MAIN QUERY - Channel properly filtered
+                var qry1 = db.campaign_master
+                    .Where(x =>
+                        (
+                            (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
+                            || x.campaign_master_start_date > dt
+                        )
+                        &&
+                        (
+                            string.IsNullOrEmpty(userChannel)
+                            || x.channel_code.ToUpper().Trim() == userChannel
+                        )
+                    )
+                    .OrderByDescending(x => x.campaign_master_id)
+                    .ToList();
 
-        //        if (!string.IsNullOrEmpty(form["campaigntype"]))
-        //            predicate = predicate.And(x => x.campaign_master_type == form["campaigntype"]);
+                if (qry1 == null || !qry1.Any())
+                {
+                    logger.Warn($"campaignview: No campaigns found for channel: {userChannel}");
+                    ViewBag.AlertMessage = $"No active campaigns found for channel '{userChannel}'.";
+                    ViewBag.AlertType = "info";
+                }
 
-        //        if (!string.IsNullOrEmpty(form["campaignstatus"]))
-        //            predicate = predicate.And(x => x.camapaign_master_status == form["campaignstatus"]);
+                logger.Info($"campaignview: {qry1?.Count ?? 0} campaigns loaded for channel: {userChannel}");
+                ViewBag.lstAllCampaigns = qry1;
 
-        //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
-
-        //        predicate = predicate.And(x =>
-        //            x.camapaign_master_status == "Pause" ||
-        //            (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt) ||
-        //            x.campaign_master_start_date > dt
-        //        );
-
-        //        // 🔹 MAIN FIX: SAP_CODE → X_CHANNEL
-        //        string userChannel = GetUserChannel();
-
-        //        if (!string.IsNullOrEmpty(userChannel))
-        //            predicate = predicate.And(x => x.channel_code.Trim().ToUpper() == userChannel);
-
-        //        ViewBag.lstAllCampaigns = db.campaign_master
-        //                                    .Where(predicate)
-        //                                    .OrderByDescending(x => x.campaign_master_id)
-        //                                    .ToList();
-
-        //        // reload dropdowns
-        //        ViewBag.lstchannels = db.channels.Where(x => x.channel_delflag == null).ToList();
-        //        ViewBag.lstcategory = db.campaign_category.Where(x => x.campaign_category_delflag == null).ToList();
-        //        ViewBag.lstcampaign = db.campaigns.Where(x => x.campaign_delflag == null).ToList();
-        //        ViewBag.lstsubcampaign = db.subcampaigns.Where(x => x.subcampaign_delflag == null).ToList();
-
-        //        return View();
-        //    }
-        //==============================================================
+                return View();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("campaignview: Unhandled exception.", ex);
+                ViewBag.AlertMessage = "Something went wrong while loading campaigns: " + ex.Message;
+                ViewBag.AlertType = "error";
+                ViewBag.lstAllCampaigns = new List<campaign_master>();
+                return View();
+            }
+        }
 
         //    public ActionResult campaignview()
         //    {
         //        SetData();
 
         //        // Status
-        //        ViewBag.lstStatus = new List<SelectListItem>()
+        //        List<SelectListItem> status = new List<SelectListItem>()
         //{
         //    new SelectListItem{Text="Start", Value="Start"},
         //    new SelectListItem{Text="Pause", Value="Pause"}
         //};
+        //        ViewBag.lstStatus = status;
 
+        //        // Channels
         //        ViewBag.lstchannels = db.channels
-        //            .Where(x => x.channel_delflag == null)
+        //                                .Where(x => x.channel_delflag == null)
+        //                                .ToList();
+
+        //        // ✅ Categories (ONLY those having campaign_master data)
+        //        var categories = db.campaign_category
+        //            .Where(x => x.campaign_category_delflag == null
+        //                && db.campaign_master
+        //                     .Any(c => c.campaign_category_id == x.campaign_category_id))
         //            .ToList();
 
-        //        ViewBag.lstcategory = db.campaign_category
-        //            .Where(x => x.campaign_category_delflag == null)
-        //            .ToList();
+        //        ViewBag.lstcategory = categories;
 
+        //        // Campaigns
         //        ViewBag.lstcampaign = db.campaigns
-        //            .Where(x => x.campaign_delflag == null)
-        //            .ToList();
+        //                                .Where(x => x.campaign_delflag == null)
+        //                                .ToList();
 
         //        ViewBag.lstsubcampaign = db.subcampaigns
-        //            .Where(x => x.subcampaign_delflag == null)
-        //            .ToList();
+        //                                   .Where(x => x.subcampaign_delflag == null)
+        //                                   .ToList();
 
+        //        // Languages
         //        ViewBag.lstlanguage = new List<SelectListItem>()
         //{
         //    new SelectListItem{Text="English", Value="English"},
@@ -2200,6 +2381,7 @@ namespace RelianceMkt.Controllers
         //    new SelectListItem{Text="Tamil", Value="Tamil"}
         //};
 
+        //        // Types
         //        ViewBag.lsttype = new List<SelectListItem>()
         //{
         //    new SelectListItem{Text="Creative", Value="Creative"},
@@ -2207,271 +2389,37 @@ namespace RelianceMkt.Controllers
         //    new SelectListItem{Text="Blogs", Value="Blogs"}
         //};
 
-        //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
+        //        ViewBag.channel = "";
+        //        ViewBag.category = "";
+        //        ViewBag.campaign = "";
+        //        ViewBag.subcampaign = "";
+        //        ViewBag.language = "";
+        //        ViewBag.type = "";
 
-        //        // 🔹 SAPCODE based X_CHANNEL
-        //        string sapCode = (Session["SAPCODE"]?.ToString() ?? "").Trim();
-        //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
+        //        DateTime dt = System.DateTime.UtcNow.AddMinutes(330);
 
-        //        // 🔴 Agar channel hi nahi mila → blank list
-        //        if (string.IsNullOrEmpty(userChannel))
-        //        {
-        //            ViewBag.lstAllCampaigns = new List<campaign_master>();
-        //            return View();
-        //        }
+        //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "")
+        //                             .Trim()
+        //                             .ToUpper();
 
-        //        var qry = db.campaign_master
-        //            .Where(x =>
-        //                (
-        //                    (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
-        //                    || x.campaign_master_start_date > dt
-        //                )
-        //                && x.channel_code != null
-        //                && x.channel_code.Trim().ToUpper() == userChannel
-        //            )
-        //            .OrderByDescending(x => x.campaign_master_id)
-        //            .ToList();
+        //        var qry1 = db.campaign_master
+        //                     .Where(x => (
+        //                                    (x.campaign_master_start_date <= dt
+        //                                     && x.campaign_master_end_date >= dt)
+        //                                    || x.campaign_master_start_date > dt
+        //                                 )
+        //                                 && x.channel_code.Trim().ToUpper() == userChannel)
+        //                     .OrderByDescending(x => x.campaign_master_id)
+        //                     .ToList();
 
-        //        ViewBag.lstAllCampaigns = qry;
+        //        ViewBag.lstAllCampaigns = qry1;
 
         //        return View();
         //    }
 
 
-        //    [HttpPost]
-        //    public ActionResult campaignview(FormCollection form)
-        //    {
-        //        SetData();
 
-        //        ViewBag.lstStatus = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="Start", Value="Start"},
-        //    new SelectListItem{Text="Pause", Value="Pause"}
-        //};
-
-        //        ViewBag.lstlanguage = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="English", Value="English"},
-        //    new SelectListItem{Text="Hindi", Value="Hindi"},
-        //    new SelectListItem{Text="Marathi", Value="Marathi"},
-        //    new SelectListItem{Text="Tamil", Value="Tamil"}
-        //};
-
-        //        ViewBag.lsttype = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="Creative", Value="Creative"},
-        //    new SelectListItem{Text="Video", Value="Video"},
-        //    new SelectListItem{Text="Blogs", Value="Blogs"}
-        //};
-
-        //        var predicate = PredicateBuilder.True<campaign_master>();
-
-        //        if (!string.IsNullOrEmpty(form["channel"]))
-        //            predicate = predicate.And(x => x.channel_id == Convert.ToDecimal(form["channel"]));
-
-        //        if (!string.IsNullOrEmpty(form["category"]))
-        //            predicate = predicate.And(x => x.campaign_category_id == Convert.ToDecimal(form["category"]));
-
-        //        if (!string.IsNullOrEmpty(form["campaign"]))
-        //            predicate = predicate.And(x => x.campaign_id == Convert.ToDecimal(form["campaign"]));
-
-        //        if (!string.IsNullOrEmpty(form["subcampaign"]))
-        //            predicate = predicate.And(x => x.subcampaign_id == Convert.ToDecimal(form["subcampaign"]));
-
-        //        if (!string.IsNullOrEmpty(form["language"]))
-        //            predicate = predicate.And(x => x.campaign_master_lang == form["language"]);
-
-        //        if (!string.IsNullOrEmpty(form["campaigntype"]))
-        //            predicate = predicate.And(x => x.campaign_master_type == form["campaigntype"]);
-
-        //        if (!string.IsNullOrEmpty(form["campaignstatus"]))
-        //            predicate = predicate.And(x => x.camapaign_master_status == form["campaignstatus"]);
-
-        //        DateTime dt = DateTime.UtcNow.AddMinutes(330);
-        //        predicate = predicate.And(x =>
-        //            x.camapaign_master_status == "Pause"
-        //            || (x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
-        //            || x.campaign_master_start_date > dt
-        //        );
-
-        //        // 🔹 SAPCODE → X_CHANNEL security filter
-        //        string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
-
-        //        if (!string.IsNullOrEmpty(userChannel))
-        //        {
-        //            predicate = predicate.And(x =>
-        //                x.channel_code != null &&
-        //                x.channel_code.Trim().ToUpper() == userChannel
-        //            );
-        //        }
-        //        else
-        //        {
-        //            ViewBag.lstAllCampaigns = new List<campaign_master>();
-        //            return View();
-        //        }
-
-        //        ViewBag.lstAllCampaigns = db.campaign_master
-        //            .Where(predicate)
-        //            .OrderByDescending(x => x.campaign_master_id)
-        //            .ToList();
-
-        //        return View();
-        //    }
-        //===========================================
-        public ActionResult campaignview()
-        {
-            SetData();
-
-            // Status
-            List<SelectListItem> status = new List<SelectListItem>()
-    {
-        new SelectListItem{Text="Start", Value="Start"},
-        new SelectListItem{Text="Pause", Value="Pause"}
-    };
-            ViewBag.lstStatus = status;
-
-            // Channels
-            ViewBag.lstchannels = db.channels
-                                    .Where(x => x.channel_delflag == null)
-                                    .ToList();
-
-            // ✅ Categories (ONLY those having campaign_master data)
-            var categories = db.campaign_category
-                .Where(x => x.campaign_category_delflag == null
-                    && db.campaign_master
-                         .Any(c => c.campaign_category_id == x.campaign_category_id))
-                .ToList();
-
-            ViewBag.lstcategory = categories;
-
-            // Campaigns
-            ViewBag.lstcampaign = db.campaigns
-                                    .Where(x => x.campaign_delflag == null)
-                                    .ToList();
-
-            ViewBag.lstsubcampaign = db.subcampaigns
-                                       .Where(x => x.subcampaign_delflag == null)
-                                       .ToList();
-
-            // Languages
-            ViewBag.lstlanguage = new List<SelectListItem>()
-    {
-        new SelectListItem{Text="English", Value="English"},
-        new SelectListItem{Text="Hindi", Value="Hindi"},
-        new SelectListItem{Text="Marathi", Value="Marathi"},
-        new SelectListItem{Text="Tamil", Value="Tamil"}
-    };
-
-            // Types
-            ViewBag.lsttype = new List<SelectListItem>()
-    {
-        new SelectListItem{Text="Creative", Value="Creative"},
-        new SelectListItem{Text="Video", Value="Video"},
-        new SelectListItem{Text="Blogs", Value="Blogs"}
-    };
-
-            ViewBag.channel = "";
-            ViewBag.category = "";
-            ViewBag.campaign = "";
-            ViewBag.subcampaign = "";
-            ViewBag.language = "";
-            ViewBag.type = "";
-
-            DateTime dt = System.DateTime.UtcNow.AddMinutes(330);
-
-            string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "")
-                                 .Trim()
-                                 .ToUpper();
-
-            var qry1 = db.campaign_master
-                         .Where(x => (
-                                        (x.campaign_master_start_date <= dt
-                                         && x.campaign_master_end_date >= dt)
-                                        || x.campaign_master_start_date > dt
-                                     )
-                                     && x.channel_code.Trim().ToUpper() == userChannel)
-                         .OrderByDescending(x => x.campaign_master_id)
-                         .ToList();
-
-            ViewBag.lstAllCampaigns = qry1;
-
-            return View();
-        }
-
-
-        //public ActionResult campaignview()
-        //{
-        //    SetData();
-
-        //    // Status
-        //    List<SelectListItem> status = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="Start", Value="Start"},
-        //    new SelectListItem{Text="Pause", Value="Pause"}
-        //};
-        //    ViewBag.lstStatus = status;
-
-        //    // Channels, Categories, etc.
-        //    ViewBag.lstchannels = db.channels.Where(x => x.channel_delflag == null).ToList();
-
-        //    var categories = db.campaign_category
-        //                       .Where(x => x.campaign_category_delflag == null)
-        //                       .ToList();
-
-        //    foreach (var cat in categories)
-        //    {
-        //        bool hasData = db.campaign_master.Any(c => c.campaign_category_id == cat.campaign_category_id);
-        //        cat.Campaign_Category_Status = hasData ? "0" : "1";
-        //    }
-        //    categories = categories
-        //    .Where(x => x.Campaign_Category_Status == "0")
-        //    .ToList();
-
-        //    db.SaveChanges();
-        //    ViewBag.lstcategory = categories.Where(x => x.Campaign_Category_Status == "0").ToList();
-
-        //    ViewBag.lstcampaign = db.campaigns.Where(x => x.campaign_delflag == null).ToList();
-        //    ViewBag.lstsubcampaign = db.subcampaigns.Where(x => x.subcampaign_delflag == null).ToList();
-
-        //    // Languages & Types
-        //    ViewBag.lstlanguage = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="English", Value="English"},
-        //    new SelectListItem{Text="Hindi", Value="Hindi"},
-        //    new SelectListItem{Text="Marathi", Value="Marathi"},
-        //    new SelectListItem{Text="Tamil", Value="Tamil"}
-        //};
-        //    ViewBag.lsttype = new List<SelectListItem>()
-        //{
-        //    new SelectListItem{Text="Creative", Value="Creative"},
-        //    new SelectListItem{Text="Video", Value="Video"},
-        //    new SelectListItem{Text="Blogs", Value="Blogs"}
-        //};
-
-        //    ViewBag.channel = "";
-        //    ViewBag.category = "";
-        //    ViewBag.campaign = "";
-        //    ViewBag.subcampaign = "";
-        //    ViewBag.language = "";
-        //    ViewBag.type = "";
-
-        //    DateTime dt = System.DateTime.UtcNow.AddMinutes(330);
-        //    //string sapCode = (Session["SAPCODE"]?.ToString() ?? "").Trim();
-        //    // 🔹 Filter by user's X_CHANNEL
-        //    string userChannel = (Session["X_CHANNEL"]?.ToString() ?? "").Trim().ToUpper();
-
-        //    var qry1 = db.campaign_master
-        //                 .Where(x => ((x.campaign_master_start_date <= dt && x.campaign_master_end_date >= dt)
-        //                               || x.campaign_master_start_date > dt)
-        //                             && x.channel_code.Trim().ToUpper() == userChannel) // normalize here
-        //                 .OrderByDescending(x => x.campaign_master_id)
-        //                 .ToList();
-
-        //    ViewBag.lstAllCampaigns = qry1;
-
-        //    return View();
-        //}
-
+        //========================
 
 
         [HttpPost]
@@ -7516,8 +7464,8 @@ string input_name, string input_mobile, string input_email)
                     int totalRows = sheetData.Elements<Row>().Count();
                     ServerLog("Total rows found (including header): " + totalRows);
 
-                   string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                   //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+                   //string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                   string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
                     using (SqlConnection con = new SqlConnection(conStr))
                     {
@@ -7805,8 +7753,8 @@ string input_name, string input_mobile, string input_email)
         public string GetCampaignImageUrl(string campaignName)
         {
             string imageName = "";
-            string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-             //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            //string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+             string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             using (SqlConnection con = new SqlConnection(conStr))
             {
@@ -8332,10 +8280,10 @@ string input_name, string input_mobile, string input_email)
                     return View(data);
                 }
 
-                //var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
-                //var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
-                var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
-                var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
+                var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
+                var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
+                //var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
+                //var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
 
                 string apiRequestId = null;
                 string rawJson = "";
@@ -9565,7 +9513,6 @@ string input_name, string input_mobile, string input_email)
             }
         }
 
-
         [HttpPost]
         public ActionResult DateWiseShare(string fromdate, string todate, string channel, string zone)
         {
@@ -9577,67 +9524,61 @@ string input_name, string input_mobile, string input_email)
 
                 DateTime dt1, dt2;
 
-                // ✅ Date parsing (server safe)
-                if (!DateTime.TryParseExact(fromdate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt1))
+                // ✅ NULL + FORMAT SAFE DATE PARSING
+                if (string.IsNullOrEmpty(fromdate) ||
+                    !DateTime.TryParseExact(fromdate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt1))
                 {
                     log.Error("Invalid From Date");
                     return Content("Invalid From Date");
                 }
 
-                if (!DateTime.TryParseExact(todate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt2))
+                if (string.IsNullOrEmpty(todate) ||
+                    !DateTime.TryParseExact(todate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt2))
                 {
                     log.Error("Invalid To Date");
                     return Content("Invalid To Date");
                 }
 
+                // ✅ NULL SAFE VIEWBAG
                 ViewBag.dt1 = dt1;
                 ViewBag.dt2 = dt2;
-                ViewBag.channel = channel;
-                ViewBag.zone = zone;
+                ViewBag.channel = channel ?? "";
+                ViewBag.zone = zone ?? "";
 
-                // ✅ Channel dropdown (STRING LIST)
-                //ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
-                //    .Where(a => a.X_SM_STATUS == "if")
-                //    .Select(a => a.X_CHANNEL)
-                //    .Distinct()
-                //    .ToList();
-                // ✅ Channel dropdown (STRING ONLY)
+                // ✅ CHANNEL DROPDOWN NULL SAFE
                 ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
-                    .Where(a => a.X_SM_STATUS == "if" && a.X_CHANNEL != null)
+                    .Where(a => a.X_SM_STATUS == "if" && !string.IsNullOrEmpty(a.X_CHANNEL))
                     .Select(a => a.X_CHANNEL.Trim())
                     .Distinct()
                     .ToList();
 
-                // ✅ Zone dropdown (STRING LIST)
-                //ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
-                //    .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
-                //    .Select(a => a.X_ZONE)
-                //    .Distinct()
-                //    .ToList();
+                // ✅ ZONE DROPDOWN NULL SAFE
                 ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
-                .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
-                .Select(a => a.X_ZONE.Trim())
-                .Distinct()
-                 .ToList();
+                    .Where(a => a.X_SM_STATUS == "if" && !string.IsNullOrEmpty(a.X_ZONE))
+                    .Select(a => a.X_ZONE.Trim())
+                    .Distinct()
+                    .ToList();
 
                 log.Info("Dropdown data loaded");
 
-                // ✅ Main data
+                // ✅ MAIN DATA NULL SAFE
                 var sharecount = db.ENGAGE_SHARECOUNT
-                    .Where(p => p.SHC_DATE.HasValue &&
+                    .Where(p => p != null &&
+                                p.SHC_DATE.HasValue &&
                                 p.SHC_DATE.Value >= dt1 &&
-                                p.SHC_DATE.Value <= dt2)
+                                p.SHC_DATE.Value <= dt2 &&
+                                p.SHC_SAPCODE != null)
                     .GroupBy(p => p.SHC_SAPCODE)
                     .Select(g => new CustomModel.ViewGroupByShare
                     {
                         count = g.Count(),
-                        sapcode = g.Key
+                        sapcode = g.Key ?? ""
                     })
                     .ToList();
 
-                log.Info($"Records fetched: {sharecount.Count}");
+                log.Info($"Records fetched: {sharecount?.Count ?? 0}");
 
-                return View(sharecount);
+                return View(sharecount ?? new List<CustomModel.ViewGroupByShare>());
             }
             catch (Exception ex)
             {
@@ -9645,6 +9586,85 @@ string input_name, string input_mobile, string input_email)
                 return Content("Error occurred. Check logs.");
             }
         }
+        //[HttpPost]
+        //public ActionResult DateWiseShare(string fromdate, string todate, string channel, string zone)
+        //{
+        //    log.Info("DateWiseShare method started");
+
+        //    try
+        //    {
+        //        log.Info($"Input => fromdate: {fromdate}, todate: {todate}, channel: {channel}, zone: {zone}");
+
+        //        DateTime dt1, dt2;
+
+        //        // ✅ Date parsing (server safe)
+        //        if (!DateTime.TryParseExact(fromdate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt1))
+        //        {
+        //            log.Error("Invalid From Date");
+        //            return Content("Invalid From Date");
+        //        }
+
+        //        if (!DateTime.TryParseExact(todate, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dt2))
+        //        {
+        //            log.Error("Invalid To Date");
+        //            return Content("Invalid To Date");
+        //        }
+
+        //        ViewBag.dt1 = dt1;
+        //        ViewBag.dt2 = dt2;
+        //        ViewBag.channel = channel;
+        //        ViewBag.zone = zone;
+
+        //        // ✅ Channel dropdown (STRING LIST)
+        //        //ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
+        //        //    .Where(a => a.X_SM_STATUS == "if")
+        //        //    .Select(a => a.X_CHANNEL)
+        //        //    .Distinct()
+        //        //    .ToList();
+        //        // ✅ Channel dropdown (STRING ONLY)
+        //        ViewBag.lstChannel = db.NEW_TEMP_HIERARCHY
+        //            .Where(a => a.X_SM_STATUS == "if" && a.X_CHANNEL != null)
+        //            .Select(a => a.X_CHANNEL.Trim())
+        //            .Distinct()
+        //            .ToList();
+
+        //        // ✅ Zone dropdown (STRING LIST)
+        //        //ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
+        //        //    .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
+        //        //    .Select(a => a.X_ZONE)
+        //        //    .Distinct()
+        //        //    .ToList();
+        //        ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
+        //        .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
+        //        .Select(a => a.X_ZONE.Trim())
+        //        .Distinct()
+        //         .ToList();
+
+        //        log.Info("Dropdown data loaded");
+
+        //        // ✅ Main data
+        //        var sharecount = db.ENGAGE_SHARECOUNT
+        //            .Where(p => p.SHC_DATE.HasValue &&
+        //                        p.SHC_DATE.Value >= dt1 &&
+        //                        p.SHC_DATE.Value <= dt2)
+        //            .GroupBy(p => p.SHC_SAPCODE)
+        //            .Select(g => new CustomModel.ViewGroupByShare
+        //            {
+        //                count = g.Count(),
+        //                sapcode = g.Key
+        //            })
+        //            .ToList();
+
+        //        log.Info($"Records fetched: {sharecount.Count}");
+
+        //        return View(sharecount);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        log.Error("Error in DateWiseShare", ex);
+        //        return Content("Error occurred. Check logs.");
+        //    }
+        //}
 
         [ChildActionOnly]
         public ActionResult GetLeadRecord(int srno, string fd, string td, string sapcode, string sharecount, string channel, string zone)
