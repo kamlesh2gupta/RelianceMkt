@@ -7505,9 +7505,11 @@ string input_name, string input_mobile, string input_email)
                     WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
-                    string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                    string Constr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                    //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
-                    using (SqlConnection con = new SqlConnection(conStr))
+
+                    using (SqlConnection con = new SqlConnection(Constr))
                     {
                         con.Open();
 
@@ -7542,12 +7544,12 @@ string input_name, string input_mobile, string input_email)
                                     mobile = "+91" + mobile;
 
                                 // ✅ DUPLICATE CHECK
-                                if (IsAlreadyInserted(con, mobile, CampaignName))
-                                {
-                                    ServerLog($"Row {row.RowIndex} SKIPPED — Duplicate: {mobile}");
-                                    skipCount++;
-                                    continue;
-                                }
+                                //if (IsAlreadyInserted(con, mobile, CampaignName))
+                                //{
+                                //    ServerLog($"Row {row.RowIndex} SKIPPED — Duplicate: {mobile}");
+                                //    skipCount++;
+                                //    continue;
+                                //}
 
                                 int l1Code = 0;
                                 int.TryParse(l1CodeText, out l1Code);
@@ -7611,18 +7613,18 @@ string input_name, string input_mobile, string input_email)
             return RedirectToAction("CentralBlast");
         }
 
-        private bool IsAlreadyInserted(SqlConnection con, string mobile, string campaign)
-        {
-            using (var cmd = new SqlCommand(@"
-        SELECT COUNT(1) 
-        FROM CENTRAL_BLAST 
-        WHERE Contact_Number = @m AND CampaignName = @c", con))
-            {
-                cmd.Parameters.AddWithValue("@m", mobile);
-                cmd.Parameters.AddWithValue("@c", campaign);
-                return (int)cmd.ExecuteScalar() > 0;
-            }
-        }
+        //private bool IsAlreadyInserted(SqlConnection con, string mobile, string campaign)
+        //{
+        //    using (var cmd = new SqlCommand(@"
+        //SELECT COUNT(1) 
+        //FROM CENTRAL_BLAST 
+        //WHERE Contact_Number = @m AND CampaignName = @c", con))
+        //    {
+        //        cmd.Parameters.AddWithValue("@m", mobile);
+        //        cmd.Parameters.AddWithValue("@c", campaign);
+        //        return (int)cmd.ExecuteScalar() > 0;
+        //    }
+        //}
 
         private void ServerLog(string msg)
         {
