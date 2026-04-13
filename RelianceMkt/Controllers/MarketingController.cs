@@ -7506,6 +7506,8 @@ string input_name, string input_mobile, string input_email)
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
                     string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                    //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+
 
                     using (SqlConnection con = new SqlConnection(conStr))
                     {
@@ -7732,7 +7734,7 @@ string input_name, string input_mobile, string input_email)
             }
         }
 
-        // ✅ Relative path ko Full URL mein convert karna
+         //✅ Relative path ko Full URL mein convert karna
         //private string GetFullImageUrl(string imageLink)
         //{
         //    if (string.IsNullOrEmpty(imageLink))
