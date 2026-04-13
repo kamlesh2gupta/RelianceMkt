@@ -18,6 +18,18 @@ public class LeadHelper
                     ? mobileNumber.Substring(mobileNumber.Length - 10)
                     : mobileNumber;
 
+                // ✅ NEW: Check karo ki lead already bana hai
+                bool leadAlreadyCreated = db.CampaignResponses.Any(x =>
+                    x.Mobile == normalizedMobile &&
+                    x.CampaignName == campaignName &&
+                    x.LeadCreated == true);  // column add karna hoga
+
+                if (leadAlreadyCreated)
+                {
+                    // Log karo lekin duplicate mat banao
+                    return;
+                }
+
                 // ✅ CENTRAL_BLAST lookup
                 var blastRecord = db.CENTRAL_BLAST
                     .FirstOrDefault(x =>
@@ -77,7 +89,7 @@ public class LeadHelper
 
                 if (lsqChannels.Contains(channelCode))
                 {
-                    var result =  await api.TestAPI(userName, userMobile, sapCode, sapName);
+                    var result = await api.TestAPI(userName, userMobile, sapCode, sapName);
                     apiRequestId = result.Response?.RequestId;
                     rawJson = result.RawJson;
 
@@ -105,6 +117,16 @@ public class LeadHelper
                     LeadType = categoryName,            // ✅ Category Name
                     leads_creativeid = 0                        // ✅ Default — WhatsApp se creative nahi aata
                 };
+
+                var responseRecord = db.CampaignResponses
+            .FirstOrDefault(x => x.Mobile == normalizedMobile
+                              && x.CampaignName == campaignName);
+
+                if (responseRecord != null)
+                {
+                    responseRecord.LeadCreated = true;
+                    responseRecord.LeadCreatedAt = DateTime.Now;
+                }
 
                 db.Leads.Add(lead);
                 db.SaveChanges();

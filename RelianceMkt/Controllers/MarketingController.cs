@@ -736,9 +736,9 @@ namespace RelianceMkt.Controllers
         public void SetData()
         {
 
-           string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+            string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
 
-           //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             SqlConnection con = new SqlConnection(Constr);
             string SAPCODE = Session["SAPCODE"]?.ToString();
@@ -4409,10 +4409,10 @@ namespace RelianceMkt.Controllers
 
 
 
-      //===================================================
+        //===================================================
 
 
-        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI(string name,string mobile,string sapcode,string SapName)
+        public async Task<(LeadSquaredResponse Response, string RawJson)> TestAPI(string name, string mobile, string sapcode, string SapName)
         {
             var url = "https://api-in21.leadsquared.com/v2/OpportunityManagement.svc/Capture" +
                       "?accessKey=u$re5470b019cbada9931f9d41d27261f60" +
@@ -4632,7 +4632,7 @@ namespace RelianceMkt.Controllers
             string cleanMobile = Regex.Replace(mobile ?? "", @"\D", "");
 
 
-                            var jsonBody = $@"
+            var jsonBody = $@"
                 {{
                     ""userId"": ""{sapcode}"",
                     ""name"": ""{name}"",
@@ -4643,7 +4643,7 @@ namespace RelianceMkt.Controllers
                     ""campaign"": ""Digimyin""
                 }}";
 
-     
+
 
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 
@@ -7463,7 +7463,7 @@ string input_name, string input_mobile, string input_email)
 
 
 
-       
+
         [HttpPost]
         public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName, string status)
         {
@@ -7491,12 +7491,7 @@ string input_name, string input_mobile, string input_email)
 
             try
             {
-                ServerLog("File Name: " + excelFile.FileName);
-                ServerLog("Campaign: " + CampaignName);
-
                 string imageLink = GetCampaignImageUrl(CampaignName);
-
-                ServerLog("Image URL: " + imageLink);
 
                 using (var stream = excelFile.InputStream)
                 using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
@@ -7505,28 +7500,21 @@ string input_name, string input_mobile, string input_email)
                     Sheet sheet = workbookPart.Workbook.Sheets.Elements<Sheet>().FirstOrDefault();
 
                     if (sheet == null)
-                    {
-                        ServerLog("Sheet NOT FOUND");
                         throw new Exception("No sheet found in Excel");
-                    }
 
                     WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
-                    int totalRows = sheetData.Elements<Row>().Count();
-                    ServerLog("Total rows found (including header): " + totalRows);
-
-                   string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                   //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+                    string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
                     using (SqlConnection con = new SqlConnection(conStr))
                     {
                         con.Open();
-                        ServerLog("DB Connected");
 
                         int insertCount = 0;
+                        int skipCount = 0;
 
-                        foreach (Row row in sheetData.Elements<Row>().Skip(1)) // skip header
+                        foreach (Row row in sheetData.Elements<Row>().Skip(1))
                         {
                             try
                             {
@@ -7537,14 +7525,13 @@ string input_name, string input_mobile, string input_email)
                                 string l1Name = GetCellValue(document, row, "F");
                                 string channel = GetCellValue(document, row, "G");
 
-                                ServerLog($"Row {row.RowIndex} Raw Mobile: [{mobile}]");
-
                                 if (string.IsNullOrWhiteSpace(mobile))
                                 {
-                                    ServerLog($"Row {row.RowIndex} skipped (mobile empty)");
+                                    ServerLog($"Row {row.RowIndex} skipped (empty mobile)");
                                     continue;
                                 }
 
+                                // ✅ Mobile Clean
                                 mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
 
                                 if (mobile.Length == 10)
@@ -7554,9 +7541,18 @@ string input_name, string input_mobile, string input_email)
                                 else if (!mobile.StartsWith("+"))
                                     mobile = "+91" + mobile;
 
+                                // ✅ DUPLICATE CHECK
+                                if (IsAlreadyInserted(con, mobile, CampaignName))
+                                {
+                                    ServerLog($"Row {row.RowIndex} SKIPPED — Duplicate: {mobile}");
+                                    skipCount++;
+                                    continue;
+                                }
+
                                 int l1Code = 0;
                                 int.TryParse(l1CodeText, out l1Code);
 
+                                // ✅ INSERT CENTRAL_BLAST
                                 using (SqlCommand cmd = new SqlCommand(@"
                             INSERT INTO CENTRAL_BLAST
                             (Name, Contact_Number, Type_Of_Data, L1_Code, L1_Name, Channel, CampaignName)
@@ -7570,11 +7566,11 @@ string input_name, string input_mobile, string input_email)
                                     cmd.Parameters.AddWithValue("@L1_Name", l1Name ?? "");
                                     cmd.Parameters.AddWithValue("@Channel", channel ?? "");
                                     cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
-                                   
 
                                     cmd.ExecuteNonQuery();
                                 }
 
+                                // ✅ INSERT CampaignResponses
                                 using (SqlCommand cmd = new SqlCommand(@"
                             INSERT INTO CampaignResponses
                             (Mobile, CampaignName, Response, CreatedDate)
@@ -7587,35 +7583,45 @@ string input_name, string input_mobile, string input_email)
                                 }
 
                                 insertCount++;
-                                ServerLog($"Row {row.RowIndex} inserted successfully | Mobile: {mobile}");
 
-                                //await SendWhatsAppMessageAsync(mobile, CampaignName);
-                                //await SendWhatsAppMessageAsync(mobile, name, CampaignName, imageLink);
-                                //string imageLinkFromDb = GetCampaignImage(CampaignName);
-
+                                // ✅ WhatsApp Send
                                 await SendWhatsAppMessageAsync(mobile, name, CampaignName, imageLink);
+
+                                ServerLog($"Row {row.RowIndex} INSERTED: {mobile}");
                             }
                             catch (Exception rowEx)
                             {
-                                ServerLog($"Row {row.RowIndex} ERROR: {rowEx}");
+                                ServerLog($"Row {row.RowIndex} ERROR: {rowEx.Message}");
                             }
                         }
 
-                        ServerLog("Total rows inserted: " + insertCount);
+                        ServerLog($"Inserted: {insertCount}, Skipped: {skipCount}");
                         con.Close();
                     }
                 }
 
-                TempData["SuccessMessage"] = "Data saved & WhatsApp messages sent to ALL contacts!";
-                ServerLog("===== UploadExcel SUCCESS =====");
+                TempData["SuccessMessage"] = "Upload completed successfully!";
             }
             catch (Exception ex)
             {
                 ServerLog("FATAL ERROR: " + ex);
-                TempData["ErrorMessage"] = "Error: " + ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
             }
 
             return RedirectToAction("CentralBlast");
+        }
+
+        private bool IsAlreadyInserted(SqlConnection con, string mobile, string campaign)
+        {
+            using (var cmd = new SqlCommand(@"
+        SELECT COUNT(1) 
+        FROM CENTRAL_BLAST 
+        WHERE Contact_Number = @m AND CampaignName = @c", con))
+            {
+                cmd.Parameters.AddWithValue("@m", mobile);
+                cmd.Parameters.AddWithValue("@c", campaign);
+                return (int)cmd.ExecuteScalar() > 0;
+            }
         }
 
         private void ServerLog(string msg)
@@ -7632,7 +7638,7 @@ string input_name, string input_mobile, string input_email)
         }
 
 
-      
+
         private string GetCellValue(SpreadsheetDocument document, Row row, string columnName)
         {
             if (row == null) return "";
@@ -7727,18 +7733,30 @@ string input_name, string input_mobile, string input_email)
         }
 
         // ✅ Relative path ko Full URL mein convert karna
+        //private string GetFullImageUrl(string imageLink)
+        //{
+        //    if (string.IsNullOrEmpty(imageLink))
+        //        return "";
+
+        //    // Already full URL hai
+        //    if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
+        //        return imageLink;
+
+        //    // ✅ Apna domain yahan daalo
+        //    string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
+
+        //    return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
+        //}
+
         private string GetFullImageUrl(string imageLink)
         {
             if (string.IsNullOrEmpty(imageLink))
                 return "";
 
-            // Already full URL hai
             if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
                 return imageLink;
 
-            // ✅ Apna domain yahan daalo
-            string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
-
+            string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
             return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
         }
 
@@ -7806,7 +7824,7 @@ string input_name, string input_mobile, string input_email)
         {
             string imageName = "";
             string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-             //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             using (SqlConnection con = new SqlConnection(conStr))
             {
@@ -7829,7 +7847,7 @@ string input_name, string input_mobile, string input_email)
             if (string.IsNullOrEmpty(imageName))
                 return "";
 
-           
+
             //using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString))
             //{
             //    string query = @"SELECT TOP 1 campaign_master_images 
@@ -9537,11 +9555,11 @@ string input_name, string input_mobile, string input_email)
                 //                   {
                 //                       zonename = a.X_ZONE
                 //                   }).ToList().Distinct();
-                     ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
-                    .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
-                    .Select(a => a.X_ZONE.Trim())
-                    .Distinct()
-                    .ToList();
+                ViewBag.lstZone = db.NEW_TEMP_HIERARCHY
+               .Where(a => a.X_SM_STATUS == "if" && a.X_ZONE != null)
+               .Select(a => a.X_ZONE.Trim())
+               .Distinct()
+               .ToList();
 
 
 
@@ -9761,7 +9779,7 @@ string input_name, string input_mobile, string input_email)
 
 
 
-///================================================================
+        ///================================================================
 
 
         //[ChildActionOnly]
@@ -10412,7 +10430,7 @@ string input_name, string input_mobile, string input_email)
         }
 
 
-       
+
 
 
 
