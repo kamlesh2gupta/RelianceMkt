@@ -41,7 +41,6 @@ public partial class Lead
     public string LeadType { get; set; }
 
 }
-
     public class LeadSquaredResponse
     {
         public int Status { get; set; }
@@ -50,7 +49,4 @@ public partial class Lead
         public string ExceptionType { get; set; }
         public object AdditionalDetails { get; set; }
     }
-
-
-
 }

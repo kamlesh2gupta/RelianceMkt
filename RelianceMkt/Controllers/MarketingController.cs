@@ -1112,7 +1112,7 @@ namespace RelianceMkt.Controllers
         public void SetData()
         {
 
-           // string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+            //string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
 
             string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 

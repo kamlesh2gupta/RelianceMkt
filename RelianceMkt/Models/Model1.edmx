@@ -153,8 +153,6 @@
           <Property Name="api_response_json" Type="nvarchar(max)" />
           <Property Name="LeadType" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'ILW DIGIMYIN PROJECT .dbo.NEW_TEMP_HIERARCHY' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
             <PropertyRef Name="ID" />
@@ -214,34 +212,9 @@ warning 6002: The table/view 'ILW DIGIMYIN PROJECT .dbo.NEW_TEMP_HIERARCHY' does
           <EntitySet Name="ENGAGE_SHARECOUNT" EntityType="Self.ENGAGE_SHARECOUNT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="landingpage" EntityType="Self.landingpage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Leads" EntityType="Self.Leads" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="Self.NEW_TEMP_HIERARCHY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="subcampaign" EntityType="Self.subcampaign" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserNotification" EntityType="Self.UserNotification" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="Self.NEW_TEMP_HIERARCHY" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-[NEW_TEMP_HIERARCHY].[ID] AS [ID], 
-[NEW_TEMP_HIERARCHY].[X_CHANNEL] AS [X_CHANNEL], 
-[NEW_TEMP_HIERARCHY].[X_BM_EMP_CD] AS [X_BM_EMP_CD], 
-[NEW_TEMP_HIERARCHY].[X_BM_NM] AS [X_BM_NM], 
-[NEW_TEMP_HIERARCHY].[X_BRANCH] AS [X_BRANCH], 
-[NEW_TEMP_HIERARCHY].[X_REGION] AS [X_REGION], 
-[NEW_TEMP_HIERARCHY].[X_SALES_UNIT_CD] AS [X_SALES_UNIT_CD], 
-[NEW_TEMP_HIERARCHY].[X_SALES_UNIT_NM] AS [X_SALES_UNIT_NM], 
-[NEW_TEMP_HIERARCHY].[X_ZM_EMP_CD] AS [X_ZM_EMP_CD], 
-[NEW_TEMP_HIERARCHY].[X_ZM_NM] AS [X_ZM_NM], 
-[NEW_TEMP_HIERARCHY].[X_ZONE] AS [X_ZONE], 
-[NEW_TEMP_HIERARCHY].[X_RM_EMP_EMP_CD] AS [X_RM_EMP_EMP_CD], 
-[NEW_TEMP_HIERARCHY].[X_RM_NM] AS [X_RM_NM], 
-[NEW_TEMP_HIERARCHY].[X_SM_EMP_CD] AS [X_SM_EMP_CD], 
-[NEW_TEMP_HIERARCHY].[X_SM_NM] AS [X_SM_NM], 
-[NEW_TEMP_HIERARCHY].[X_SM_STATUS] AS [X_SM_STATUS], 
-[NEW_TEMP_HIERARCHY].[SUBCHANNEL] AS [SUBCHANNEL], 
-[NEW_TEMP_HIERARCHY].[AGENT_CODE] AS [AGENT_CODE], 
-[NEW_TEMP_HIERARCHY].[AGENT_NAME] AS [AGENT_NAME], 
-[NEW_TEMP_HIERARCHY].[BM_NAME] AS [BM_NAME], 
-[NEW_TEMP_HIERARCHY].[ZM_NAME] AS [ZM_NAME], 
-[NEW_TEMP_HIERARCHY].[X_CHANNEL_DESC] AS [X_CHANNEL_DESC]
-FROM [dbo].[NEW_TEMP_HIERARCHY] AS [NEW_TEMP_HIERARCHY]</DefiningQuery>
-          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
