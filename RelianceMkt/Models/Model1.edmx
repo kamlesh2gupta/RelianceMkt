@@ -79,6 +79,8 @@
           <Property Name="Response" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ResponseCampaignName" Type="varchar" MaxLength="20" />
+          <Property Name="LeadCreated" Type="bit" />
+          <Property Name="LeadCreatedAt" Type="datetime" />
         </EntityType>
         <EntityType Name="CENTRAL_BLAST">
           <Key>
@@ -246,13 +248,13 @@
           <EntitySet Name="landingpages" EntityType="rglinixm_relModel.landingpage" />
           <EntitySet Name="Digimyin_Send_Campaign" EntityType="rglinixm_relModel.Digimyin_Send_Campaign" />
           <EntitySet Name="ENGAGE_SHARECOUNT" EntityType="rglinixm_relModel.ENGAGE_SHARECOUNT" />
-          <EntitySet Name="CENTRAL_BLAST" EntityType="rglinixm_relModel.CENTRAL_BLAST" />
           <EntitySet Name="campaign_master" EntityType="rglinixm_relModel.campaign_master" />
           <EntitySet Name="channels" EntityType="rglinixm_relModel.channel" />
           <EntitySet Name="UserNotifications" EntityType="rglinixm_relModel.UserNotification" />
           <EntitySet Name="CampaignResponses" EntityType="rglinixm_relModel.CampaignRespons" />
           <EntitySet Name="NEW_TEMP_HIERARCHY" EntityType="rglinixm_relModel.NEW_TEMP_HIERARCHY" />
           <EntitySet Name="Leads" EntityType="rglinixm_relModel.Lead" />
+          <EntitySet Name="CENTRAL_BLAST" EntityType="rglinixm_relModel.CENTRAL_BLAST" />
         </EntityContainer>
         <EntityType Name="subcampaign">
           <Key>
@@ -308,19 +310,6 @@
           <Property Name="SHC_SHARECOUNT" Type="Decimal" Precision="18" Scale="0" />
           <Property Name="SHC_DATE" Type="DateTime" Precision="0" />
           <Property Name="CREATIVE_ID" Type="Decimal" Precision="18" Scale="0" />
-        </EntityType>
-        <EntityType Name="CENTRAL_BLAST">
-          <Key>
-            <PropertyRef Name="Sr_Id" />
-          </Key>
-          <Property Name="Sr_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Contact_Number" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Type_Of_Data" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="L1_Code" Type="Int32" />
-          <Property Name="L1_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Channel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CampaignName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="campaign_master">
           <Key>
@@ -387,6 +376,8 @@
           <Property Name="Response" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ResponseCampaignName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LeadCreated" Type="Boolean" />
+          <Property Name="LeadCreatedAt" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="NEW_TEMP_HIERARCHY">
           <Key>
@@ -430,6 +421,19 @@
           <Property Name="api_leads_id" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="api_response_json" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LeadType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CENTRAL_BLAST">
+          <Key>
+            <PropertyRef Name="Sr_Id" />
+          </Key>
+          <Property Name="Sr_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Contact_Number" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Type_Of_Data" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="L1_Code" Type="Int32" />
+          <Property Name="L1_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Channel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CampaignName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -517,20 +521,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CENTRAL_BLAST">
-            <EntityTypeMapping TypeName="rglinixm_relModel.CENTRAL_BLAST">
-              <MappingFragment StoreEntitySet="CENTRAL_BLAST">
-                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
-                <ScalarProperty Name="Channel" ColumnName="Channel" />
-                <ScalarProperty Name="L1_Name" ColumnName="L1_Name" />
-                <ScalarProperty Name="L1_Code" ColumnName="L1_Code" />
-                <ScalarProperty Name="Type_Of_Data" ColumnName="Type_Of_Data" />
-                <ScalarProperty Name="Contact_Number" ColumnName="Contact_Number" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Sr_Id" ColumnName="Sr_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="campaign_master">
             <EntityTypeMapping TypeName="rglinixm_relModel.campaign_master">
               <MappingFragment StoreEntitySet="campaign_master">
@@ -592,6 +582,8 @@
           <EntitySetMapping Name="CampaignResponses">
             <EntityTypeMapping TypeName="rglinixm_relModel.CampaignRespons">
               <MappingFragment StoreEntitySet="CampaignResponses">
+                <ScalarProperty Name="LeadCreatedAt" ColumnName="LeadCreatedAt" />
+                <ScalarProperty Name="LeadCreated" ColumnName="LeadCreated" />
                 <ScalarProperty Name="ResponseCampaignName" ColumnName="ResponseCampaignName" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Response" ColumnName="Response" />
@@ -643,6 +635,20 @@
                 <ScalarProperty Name="leads_mobile" ColumnName="leads_mobile" />
                 <ScalarProperty Name="leads_name" ColumnName="leads_name" />
                 <ScalarProperty Name="leads_id" ColumnName="leads_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CENTRAL_BLAST">
+            <EntityTypeMapping TypeName="rglinixm_relModel.CENTRAL_BLAST">
+              <MappingFragment StoreEntitySet="CENTRAL_BLAST">
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="Channel" ColumnName="Channel" />
+                <ScalarProperty Name="L1_Name" ColumnName="L1_Name" />
+                <ScalarProperty Name="L1_Code" ColumnName="L1_Code" />
+                <ScalarProperty Name="Type_Of_Data" ColumnName="Type_Of_Data" />
+                <ScalarProperty Name="Contact_Number" ColumnName="Contact_Number" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sr_Id" ColumnName="Sr_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
