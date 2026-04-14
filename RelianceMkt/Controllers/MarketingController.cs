@@ -5,6 +5,8 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using log4net;
 using Newtonsoft.Json;
+using RelianceMkt.App_Start;
+
 //using OfficeOpenXml;
 using RelianceMkt.Models;
 using System;
@@ -736,9 +738,9 @@ namespace RelianceMkt.Controllers
         public void SetData()
         {
 
-            //string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+            string Constr = DBHelper.GetConnectionString();
 
-            string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             SqlConnection con = new SqlConnection(Constr);
             string SAPCODE = Session["SAPCODE"]?.ToString();
@@ -7464,27 +7466,172 @@ string input_name, string input_mobile, string input_email)
 
 
 
+        //[HttpPost]
+        //public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName, string status)
+        //{
+        //    ServerLog("===== UploadExcel START =====");
+
+        //    if (Session["userid"] == null)
+        //    {
+        //        ServerLog("Session expired");
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    if (string.IsNullOrEmpty(CampaignName))
+        //    {
+        //        ServerLog("CampaignName empty");
+        //        TempData["ErrorMessage"] = "Please select a Campaign before uploading.";
+        //        return RedirectToAction("CentralBlast");
+        //    }
+
+        //    if (excelFile == null || excelFile.ContentLength <= 0)
+        //    {
+        //        ServerLog("Excel file missing");
+        //        TempData["ErrorMessage"] = "Please upload a valid Excel file.";
+        //        return RedirectToAction("CentralBlast");
+        //    }
+
+        //    try
+        //    {
+        //        string imageLink = GetCampaignImageUrl(CampaignName);
+
+        //        using (var stream = excelFile.InputStream)
+        //        using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
+        //        {
+        //            WorkbookPart workbookPart = document.WorkbookPart;
+        //            Sheet sheet = workbookPart.Workbook.Sheets.Elements<Sheet>().FirstOrDefault();
+
+        //            if (sheet == null)
+        //                throw new Exception("No sheet found in Excel");
+
+        //            WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+        //            SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
+
+        //            string Constr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        //            //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+
+
+        //            using (SqlConnection con = new SqlConnection(Constr))
+        //            {
+        //                con.Open();
+
+        //                int insertCount = 0;
+        //                int skipCount = 0;
+
+        //                foreach (Row row in sheetData.Elements<Row>().Skip(1))
+        //                {
+        //                    try
+        //                    {
+        //                        string name = GetCellValue(document, row, "B");
+        //                        string mobile = GetCellValue(document, row, "C");
+        //                        string typeOfData = GetCellValue(document, row, "D");
+        //                        string l1CodeText = GetCellValue(document, row, "E");
+        //                        string l1Name = GetCellValue(document, row, "F");
+        //                        string channel = GetCellValue(document, row, "G");
+
+        //                        if (string.IsNullOrWhiteSpace(mobile))
+        //                        {
+        //                            ServerLog($"Row {row.RowIndex} skipped (empty mobile)");
+        //                            continue;
+        //                        }
+
+        //                        // ✅ Mobile Clean
+        //                        mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
+
+        //                        if (mobile.Length == 10)
+        //                            mobile = "+91" + mobile;
+        //                        else if (mobile.StartsWith("91"))
+        //                            mobile = "+" + mobile;
+        //                        else if (!mobile.StartsWith("+"))
+        //                            mobile = "+91" + mobile;
+
+        //                        // ✅ DUPLICATE CHECK
+        //                        //if (IsAlreadyInserted(con, mobile, CampaignName))
+        //                        //{
+        //                        //    ServerLog($"Row {row.RowIndex} SKIPPED — Duplicate: {mobile}");
+        //                        //    skipCount++;
+        //                        //    continue;
+        //                        //}
+
+        //                        int l1Code = 0;
+        //                        int.TryParse(l1CodeText, out l1Code);
+
+        //                        // ✅ INSERT CENTRAL_BLAST
+        //                        using (SqlCommand cmd = new SqlCommand(@"
+        //                    INSERT INTO CENTRAL_BLAST
+        //                    (Name, Contact_Number, Type_Of_Data, L1_Code, L1_Name, Channel, CampaignName)
+        //                    VALUES
+        //                    (@Name, @Contact_Number, @Type_Of_Data, @L1_Code, @L1_Name, @Channel, @CampaignName)", con))
+        //                        {
+        //                            cmd.Parameters.AddWithValue("@Name", name ?? "");
+        //                            cmd.Parameters.AddWithValue("@Contact_Number", mobile);
+        //                            cmd.Parameters.AddWithValue("@Type_Of_Data", typeOfData ?? "");
+        //                            cmd.Parameters.AddWithValue("@L1_Code", l1Code);
+        //                            cmd.Parameters.AddWithValue("@L1_Name", l1Name ?? "");
+        //                            cmd.Parameters.AddWithValue("@Channel", channel ?? "");
+        //                            cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
+
+        //                            cmd.ExecuteNonQuery();
+        //                        }
+
+        //                        // ✅ INSERT CampaignResponses
+        //                        using (SqlCommand cmd = new SqlCommand(@"
+        //                    INSERT INTO CampaignResponses
+        //                    (Mobile, CampaignName, Response, CreatedDate)
+        //                    VALUES
+        //                    (@Mobile, @CampaignName, 'Pending', GETDATE())", con))
+        //                        {
+        //                            cmd.Parameters.AddWithValue("@Mobile", mobile);
+        //                            cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
+        //                            cmd.ExecuteNonQuery();
+        //                        }
+
+        //                        insertCount++;
+
+        //                        // ✅ WhatsApp Send
+        //                        await SendWhatsAppMessageAsync(mobile, name, CampaignName, imageLink);
+
+        //                        ServerLog($"Row {row.RowIndex} INSERTED: {mobile}");
+        //                    }
+        //                    catch (Exception rowEx)
+        //                    {
+        //                        ServerLog($"Row {row.RowIndex} ERROR: {rowEx.Message}");
+        //                    }
+        //                }
+
+        //                ServerLog($"Inserted: {insertCount}, Skipped: {skipCount}");
+        //                con.Close();
+        //            }
+        //        }
+
+        //        TempData["SuccessMessage"] = "Upload completed successfully!";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ServerLog("FATAL ERROR: " + ex);
+        //        TempData["ErrorMessage"] = ex.Message;
+        //    }
+
+        //    return RedirectToAction("CentralBlast");
+        //}
+
+
         [HttpPost]
         public async Task<ActionResult> UploadExcel(HttpPostedFileBase excelFile, string CampaignName, string status)
         {
             ServerLog("===== UploadExcel START =====");
 
             if (Session["userid"] == null)
-            {
-                ServerLog("Session expired");
                 return RedirectToAction("Index");
-            }
 
             if (string.IsNullOrEmpty(CampaignName))
             {
-                ServerLog("CampaignName empty");
                 TempData["ErrorMessage"] = "Please select a Campaign before uploading.";
                 return RedirectToAction("CentralBlast");
             }
 
             if (excelFile == null || excelFile.ContentLength <= 0)
             {
-                ServerLog("Excel file missing");
                 TempData["ErrorMessage"] = "Please upload a valid Excel file.";
                 return RedirectToAction("CentralBlast");
             }
@@ -7492,27 +7639,23 @@ string input_name, string input_mobile, string input_email)
             try
             {
                 string imageLink = GetCampaignImageUrl(CampaignName);
+                string Constr = DBHelper.GetConnectionString();
+                // ✅ Saari rows pehle collect karo — phir batch insert
+                var jobList = new List<WhatsAppJob>();
 
                 using (var stream = excelFile.InputStream)
                 using (SpreadsheetDocument document = SpreadsheetDocument.Open(stream, false))
                 {
                     WorkbookPart workbookPart = document.WorkbookPart;
                     Sheet sheet = workbookPart.Workbook.Sheets.Elements<Sheet>().FirstOrDefault();
-
-                    if (sheet == null)
-                        throw new Exception("No sheet found in Excel");
+                    if (sheet == null) throw new Exception("No sheet found in Excel");
 
                     WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
-                    //string Constr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                    string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
-
-
                     using (SqlConnection con = new SqlConnection(Constr))
                     {
                         con.Open();
-
                         int insertCount = 0;
                         int skipCount = 0;
 
@@ -7527,35 +7670,27 @@ string input_name, string input_mobile, string input_email)
                                 string l1Name = GetCellValue(document, row, "F");
                                 string channel = GetCellValue(document, row, "G");
 
-                                if (string.IsNullOrWhiteSpace(mobile))
-                                {
-                                    ServerLog($"Row {row.RowIndex} skipped (empty mobile)");
-                                    continue;
-                                }
+                                if (string.IsNullOrWhiteSpace(mobile)) continue;
 
-                                // ✅ Mobile Clean
+                                // Mobile normalize
                                 mobile = mobile.Replace(" ", "").Replace("-", "").Trim();
+                                if (mobile.Length == 10) mobile = "+91" + mobile;
+                                else if (mobile.StartsWith("91")) mobile = "+" + mobile;
+                                else if (!mobile.StartsWith("+")) mobile = "+91" + mobile;
 
-                                if (mobile.Length == 10)
-                                    mobile = "+91" + mobile;
-                                else if (mobile.StartsWith("91"))
-                                    mobile = "+" + mobile;
-                                else if (!mobile.StartsWith("+"))
-                                    mobile = "+91" + mobile;
-
-                                // ✅ DUPLICATE CHECK
+                                //// Duplicate check
                                 //if (IsAlreadyInserted(con, mobile, CampaignName))
                                 //{
-                                //    ServerLog($"Row {row.RowIndex} SKIPPED — Duplicate: {mobile}");
                                 //    skipCount++;
+                                //    ServerLog($"Row {row.RowIndex} SKIPPED duplicate: {mobile}");
                                 //    continue;
                                 //}
 
                                 int l1Code = 0;
                                 int.TryParse(l1CodeText, out l1Code);
 
-                                // ✅ INSERT CENTRAL_BLAST
-                                using (SqlCommand cmd = new SqlCommand(@"
+                                // ✅ CENTRAL_BLAST insert
+                                using (var cmd = new SqlCommand(@"
                             INSERT INTO CENTRAL_BLAST
                             (Name, Contact_Number, Type_Of_Data, L1_Code, L1_Name, Channel, CampaignName)
                             VALUES
@@ -7568,12 +7703,11 @@ string input_name, string input_mobile, string input_email)
                                     cmd.Parameters.AddWithValue("@L1_Name", l1Name ?? "");
                                     cmd.Parameters.AddWithValue("@Channel", channel ?? "");
                                     cmd.Parameters.AddWithValue("@CampaignName", CampaignName);
-
                                     cmd.ExecuteNonQuery();
                                 }
 
-                                // ✅ INSERT CampaignResponses
-                                using (SqlCommand cmd = new SqlCommand(@"
+                                // ✅ CampaignResponses insert
+                                using (var cmd = new SqlCommand(@"
                             INSERT INTO CampaignResponses
                             (Mobile, CampaignName, Response, CreatedDate)
                             VALUES
@@ -7584,12 +7718,16 @@ string input_name, string input_mobile, string input_email)
                                     cmd.ExecuteNonQuery();
                                 }
 
+                                // ✅ Queue mein add karo — direct send nahi
+                                jobList.Add(new WhatsAppJob
+                                {
+                                    Mobile = mobile,
+                                    Name = name ?? "",
+                                    CampaignName = CampaignName,
+                                    ImageLink = imageLink
+                                });
+
                                 insertCount++;
-
-                                // ✅ WhatsApp Send
-                                await SendWhatsAppMessageAsync(mobile, name, CampaignName, imageLink);
-
-                                ServerLog($"Row {row.RowIndex} INSERTED: {mobile}");
                             }
                             catch (Exception rowEx)
                             {
@@ -7597,21 +7735,29 @@ string input_name, string input_mobile, string input_email)
                             }
                         }
 
-                        ServerLog($"Inserted: {insertCount}, Skipped: {skipCount}");
+                        ServerLog($"DB Insert done — Inserted: {insertCount}, Skipped: {skipCount}");
                         con.Close();
                     }
                 }
 
-                TempData["SuccessMessage"] = "Upload completed successfully!";
+                // ✅ Saari jobs ek saath background mein bhejo
+                if (jobList.Count > 0)
+                {
+                    WhatsAppQueueManager.EnqueueBulk(jobList);
+                    ServerLog($"Queue mein add kiya: {jobList.Count} jobs");
+                }
+
+                TempData["SuccessMessage"] = $"{jobList.Count} contacts queued! WhatsApp messages background mein send ho rahe hain.";
             }
             catch (Exception ex)
             {
-                ServerLog("FATAL ERROR: " + ex);
+                ServerLog("FATAL ERROR: " + ex.Message);
                 TempData["ErrorMessage"] = ex.Message;
             }
 
             return RedirectToAction("CentralBlast");
         }
+
 
         //private bool IsAlreadyInserted(SqlConnection con, string mobile, string campaign)
         //{
@@ -7735,32 +7881,32 @@ string input_name, string input_mobile, string input_email)
         }
 
         // ✅ Relative path ko Full URL mein convert karna
-        private string GetFullImageUrl(string imageLink)
-        {
-            if (string.IsNullOrEmpty(imageLink))
-                return "";
-
-            // Already full URL hai
-            if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
-                return imageLink;
-
-            // ✅ Apna domain yahan daalo
-            string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
-
-            return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
-        }
-
         //private string GetFullImageUrl(string imageLink)
         //{
         //    if (string.IsNullOrEmpty(imageLink))
         //        return "";
 
+        //    // Already full URL hai
         //    if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
         //        return imageLink;
 
-        //    string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+        //    // ✅ Apna domain yahan daalo
+        //    string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
+
         //    return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
         //}
+
+        private string GetFullImageUrl(string imageLink)
+        {
+            if (string.IsNullOrEmpty(imageLink))
+                return "";
+
+            if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
+                return imageLink;
+
+            string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+            return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
+        }
 
 
 
@@ -7825,10 +7971,10 @@ string input_name, string input_mobile, string input_email)
         public string GetCampaignImageUrl(string campaignName)
         {
             string imageName = "";
-            string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            string Constr = DBHelper.GetConnectionString();
             //string conStr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
-            using (SqlConnection con = new SqlConnection(conStr))
+            using (SqlConnection con = new SqlConnection(Constr))
             {
                 string query = @"SELECT TOP 1 campaign_master_images 
                          FROM campaign_master 
@@ -8352,10 +8498,10 @@ string input_name, string input_mobile, string input_email)
                     return View(data);
                 }
 
-                var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
-                var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
-                //var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
-                //var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
+                //var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
+                //var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
+                var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
+                var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
 
                 string apiRequestId = null;
                 string rawJson = "";
