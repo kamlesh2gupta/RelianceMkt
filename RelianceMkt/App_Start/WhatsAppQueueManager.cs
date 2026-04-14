@@ -170,14 +170,43 @@ namespace RelianceMkt.App_Start
                     throw; // Retry ke liye exception rethrow karo
                 }
             }
+
         }
+
+        //private static string GetFullImageUrl(string imageLink)
+        //{
+        //    if (string.IsNullOrEmpty(imageLink)) return "";
+        //    if (imageLink.StartsWith("http://") ||
+        //        imageLink.StartsWith("https://")) return imageLink;
+        //    string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+        //    return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
+        //}
+
+        //private static string GetFullImageUrl(string imageLink)
+        //{
+        //    if (string.IsNullOrEmpty(imageLink))
+        //        return "";
+
+        //    // Agar already full URL hai
+        //    if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
+        //        return imageLink;
+
+        //    // Local image ke liye relative path
+        //    return "/Content/images/campaign/" + imageLink.TrimStart('/');
+        //}
 
         private static string GetFullImageUrl(string imageLink)
         {
-            if (string.IsNullOrEmpty(imageLink)) return "";
-            if (imageLink.StartsWith("http://") ||
-                imageLink.StartsWith("https://")) return imageLink;
-            string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+            if (string.IsNullOrEmpty(imageLink))
+                return "";
+
+            // Already full URL hai
+            if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
+                return imageLink;
+
+            // ✅ Apna domain yahan daalo
+            string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
+
             return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
         }
 

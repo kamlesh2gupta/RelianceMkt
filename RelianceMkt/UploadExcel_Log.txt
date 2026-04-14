@@ -3857,3 +3857,26 @@ The statement has been terminated.
 2026-04-13 18:11:02 :: DB Insert done — Inserted: 223, Skipped: 0
 2026-04-13 18:11:02 :: Queue mein add kiya: 223 jobs
 >>>>>>> origin/amir-changes
+2026-04-14 13:10:03 :: ===== UploadExcel START =====
+2026-04-14 13:10:05 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:17:39 :: ===== UploadExcel START =====
+2026-04-14 13:17:39 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:18:23 :: ===== UploadExcel START =====
+2026-04-14 13:18:24 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:22:52 :: ===== UploadExcel START =====
+2026-04-14 13:22:52 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:27:34 :: ===== UploadExcel START =====
+2026-04-14 13:27:55 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:31:10 :: ===== UploadExcel START =====
+2026-04-14 13:31:12 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:39:08 :: ===== UploadExcel START =====
+2026-04-14 13:41:34 :: DB Insert done — Inserted: 0, Skipped: 0
+2026-04-14 13:43:12 :: ===== UploadExcel START =====
+2026-04-14 13:43:58 :: DB Insert done — Inserted: 2, Skipped: 0
+2026-04-14 13:44:05 :: Queue mein add kiya: 2 jobs
+2026-04-14 14:04:31 :: ===== UploadExcel START =====
+2026-04-14 14:04:41 :: DB Insert done — Inserted: 2, Skipped: 0
+2026-04-14 14:04:41 :: Queue mein add kiya: 2 jobs
+2026-04-14 14:05:53 :: ===== UploadExcel START =====
+2026-04-14 14:05:53 :: DB Insert done — Inserted: 2, Skipped: 0
+2026-04-14 14:05:53 :: Queue mein add kiya: 2 jobs

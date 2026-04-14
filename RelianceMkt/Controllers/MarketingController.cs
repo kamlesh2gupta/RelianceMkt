@@ -7881,32 +7881,22 @@ string input_name, string input_mobile, string input_email)
         }
 
         // ✅ Relative path ko Full URL mein convert karna
-        //private string GetFullImageUrl(string imageLink)
-        //{
-        //    if (string.IsNullOrEmpty(imageLink))
-        //        return "";
-
-        //    // Already full URL hai
-        //    if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
-        //        return imageLink;
-
-        //    // ✅ Apna domain yahan daalo
-        //    string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
-
-        //    return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
-        //}
-
         private string GetFullImageUrl(string imageLink)
         {
             if (string.IsNullOrEmpty(imageLink))
                 return "";
 
+            // Already full URL hai
             if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
                 return imageLink;
 
-            string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+            // ✅ Apna domain yahan daalo
+            string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
+
             return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
         }
+
+       
 
 
 
