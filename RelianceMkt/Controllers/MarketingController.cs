@@ -736,9 +736,9 @@ namespace RelianceMkt.Controllers
         public void SetData()
         {
 
-            string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
+            //string Constr = ConfigurationManager.ConnectionStrings["Rel_connection"].ToString();
 
-            //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+            string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
             SqlConnection con = new SqlConnection(Constr);
             string SAPCODE = Session["SAPCODE"]?.ToString();
@@ -7505,8 +7505,8 @@ string input_name, string input_mobile, string input_email)
                     WorksheetPart worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
                     SheetData sheetData = worksheetPart.Worksheet.Elements<SheetData>().FirstOrDefault();
 
-                    string Constr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                    //string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
+                    //string Constr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                    string Constr = "Data Source=10.126.143.86,1981;Initial Catalog=DIGIMYIN;User ID=reliance_user;Password=pass@123;MultipleActiveResultSets=True;Connection Timeout=10000;";
 
 
                     using (SqlConnection con = new SqlConnection(Constr))
@@ -7735,32 +7735,32 @@ string input_name, string input_mobile, string input_email)
         }
 
         // ✅ Relative path ko Full URL mein convert karna
-        //private string GetFullImageUrl(string imageLink)
-        //{
-        //    if (string.IsNullOrEmpty(imageLink))
-        //        return "";
-
-        //    // Already full URL hai
-        //    if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
-        //        return imageLink;
-
-        //    // ✅ Apna domain yahan daalo
-        //    string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
-
-        //    return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
-        //}
-
         private string GetFullImageUrl(string imageLink)
         {
             if (string.IsNullOrEmpty(imageLink))
                 return "";
 
+            // Already full URL hai
             if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
                 return imageLink;
 
-            string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+            // ✅ Apna domain yahan daalo
+            string baseUrl = "https://dsp.indusindnipponlife.com/Digimyin";
+
             return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
         }
+
+        //private string GetFullImageUrl(string imageLink)
+        //{
+        //    if (string.IsNullOrEmpty(imageLink))
+        //        return "";
+
+        //    if (imageLink.StartsWith("http://") || imageLink.StartsWith("https://"))
+        //        return imageLink;
+
+        //    string baseUrl = "https://pants-feminine-salvage.ngrok-free.dev";
+        //    return baseUrl.TrimEnd('/') + "/" + imageLink.TrimStart('/');
+        //}
 
 
 
@@ -8352,10 +8352,10 @@ string input_name, string input_mobile, string input_email)
                     return View(data);
                 }
 
-                //var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
-                //var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
-                var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
-                var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
+                var lsqChannels = new List<string> { "AD", "DB", "DL", "DP", "PC", "PM" };
+                var seChannels = new List<string> { "CM", "CN", "GR", "NV", "ST", "CD" };
+                //var lsqChannels = new List<string> { "GR", "DL", "DP", "PC", "PM", "EN" };
+                //var seChannels = new List<string> { "AG", "CN", "GR", "NV", "ST", "CD", "EN" };
 
                 string apiRequestId = null;
                 string rawJson = "";
